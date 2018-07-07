@@ -688,6 +688,5 @@ p_ar_tidy + ggtitle(title_ar) + xlab("Sample Size") +
 
 dev.off()
 
-
 # Reproducibility - Make sure to save it with a unique name! ####
 writeLines(capture.output(sessionInfo()), "sessionInfo_Abies_regeneration_SL.txt")
