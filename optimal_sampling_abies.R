@@ -116,6 +116,11 @@ system.time({
   # Save the highest sample size 
   high_samp_size <- samp_size[length(samp_size)]# added because of hierfstat bug 
   
+  # Sim data with lapply
+  sim_data_all <- lapply(data, 
+                         replicate, n = replic_num, expr = sample(1:nrow(data$tab), 
+                                                                  i, replace = F))
+  
   
   # sim_data_5 ###############################################
   # Returns a list with as many elements as the different sample size classes.
