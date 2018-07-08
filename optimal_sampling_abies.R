@@ -116,12 +116,1062 @@ system.time({
   # Save the highest sample size 
   high_samp_size <- samp_size[length(samp_size)]# added because of hierfstat bug 
   
-  # Sim data with lapply
-  sim_data_all <- lapply(data, 
-                         replicate, n = replic_num, expr = sample(1:nrow(data$tab), 
-                                                                  i, replace = F))
+  # sim_data_17 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_17 <- list()
+  for(i in samp_size){ 
+    sim_data_17[[i]] <-
+      replicate (replic_num, data[[17]][sample(1:nrow(data[[17]]$tab), 
+                                               i, replace = F)])
+  }
   
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_17[[i]][[j]])
+    }
+  }
   
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_17 <- melt(Hobs_means)
+  colnames(Hobs_means_df_17) <- c("value", "replic", "samp_size")
+  Hobs_means_df_17$samp_size <- 
+    factor(Hobs_means_df_17$samp_size, levels = unique(
+      as.character(Hobs_means_df_17$samp_size)))
+  
+  Hobs_means_df_17$marker_num <- "17 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_17 <- melt(Hexp_means)
+  colnames(Hexp_means_df_17) <- c("value", "replic", "samp_size")
+  Hexp_means_df_17$samp_size <- 
+    factor(Hexp_means_df_17$samp_size, levels = unique(
+      as.character(Hexp_means_df_17$samp_size)))
+  
+  Hexp_means_df_17$marker_num <- "17 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_17[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_17 <- melt(ar_means)
+  colnames(ar_means_df_17) <- c("value", "samp_size")
+  ar_means_df_17$samp_size <- 
+    factor(ar_means_df_17$samp_size, levels = unique(
+      as.character(ar_means_df_17$samp_size)))
+  
+  ar_means_df_17$marker_num <- "17 markers"
+  # sim_data_16 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_16 <- list()
+  for(i in samp_size){ 
+    sim_data_16[[i]] <-
+      replicate (replic_num, data[[16]][sample(1:nrow(data[[16]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_16[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_16 <- melt(Hobs_means)
+  colnames(Hobs_means_df_16) <- c("value", "replic", "samp_size")
+  Hobs_means_df_16$samp_size <- 
+    factor(Hobs_means_df_16$samp_size, levels = unique(
+      as.character(Hobs_means_df_16$samp_size)))
+  
+  Hobs_means_df_16$marker_num <- "16 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_16 <- melt(Hexp_means)
+  colnames(Hexp_means_df_16) <- c("value", "replic", "samp_size")
+  Hexp_means_df_16$samp_size <- 
+    factor(Hexp_means_df_16$samp_size, levels = unique(
+      as.character(Hexp_means_df_16$samp_size)))
+  
+  Hexp_means_df_16$marker_num <- "16 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_16[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_16 <- melt(ar_means)
+  colnames(ar_means_df_16) <- c("value", "samp_size")
+  ar_means_df_16$samp_size <- 
+    factor(ar_means_df_16$samp_size, levels = unique(
+      as.character(ar_means_df_16$samp_size)))
+  
+  ar_means_df_16$marker_num <- "16 markers"
+  # sim_data_15 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_15 <- list()
+  for(i in samp_size){ 
+    sim_data_15[[i]] <-
+      replicate (replic_num, data[[15]][sample(1:nrow(data[[15]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_15[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_15 <- melt(Hobs_means)
+  colnames(Hobs_means_df_15) <- c("value", "replic", "samp_size")
+  Hobs_means_df_15$samp_size <- 
+    factor(Hobs_means_df_15$samp_size, levels = unique(
+      as.character(Hobs_means_df_15$samp_size)))
+  
+  Hobs_means_df_15$marker_num <- "15 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_15 <- melt(Hexp_means)
+  colnames(Hexp_means_df_15) <- c("value", "replic", "samp_size")
+  Hexp_means_df_15$samp_size <- 
+    factor(Hexp_means_df_15$samp_size, levels = unique(
+      as.character(Hexp_means_df_15$samp_size)))
+  
+  Hexp_means_df_15$marker_num <- "15 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_15[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_15 <- melt(ar_means)
+  colnames(ar_means_df_15) <- c("value", "samp_size")
+  ar_means_df_15$samp_size <- 
+    factor(ar_means_df_15$samp_size, levels = unique(
+      as.character(ar_means_df_15$samp_size)))
+  
+  ar_means_df_15$marker_num <- "15 markers"
+  # sim_data_14 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_14 <- list()
+  for(i in samp_size){ 
+    sim_data_14[[i]] <-
+      replicate (replic_num, data[[14]][sample(1:nrow(data[[14]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_14[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_14 <- melt(Hobs_means)
+  colnames(Hobs_means_df_14) <- c("value", "replic", "samp_size")
+  Hobs_means_df_14$samp_size <- 
+    factor(Hobs_means_df_14$samp_size, levels = unique(
+      as.character(Hobs_means_df_14$samp_size)))
+  
+  Hobs_means_df_14$marker_num <- "14 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_14 <- melt(Hexp_means)
+  colnames(Hexp_means_df_14) <- c("value", "replic", "samp_size")
+  Hexp_means_df_14$samp_size <- 
+    factor(Hexp_means_df_14$samp_size, levels = unique(
+      as.character(Hexp_means_df_14$samp_size)))
+  
+  Hexp_means_df_14$marker_num <- "14 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_14[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_14 <- melt(ar_means)
+  colnames(ar_means_df_14) <- c("value", "samp_size")
+  ar_means_df_14$samp_size <- 
+    factor(ar_means_df_14$samp_size, levels = unique(
+      as.character(ar_means_df_14$samp_size)))
+  
+  ar_means_df_14$marker_num <- "14 markers"
+  # sim_data_13 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_13 <- list()
+  for(i in samp_size){ 
+    sim_data_13[[i]] <-
+      replicate (replic_num, data[[13]][sample(1:nrow(data[[13]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_13[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_13 <- melt(Hobs_means)
+  colnames(Hobs_means_df_13) <- c("value", "replic", "samp_size")
+  Hobs_means_df_13$samp_size <- 
+    factor(Hobs_means_df_13$samp_size, levels = unique(
+      as.character(Hobs_means_df_13$samp_size)))
+  
+  Hobs_means_df_13$marker_num <- "13 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_13 <- melt(Hexp_means)
+  colnames(Hexp_means_df_13) <- c("value", "replic", "samp_size")
+  Hexp_means_df_13$samp_size <- 
+    factor(Hexp_means_df_13$samp_size, levels = unique(
+      as.character(Hexp_means_df_13$samp_size)))
+  
+  Hexp_means_df_13$marker_num <- "13 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_13[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_13 <- melt(ar_means)
+  colnames(ar_means_df_13) <- c("value", "samp_size")
+  ar_means_df_13$samp_size <- 
+    factor(ar_means_df_13$samp_size, levels = unique(
+      as.character(ar_means_df_13$samp_size)))
+  
+  ar_means_df_13$marker_num <- "13 markers"
+  # sim_data_12 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_12 <- list()
+  for(i in samp_size){ 
+    sim_data_12[[i]] <-
+      replicate (replic_num, data[[12]][sample(1:nrow(data[[12]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_12[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_12 <- melt(Hobs_means)
+  colnames(Hobs_means_df_12) <- c("value", "replic", "samp_size")
+  Hobs_means_df_12$samp_size <- 
+    factor(Hobs_means_df_12$samp_size, levels = unique(
+      as.character(Hobs_means_df_12$samp_size)))
+  
+  Hobs_means_df_12$marker_num <- "12 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_12 <- melt(Hexp_means)
+  colnames(Hexp_means_df_12) <- c("value", "replic", "samp_size")
+  Hexp_means_df_12$samp_size <- 
+    factor(Hexp_means_df_12$samp_size, levels = unique(
+      as.character(Hexp_means_df_12$samp_size)))
+  
+  Hexp_means_df_12$marker_num <- "12 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_12[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_12 <- melt(ar_means)
+  colnames(ar_means_df_12) <- c("value", "samp_size")
+  ar_means_df_12$samp_size <- 
+    factor(ar_means_df_12$samp_size, levels = unique(
+      as.character(ar_means_df_12$samp_size)))
+  
+  ar_means_df_12$marker_num <- "12 markers"
+  # sim_data_11 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_11 <- list()
+  for(i in samp_size){ 
+    sim_data_11[[i]] <-
+      replicate (replic_num, data[[11]][sample(1:nrow(data[[11]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_11[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_11 <- melt(Hobs_means)
+  colnames(Hobs_means_df_11) <- c("value", "replic", "samp_size")
+  Hobs_means_df_11$samp_size <- 
+    factor(Hobs_means_df_11$samp_size, levels = unique(
+      as.character(Hobs_means_df_11$samp_size)))
+  
+  Hobs_means_df_11$marker_num <- "11 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_11 <- melt(Hexp_means)
+  colnames(Hexp_means_df_11) <- c("value", "replic", "samp_size")
+  Hexp_means_df_11$samp_size <- 
+    factor(Hexp_means_df_11$samp_size, levels = unique(
+      as.character(Hexp_means_df_11$samp_size)))
+  
+  Hexp_means_df_11$marker_num <- "11 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_11[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_11 <- melt(ar_means)
+  colnames(ar_means_df_11) <- c("value", "samp_size")
+  ar_means_df_11$samp_size <- 
+    factor(ar_means_df_11$samp_size, levels = unique(
+      as.character(ar_means_df_11$samp_size)))
+  
+  ar_means_df_11$marker_num <- "11 markers"
+  # sim_data_10 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_10 <- list()
+  for(i in samp_size){ 
+    sim_data_10[[i]] <-
+      replicate (replic_num, data[[10]][sample(1:nrow(data[[10]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_10[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_10 <- melt(Hobs_means)
+  colnames(Hobs_means_df_10) <- c("value", "replic", "samp_size")
+  Hobs_means_df_10$samp_size <- 
+    factor(Hobs_means_df_10$samp_size, levels = unique(
+      as.character(Hobs_means_df_10$samp_size)))
+  
+  Hobs_means_df_10$marker_num <- "10 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_10 <- melt(Hexp_means)
+  colnames(Hexp_means_df_10) <- c("value", "replic", "samp_size")
+  Hexp_means_df_10$samp_size <- 
+    factor(Hexp_means_df_10$samp_size, levels = unique(
+      as.character(Hexp_means_df_10$samp_size)))
+  
+  Hexp_means_df_10$marker_num <- "10 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_10[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_10 <- melt(ar_means)
+  colnames(ar_means_df_10) <- c("value", "samp_size")
+  ar_means_df_10$samp_size <- 
+    factor(ar_means_df_10$samp_size, levels = unique(
+      as.character(ar_means_df_10$samp_size)))
+  
+  ar_means_df_10$marker_num <- "10 markers"  
+  # sim_data_9 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_9 <- list()
+  for(i in samp_size){ 
+    sim_data_9[[i]] <-
+      replicate (replic_num, data[[9]][sample(1:nrow(data[[9]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_9[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_9 <- melt(Hobs_means)
+  colnames(Hobs_means_df_9) <- c("value", "replic", "samp_size")
+  Hobs_means_df_9$samp_size <- 
+    factor(Hobs_means_df_9$samp_size, levels = unique(
+      as.character(Hobs_means_df_9$samp_size)))
+  
+  Hobs_means_df_9$marker_num <- "9 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_9 <- melt(Hexp_means)
+  colnames(Hexp_means_df_9) <- c("value", "replic", "samp_size")
+  Hexp_means_df_9$samp_size <- 
+    factor(Hexp_means_df_9$samp_size, levels = unique(
+      as.character(Hexp_means_df_9$samp_size)))
+  
+  Hexp_means_df_9$marker_num <- "9 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_9[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_9 <- melt(ar_means)
+  colnames(ar_means_df_9) <- c("value", "samp_size")
+  ar_means_df_9$samp_size <- 
+    factor(ar_means_df_9$samp_size, levels = unique(
+      as.character(ar_means_df_9$samp_size)))
+  
+  ar_means_df_9$marker_num <- "9 markers"
+  # sim_data_8 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_8 <- list()
+  for(i in samp_size){ 
+    sim_data_8[[i]] <-
+      replicate (replic_num, data[[8]][sample(1:nrow(data[[8]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_8[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_8 <- melt(Hobs_means)
+  colnames(Hobs_means_df_8) <- c("value", "replic", "samp_size")
+  Hobs_means_df_8$samp_size <- 
+    factor(Hobs_means_df_8$samp_size, levels = unique(
+      as.character(Hobs_means_df_8$samp_size)))
+  
+  Hobs_means_df_8$marker_num <- "8 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_8 <- melt(Hexp_means)
+  colnames(Hexp_means_df_8) <- c("value", "replic", "samp_size")
+  Hexp_means_df_8$samp_size <- 
+    factor(Hexp_means_df_8$samp_size, levels = unique(
+      as.character(Hexp_means_df_8$samp_size)))
+  
+  Hexp_means_df_8$marker_num <- "8 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_8[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_8 <- melt(ar_means)
+  colnames(ar_means_df_8) <- c("value", "samp_size")
+  ar_means_df_8$samp_size <- 
+    factor(ar_means_df_8$samp_size, levels = unique(
+      as.character(ar_means_df_8$samp_size)))
+  
+  ar_means_df_8$marker_num <- "8 markers"
+  # sim_data_7 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_7 <- list()
+  for(i in samp_size){ 
+    sim_data_7[[i]] <-
+      replicate (replic_num, data[[7]][sample(1:nrow(data[[7]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_7[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_7 <- melt(Hobs_means)
+  colnames(Hobs_means_df_7) <- c("value", "replic", "samp_size")
+  Hobs_means_df_7$samp_size <- 
+    factor(Hobs_means_df_7$samp_size, levels = unique(
+      as.character(Hobs_means_df_7$samp_size)))
+  
+  Hobs_means_df_7$marker_num <- "7 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_7 <- melt(Hexp_means)
+  colnames(Hexp_means_df_7) <- c("value", "replic", "samp_size")
+  Hexp_means_df_7$samp_size <- 
+    factor(Hexp_means_df_7$samp_size, levels = unique(
+      as.character(Hexp_means_df_7$samp_size)))
+  
+  Hexp_means_df_7$marker_num <- "7 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_7[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_7 <- melt(ar_means)
+  colnames(ar_means_df_7) <- c("value", "samp_size")
+  ar_means_df_7$samp_size <- 
+    factor(ar_means_df_7$samp_size, levels = unique(
+      as.character(ar_means_df_7$samp_size)))
+  
+  ar_means_df_7$marker_num <- "7 markers"
+  # sim_data_6 ###############################################
+  # Returns a list with as many elements as the different sample size classes.
+  # Within those elements reside the replications specified
+  sim_data_6 <- list()
+  for(i in samp_size){ 
+    sim_data_6[[i]] <-
+      replicate (replic_num, data[[6]][sample(1:nrow(data[[6]]$tab), 
+                                              i, replace = F)])
+  }
+  
+  # Summaries (Ho, He, allele number) for each generated dataset 
+  results <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      results[[i]][[j]] <- summary(sim_data_6[[i]][[j]])
+    }
+  }
+  
+  # Ho for each generated dataset 
+  Hobs <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+    }
+  }
+  
+  # Mean Ho values for each generated dataset 
+  Hobs_means <- list()
+  for(i in samp_size){
+    Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+  }
+  
+  # Produce a data frame to be plotted by ggplot2
+  Hobs_means_df_6 <- melt(Hobs_means)
+  colnames(Hobs_means_df_6) <- c("value", "replic", "samp_size")
+  Hobs_means_df_6$samp_size <- 
+    factor(Hobs_means_df_6$samp_size, levels = unique(
+      as.character(Hobs_means_df_6$samp_size)))
+  
+  Hobs_means_df_6$marker_num <- "6 markers"
+  
+  # He for each generated dataset 
+  Hexp <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
+    }
+  }
+  
+  # Mean He values for each generated dataset 
+  Hexp_means <- list()
+  for(i in samp_size){
+    Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  Hexp_means_df_6 <- melt(Hexp_means)
+  colnames(Hexp_means_df_6) <- c("value", "replic", "samp_size")
+  Hexp_means_df_6$samp_size <- 
+    factor(Hexp_means_df_6$samp_size, levels = unique(
+      as.character(Hexp_means_df_6$samp_size)))
+  
+  Hexp_means_df_6$marker_num <- "6 markers"
+  
+  # Calculation of AR for each generated dataset
+  ar <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar[[i]][[j]] <- allelic.richness(sim_data_6[[i]][[j]])
+    }
+  }
+  
+  # Mean AR values for each generated dataset
+  ar_means <- list() 
+  for(i in samp_size){
+    for(j in 1:replic_num){ # number of replications
+      ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
+    }
+  }
+  
+  # Produce a data frame to plotted by ggplot2
+  ar_means_df_6 <- melt(ar_means)
+  colnames(ar_means_df_6) <- c("value", "samp_size")
+  ar_means_df_6$samp_size <- 
+    factor(ar_means_df_6$samp_size, levels = unique(
+      as.character(ar_means_df_6$samp_size)))
+  
+  ar_means_df_6$marker_num <- "6 markers"
   # sim_data_5 ###############################################
   # Returns a list with as many elements as the different sample size classes.
   # Within those elements reside the replications specified
@@ -603,14 +1653,53 @@ Hobs_means_tidy <- bind_rows(Hobs_means_df_1, Hobs_means_df_2, Hobs_means_df_3,
                              , Hobs_means_df_6
                              ,Hobs_means_df_7, Hobs_means_df_8, Hobs_means_df_9,
                              Hobs_means_df_10, Hobs_means_df_11 
-                             #, Hobs_means_df_12, Hobs_means_df_13, Hobs_means_df_14
-                             #, Hobs_means_df_15, Hobs_means_df_16
-                             #, Hobs_means_df_17
+                             , Hobs_means_df_12, Hobs_means_df_13, Hobs_means_df_14
+                             , Hobs_means_df_15, Hobs_means_df_16
+                             , Hobs_means_df_17
 )
 Hobs_means_tidy$marker_num <- 
   factor(Hobs_means_tidy$marker_num, levels = unique(
     as.character(Hobs_means_tidy$marker_num)))
 
+if(pop == "DE_Adult"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for german adult population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Adult"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for greek adult population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Adult"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for slovenian adult population of ", 
+    italic("A. alba")))
+}else if (pop == "DE_Regen"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for german regeneration population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Regen"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for greek regeneration population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Regen"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for slovenian regeneration population of ", 
+    italic("A. alba")))
+}else if (pop == "DE_Seed"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for german seed population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Seed"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for greek seed population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Seed"){
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number for slovenian seed population of ", 
+    italic("A. alba")))
+}else{
+  title_Ho <- expression(paste(
+    "Observed Heterozygosity (Ho) by sample size & marker number"))}
 title_Ho <- expression(paste(
   "Observed Heterozygosity (Ho) by sample size & marker number for german regeneration population of ", 
   italic("A. alba")))
@@ -634,18 +1723,54 @@ Hexp_means_tidy <- bind_rows(Hexp_means_df_1, Hexp_means_df_2, Hexp_means_df_3,
                              , Hexp_means_df_6
                              ,Hexp_means_df_7, Hexp_means_df_8, Hexp_means_df_9,
                              Hexp_means_df_10, Hexp_means_df_11
-                             #, Hexp_means_df_12, Hexp_means_df_13, Hexp_means_df_14
-                             #, Hexp_means_df_15, Hexp_means_df_16
-                             #, Hexp_means_df_17
+                             , Hexp_means_df_12, Hexp_means_df_13, Hexp_means_df_14
+                             , Hexp_means_df_15, Hexp_means_df_16
+                             , Hexp_means_df_17
 )
 
 Hexp_means_tidy$marker_num <- 
   factor(Hexp_means_tidy$marker_num, levels = unique(
     as.character(Hexp_means_tidy$marker_num)))
 
-title_He <- expression(paste(
-  "Expected Heterozygosity (He) by sample size & marker number for german regeneration population of ", 
-  italic("A. alba")))
+if(pop == "DE_Adult"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for german adult population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Adult"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for greek adult population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Adult"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for slovenian adult population of ", 
+    italic("A. alba")))
+}else if (pop == "DE_Regen"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for german regeneration population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Regen"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for greek regeneration population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Regen"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for slovenian regeneration population of ", 
+    italic("A. alba")))
+}else if (pop == "DE_Seed"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for german seed population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Seed"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for greek seed population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Seed"){
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number for slovenian seed population of ", 
+    italic("A. alba")))
+}else{
+  title_He <- expression(paste(
+    "Expected Heterozygosity (He) by sample size & marker number"))}
 
 y_axis_He <- seq(0.05, 0.95, 0.05)
 
@@ -666,18 +1791,54 @@ ar_means_tidy <- bind_rows(ar_means_df_1, ar_means_df_2, ar_means_df_3,
                            , ar_means_df_6
                            ,ar_means_df_7, ar_means_df_8, ar_means_df_9,
                            ar_means_df_10, ar_means_df_11
-                           #, ar_means_df_12, ar_means_df_13, ar_means_df_14
-                           #, ar_means_df_15, ar_means_df_16
-                           #, ar_means_df_17
+                           , ar_means_df_12, ar_means_df_13, ar_means_df_14
+                           , ar_means_df_15, ar_means_df_16
+                           , ar_means_df_17
 )
 
 ar_means_tidy$marker_num <- 
   factor(ar_means_tidy$marker_num, levels = unique(
     as.character(ar_means_tidy$marker_num)))
 
-title_ar <- expression(paste(
-  "Allelic richness (Ar) by sample size & marker number for german regeneration population of ", 
-  italic("A. alba")))
+if(pop == "DE_Adult"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for german adult population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Adult"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for greek adult population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Adult"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for slovenian adult population of ", 
+    italic("A. alba")))
+}else if (pop == "DE_Regen"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for german regeneration population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Regen"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for greek regeneration population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Regen"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for slovenian regeneration population of ", 
+    italic("A. alba")))
+}else if (pop == "DE_Seed"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for german seed population of ", 
+    italic("A. alba")))
+}else if (pop == "GR_Seed"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for greek seed population of ", 
+    italic("A. borisii-regis")))
+}else if (pop == "SL_Seed"){
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number for slovenian seed population of ", 
+    italic("A. alba")))
+}else{
+  title_ar <- expression(paste(
+    "Allelic richness (Ar) by sample size & marker number"))}
 
 y_axis_ar <- 1:30
 
@@ -693,5 +1854,5 @@ p_ar_tidy + ggtitle(title_ar) + xlab("Sample Size") +
 
 dev.off()
 
-# Reproducibility - Make sure to save it with a unique name! ####
-writeLines(capture.output(sessionInfo()), "sessionInfo_Abies_regeneration_SL.txt")
+# Reproducibility ####
+writeLines(capture.output(sessionInfo()), paste("sessionInfo_Abies", pop, ".txt", sep = "_"))
