@@ -43,9 +43,11 @@ obj <- read.genalexcel(
   sheet = "Abies",             # name of sheet where the genotypes reside
   genclone = F) 
 
+# If you'de like to calculate only for EST-SSRs or nSSRs of the Abies dataset uncomment the 
+# following three lines.
 #nSSRs <- c("SF1", "NFF3", "Aag01", "NFH15", "NFF7", "SFb4")
 #EST_SSRs <- c("Aat06", "Aat11", "Aat15", "Aat01", "Aat04")
-#obj <- obj[loc = EST_SSRs]
+#obj <- obj[loc = EST_SSRs] # EST_SSRs or nSSRs
 
 loci <- sort(nAll(obj)) # vector containing loci from least to
 # most polymorphic according to the pooled dataset from all countries and pops
@@ -70,6 +72,8 @@ obj_fix <- read.genalexcel(
 # Comment next line to leave missing data as they are.
 obj <- missingno(obj, type = "mean")
 
+country <- "GR"
+species_genus <- "Abies"
 pop <- "DE_Regen" # select pop to analyze
 
 replic_num <- 100   # set number of replications
@@ -107,7 +111,7 @@ system.time({
     samp_size <- c("10", "15", "25", "30", "50", "75", "100", "125", "150", "175", "200", 
                    "225","250","275", "300", "325", "350", "375", "400")
   }else{
-    print("Unknown population")
+    print("Unknown population - Cannot continue")
   }
   
   data <- list()
