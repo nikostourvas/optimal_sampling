@@ -18,7 +18,7 @@
 # A bug report has been sent: https://github.com/jgx65/hierfstat/issues/25
 # The workaround implemented in this script, is to import a new dataset (so a new excel 
 # sheet has to be created) where the single - most polymorphic locus is duplicated. 
-# In that way, mean measures of Ar are unchanged.
+# In that way, mean measures of Ar are unaffected.
 # I have created such a sheet for locus "SFb4", which according to the 
 # common LifeGenMon dataset is the most polymorphic locus for Abies. 
 
@@ -42,7 +42,7 @@ set.seed(1994)
 # A GenAlEx formatted excel sheet is the required input
 obj <- read.genalexcel(
   "LGM_DE_SI_GR_final.xlsx",   # name of excel file
-  sheet = "Abies",             # name of sheet where the genotypes reside
+  sheet = "Fagus-extra-markers",             # name of sheet where the genotypes reside
   genclone = F) 
 
 # If you'de like to calculate only for EST-SSRs or nSSRs of the Abies dataset uncomment the 
@@ -66,7 +66,7 @@ paste("A sheet in the excel input file needs to be created for locus", most_poly
 # Import single-locus dataset
 obj_fix <- read.genalexcel(
   "LGM_DE_SI_GR_final.xlsx",     # name of excel file
-  sheet = "Abies-SFb4",     # name of sheet of single-locus dataset
+  sheet = "Fagus-FS1_15",     # name of sheet of single-locus dataset
   genclone = F)
 
 # Real-world datasets are expected to contain missing data which might introduce bias in 
@@ -74,8 +74,8 @@ obj_fix <- read.genalexcel(
 # Comment next line to leave missing data as they are.
 obj <- missingno(obj, type = "mean")
 
-species <- "Abies"  # "Abies" or "Fagus"
-pop <- "GR_Seed" # select pop to analyze
+species <- "Fagus"  # "Abies" or "Fagus"
+pop <- "GR_Adult" # select pop to analyze (acceptable names: "DE_Adult", ")
 
 replic_num <- 2   # set number of replications
 
@@ -1120,6 +1120,7 @@ system.time({
         as.character(ar_means_df_01$samp_size)))
     
     ar_means_df_01$marker_num <- "1 marker"
+    
     
   }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
     # sim_data_17 ###############################################
@@ -4176,7 +4177,6 @@ if(id == "Abies_DE_Adult"){
     "Observed Heterozygosity (Ho) by sample size & marker number for slovenian seed population of ", 
     italic("F. sylvatica")))
   
-  
 }else{
   title_Ho <- expression(paste(
     "Observed Heterozygosity (Ho) by sample size & marker number"))}
@@ -4192,7 +4192,8 @@ p_Ho_tidy + ggtitle(title_Ho) + xlab("Sample Size") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
   theme(text = element_text(size = 18)) +
   theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Observed Heterozygosity (Ho)", breaks = y_axis_Ho)
+  scale_y_continuous(name = "Observed Heterozygosity (Ho)", breaks = y_axis_Ho) +
+  stat_summary(fun.y=mean, geom="point", shape=17, size=2, color="black", fill="black")
 
 
 
@@ -4290,7 +4291,8 @@ p_He_tidy + ggtitle(title_He) + xlab("Sample Size") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
   theme(text = element_text(size = 18)) +
   theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Expected Heterozygosity (He)", breaks = y_axis_He)
+  scale_y_continuous(name = "Expected Heterozygosity (He)", breaks = y_axis_He) +
+  stat_summary(fun.y=mean, geom="point", shape=17, size=2, color="black", fill="black")
 
 
 
@@ -4388,7 +4390,8 @@ p_ar_tidy + ggtitle(title_ar) + xlab("Sample Size") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
   theme(text = element_text(size = 18)) +
   theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Allelic richness (Ar)", breaks = y_axis_ar)
+  scale_y_continuous(name = "Allelic richness (Ar)", breaks = y_axis_ar) +
+  stat_summary(fun.y=mean, geom="point", shape=17, size=2, color="black", fill="black")
 
 dev.off()
 
