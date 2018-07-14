@@ -37,6 +37,8 @@ if (!require("dplyr")) install.packages("dplyr")
 library(dplyr)
 if (!require("tidyr")) install.packages("tidyr") 
 library(tidyr)
+if (!require("RColorBrewer")) install.packages("RColorBrewer") 
+library(RColorBrewer)
 
 set.seed(1994)
 
@@ -7974,6 +7976,9 @@ system.time({
 pdf(paste(id, "100_repl.pdf", sep = "_"), 
     width = 24, height = 13.5, compress = FALSE)
 
+my_palette <- brewer.pal(12, "Set3") # create a new palette
+my_palette <- colorRampPalette(my_palette)(19) # how many colors this palette will have
+
 Hobs_means_tidy <- bind_rows(mget(ls(pattern = "Hobs_means_df_")))
 
 Hobs_means_tidy$marker_num <- 
@@ -8066,6 +8071,7 @@ p_Ho_tidy <- ggplot(Hobs_means_tidy, aes(x = samp_size, y = value)) +
   facet_wrap(~ marker_num, nrow = 2)
 
 p_Ho_tidy + ggtitle(title_Ho) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
   theme_minimal() +
   theme(legend.position = "none") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
@@ -8167,6 +8173,7 @@ p_He_tidy <- ggplot(Hexp_means_tidy, aes(x = samp_size, y = value)) +
   facet_wrap(~ marker_num, nrow = 2)
 
 p_He_tidy + ggtitle(title_He) + xlab("Sample Size") + 
+  scale_fill_manual(values = my_palette) +
   theme_minimal() +
   theme(legend.position = "none") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
@@ -8268,6 +8275,7 @@ p_ar_tidy <- ggplot(ar_means_tidy, aes(x = samp_size, y = value)) +
   facet_wrap(~ marker_num, nrow = 2)
 
 p_ar_tidy + ggtitle(title_ar) + xlab("Sample Size") + 
+  scale_fill_manual(values = my_palette) +
   theme_minimal() +
   theme(legend.position = "none") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
@@ -8380,7 +8388,7 @@ p_perc + ggtitle(title_perc) + xlab("Sample Size") +
   theme(text = element_text(size = 18)) +
   theme(title = element_text(size = 18)) +
   scale_y_continuous(
-    name = "Replicates with all alleles > 0.05 (cyan) & > 0.01 (red) detected (%)",
+    name = "Replicates with all alleles > 0.05 (cyan solid line) & > 0.01 (red dashed line) detected (%)",
     breaks = y_axis_perc) +
   theme(legend.position = "none")
 
