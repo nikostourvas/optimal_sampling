@@ -18,7 +18,7 @@
 # A bug report has been sent: https://github.com/jgx65/hierfstat/issues/25
 # The workaround implemented in this script, is to import a new dataset (so a new excel 
 # sheet has to be created) where the single - most polymorphic locus is duplicated. 
-# In that way, mean measures of Ar are unchanged.
+# In that way, mean measures of Ar are unaffected.
 # I have created such a sheet for locus "SFb4", which according to the 
 # common LifeGenMon dataset is the most polymorphic locus for Abies. 
 
@@ -35,6 +35,10 @@ if (!require("ggplot2")) install.packages("ggplot2")
 library(ggplot2)
 if (!require("dplyr")) install.packages("dplyr") 
 library(dplyr)
+if (!require("tidyr")) install.packages("tidyr") 
+library(tidyr)
+if (!require("RColorBrewer")) install.packages("RColorBrewer") 
+library(RColorBrewer)
 
 set.seed(1994)
 
@@ -75,7 +79,7 @@ obj_fix <- read.genalexcel(
 obj <- missingno(obj, type = "mean")
 
 species <- "Abies"  # "Abies" or "Fagus"
-pop <- "GR_Seed" # select pop to analyze
+pop <- "GR_Adult" # select pop to analyze (acceptable names: "DE_Adult", ")
 
 replic_num <- 2   # set number of replications
 
@@ -119,6 +123,10 @@ system.time({
   
   # Save the highest sample size 
   high_samp_size <- samp_size[length(samp_size)]# added because of hierfstat bug 
+  
+  # Calculates allelic frequencies for empirical dataset
+  f5 <- 0.05 # insert frequency
+  f1 <- 0.01
   
   
   if(id %in% c("Abies_DE_Adult", "Abies_DE_Regen", "Abies_DE_Seed",
@@ -212,6 +220,95 @@ system.time({
         as.character(ar_means_df_11$samp_size)))
     
     ar_means_df_11$marker_num <- "11 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_11[[length(sim_data_11)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_11[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_11 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_11$marker_num <- "11 markers"
+    
     # sim_data_10 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -300,6 +397,94 @@ system.time({
         as.character(ar_means_df_10$samp_size)))
     
     ar_means_df_10$marker_num <- "10 markers"  
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_10[[length(sim_data_10)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_10[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_10 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_10$marker_num <- "10 markers"
     # sim_data_09 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -388,6 +573,95 @@ system.time({
         as.character(ar_means_df_09$samp_size)))
     
     ar_means_df_09$marker_num <- "9 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_09[[length(sim_data_09)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_09[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_09 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_09$marker_num <- "9 markers"
+    
     # sim_data_08 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -476,6 +750,94 @@ system.time({
         as.character(ar_means_df_08$samp_size)))
     
     ar_means_df_08$marker_num <- "8 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_08[[length(sim_data_08)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_08[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_08 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_08$marker_num <- "8 markers"
     # sim_data_07 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -564,6 +926,94 @@ system.time({
         as.character(ar_means_df_07$samp_size)))
     
     ar_means_df_07$marker_num <- "7 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_07[[length(sim_data_07)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_07[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_07 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_07$marker_num <- "7 markers"
     # sim_data_06 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -652,6 +1102,94 @@ system.time({
         as.character(ar_means_df_06$samp_size)))
     
     ar_means_df_06$marker_num <- "6 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_06[[length(sim_data_06)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_06[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_06 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_06$marker_num <- "6 markers"
     # sim_data_05 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -741,6 +1279,93 @@ system.time({
     
     ar_means_df_05$marker_num <- "5 markers"
     
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_05[[length(sim_data_05)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_05[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_05 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_05$marker_num <- "5 markers"
     # sim_data_04 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -829,6 +1454,93 @@ system.time({
         as.character(ar_means_df_04$samp_size)))
     
     ar_means_df_04$marker_num <- "4 markers"
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_04[[length(sim_data_04)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_04[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_04 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_04$marker_num <- "4 markers"
     
     # sim_data_03 ###############################################
     # Returns a list with as many elements as the different sample size classes.
@@ -919,6 +1631,93 @@ system.time({
     
     ar_means_df_03$marker_num <- "3 markers"
     
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_03[[length(sim_data_03)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_03[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_03 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_03$marker_num <- "3 markers"
     # sim_data_02 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1007,6 +1806,94 @@ system.time({
         as.character(ar_means_df_02$samp_size)))
     
     ar_means_df_02$marker_num <- "2 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_02[[length(sim_data_02)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_02[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_02 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_02$marker_num <- "2 markers"
     
     # sim_data_01 ###############################################
     sim_data_01 <- list()
@@ -1120,6 +2007,95 @@ system.time({
         as.character(ar_means_df_01$samp_size)))
     
     ar_means_df_01$marker_num <- "1 marker"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_01[[length(sim_data_01)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_01[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_01 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_01$marker_num <- "1 marker"
+    
     
   }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
     # sim_data_17 ###############################################
@@ -1210,6 +2186,94 @@ system.time({
         as.character(ar_means_df_17$samp_size)))
     
     ar_means_df_17$marker_num <- "17 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_17[[length(sim_data_17)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_17[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_17 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_17$marker_num <- "17 markers"
     # sim_data_16 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1298,6 +2362,94 @@ system.time({
         as.character(ar_means_df_16$samp_size)))
     
     ar_means_df_16$marker_num <- "16 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_16[[length(sim_data_16)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_16[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_16 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_16$marker_num <- "16 markers"
     # sim_data_15 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1386,6 +2538,94 @@ system.time({
         as.character(ar_means_df_15$samp_size)))
     
     ar_means_df_15$marker_num <- "15 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_15[[length(sim_data_15)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_15[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_15 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_15$marker_num <- "15 markers"
     # sim_data_14 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1474,6 +2714,94 @@ system.time({
         as.character(ar_means_df_14$samp_size)))
     
     ar_means_df_14$marker_num <- "14 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_14[[length(sim_data_14)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_14[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_14 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_14$marker_num <- "14 markers"
     # sim_data_13 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1562,6 +2890,94 @@ system.time({
         as.character(ar_means_df_13$samp_size)))
     
     ar_means_df_13$marker_num <- "13 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_13[[length(sim_data_13)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_13[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_13 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_13$marker_num <- "13 markers"
     # sim_data_12 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1650,6 +3066,94 @@ system.time({
         as.character(ar_means_df_12$samp_size)))
     
     ar_means_df_12$marker_num <- "12 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_12[[length(sim_data_12)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_12[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_12 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_12$marker_num <- "12 markers"
     # sim_data_11 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1738,6 +3242,95 @@ system.time({
         as.character(ar_means_df_11$samp_size)))
     
     ar_means_df_11$marker_num <- "11 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_11[[length(sim_data_11)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_11[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_11 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_11$marker_num <- "11 markers"
+    
     # sim_data_10 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1826,6 +3419,94 @@ system.time({
         as.character(ar_means_df_10$samp_size)))
     
     ar_means_df_10$marker_num <- "10 markers"  
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_10[[length(sim_data_10)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_10[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_10 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_10$marker_num <- "10 markers"
     # sim_data_09 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -1914,6 +3595,95 @@ system.time({
         as.character(ar_means_df_09$samp_size)))
     
     ar_means_df_09$marker_num <- "9 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_09[[length(sim_data_09)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_09[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_09 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_09$marker_num <- "9 markers"
+    
     # sim_data_08 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2002,6 +3772,94 @@ system.time({
         as.character(ar_means_df_08$samp_size)))
     
     ar_means_df_08$marker_num <- "8 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_08[[length(sim_data_08)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_08[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_08 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_08$marker_num <- "8 markers"
     # sim_data_07 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2090,6 +3948,94 @@ system.time({
         as.character(ar_means_df_07$samp_size)))
     
     ar_means_df_07$marker_num <- "7 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_07[[length(sim_data_07)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_07[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_07 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_07$marker_num <- "7 markers"
     # sim_data_06 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2178,6 +4124,94 @@ system.time({
         as.character(ar_means_df_06$samp_size)))
     
     ar_means_df_06$marker_num <- "6 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_06[[length(sim_data_06)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_06[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_06 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_06$marker_num <- "6 markers"
     # sim_data_05 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2267,6 +4301,93 @@ system.time({
     
     ar_means_df_05$marker_num <- "5 markers"
     
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_05[[length(sim_data_05)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_05[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_05 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_05$marker_num <- "5 markers"
     # sim_data_04 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2355,6 +4476,93 @@ system.time({
         as.character(ar_means_df_04$samp_size)))
     
     ar_means_df_04$marker_num <- "4 markers"
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_04[[length(sim_data_04)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_04[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_04 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_04$marker_num <- "4 markers"
     
     # sim_data_03 ###############################################
     # Returns a list with as many elements as the different sample size classes.
@@ -2445,6 +4653,93 @@ system.time({
     
     ar_means_df_03$marker_num <- "3 markers"
     
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_03[[length(sim_data_03)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_03[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_03 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_03$marker_num <- "3 markers"
     # sim_data_02 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2533,6 +4828,94 @@ system.time({
         as.character(ar_means_df_02$samp_size)))
     
     ar_means_df_02$marker_num <- "2 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_02[[length(sim_data_02)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_02[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_02 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_02$marker_num <- "2 markers"
     
     # sim_data_01 ###############################################
     sim_data_01 <- list()
@@ -2646,6 +5029,95 @@ system.time({
         as.character(ar_means_df_01$samp_size)))
     
     ar_means_df_01$marker_num <- "1 marker"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_01[[length(sim_data_01)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_01[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_01 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_01$marker_num <- "1 marker"
+    
     
   }else if(id %in% c("Fagus_GR_Adult", "Fagus_GR_Regen", "Fagus_GR_Seed", 
                      "Fagus_SL_Adult", "Fagus_SL_Regen", "Fagus_SL_Seed")){
@@ -2737,6 +5209,94 @@ system.time({
         as.character(ar_means_df_16$samp_size)))
     
     ar_means_df_16$marker_num <- "16 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_16[[length(sim_data_16)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_16[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_16 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_16$marker_num <- "16 markers"
     # sim_data_15 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2825,6 +5385,94 @@ system.time({
         as.character(ar_means_df_15$samp_size)))
     
     ar_means_df_15$marker_num <- "15 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_15[[length(sim_data_15)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_15[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_15 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_15$marker_num <- "15 markers"
     # sim_data_14 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -2913,6 +5561,94 @@ system.time({
         as.character(ar_means_df_14$samp_size)))
     
     ar_means_df_14$marker_num <- "14 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_14[[length(sim_data_14)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_14[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_14 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_14$marker_num <- "14 markers"
     # sim_data_13 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3001,6 +5737,94 @@ system.time({
         as.character(ar_means_df_13$samp_size)))
     
     ar_means_df_13$marker_num <- "13 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_13[[length(sim_data_13)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_13[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_13 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_13$marker_num <- "13 markers"
     # sim_data_12 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3089,6 +5913,94 @@ system.time({
         as.character(ar_means_df_12$samp_size)))
     
     ar_means_df_12$marker_num <- "12 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_12[[length(sim_data_12)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_12[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_12 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_12$marker_num <- "12 markers"
     # sim_data_11 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3177,6 +6089,95 @@ system.time({
         as.character(ar_means_df_11$samp_size)))
     
     ar_means_df_11$marker_num <- "11 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_11[[length(sim_data_11)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_11[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_11 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_11$marker_num <- "11 markers"
+    
     # sim_data_10 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3265,6 +6266,94 @@ system.time({
         as.character(ar_means_df_10$samp_size)))
     
     ar_means_df_10$marker_num <- "10 markers"  
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_10[[length(sim_data_10)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_10[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_10 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_10$marker_num <- "10 markers"
     # sim_data_09 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3353,6 +6442,95 @@ system.time({
         as.character(ar_means_df_09$samp_size)))
     
     ar_means_df_09$marker_num <- "9 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_09[[length(sim_data_09)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_09[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_09 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_09$marker_num <- "9 markers"
+    
     # sim_data_08 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3441,6 +6619,94 @@ system.time({
         as.character(ar_means_df_08$samp_size)))
     
     ar_means_df_08$marker_num <- "8 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_08[[length(sim_data_08)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_08[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_08 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_08$marker_num <- "8 markers"
     # sim_data_07 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3529,6 +6795,94 @@ system.time({
         as.character(ar_means_df_07$samp_size)))
     
     ar_means_df_07$marker_num <- "7 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_07[[length(sim_data_07)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_07[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_07 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_07$marker_num <- "7 markers"
     # sim_data_06 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3617,6 +6971,94 @@ system.time({
         as.character(ar_means_df_06$samp_size)))
     
     ar_means_df_06$marker_num <- "6 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_06[[length(sim_data_06)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_06[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_06 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_06$marker_num <- "6 markers"
     # sim_data_05 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3706,6 +7148,93 @@ system.time({
     
     ar_means_df_05$marker_num <- "5 markers"
     
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_05[[length(sim_data_05)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_05[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_05 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_05$marker_num <- "5 markers"
     # sim_data_04 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3794,6 +7323,93 @@ system.time({
         as.character(ar_means_df_04$samp_size)))
     
     ar_means_df_04$marker_num <- "4 markers"
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_04[[length(sim_data_04)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_04[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_04 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_04$marker_num <- "4 markers"
     
     # sim_data_03 ###############################################
     # Returns a list with as many elements as the different sample size classes.
@@ -3884,6 +7500,93 @@ system.time({
     
     ar_means_df_03$marker_num <- "3 markers"
     
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_03[[length(sim_data_03)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_03[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_03 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_03$marker_num <- "3 markers"
     # sim_data_02 ###############################################
     # Returns a list with as many elements as the different sample size classes.
     # Within those elements reside the replications specified
@@ -3972,6 +7675,94 @@ system.time({
         as.character(ar_means_df_02$samp_size)))
     
     ar_means_df_02$marker_num <- "2 markers"
+    
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_02[[length(sim_data_02)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_02[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_02 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_02$marker_num <- "2 markers"
     
     # sim_data_01 ###############################################
     sim_data_01 <- list()
@@ -4086,6 +7877,95 @@ system.time({
     
     ar_means_df_01$marker_num <- "1 marker"
     
+    # Calculates allelic frequencies for all replicates
+    freq_empirical <- apply(tab(sim_data_01[[length(sim_data_01)]][[replic_num]], 
+                                freq=TRUE),2,mean, na.rm=TRUE)
+    
+    freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
+    alleles_over_f1 <- names(freq_empirical_over_f1)
+    
+    freq_empirical_over_f5 <- subset(freq_empirical, freq_empirical > f5)
+    alleles_over_f5 <- names(freq_empirical_over_f5)
+    
+    freq_repl <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl[[i]][[j]] <- apply(tab(sim_data_01[[i]][[j]], 
+                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+      }
+    }
+    
+    # Percent of datasets with all alleles f > 0.01 are found 
+    freq_repl_over_f1 <- list()
+    freq_over_f1_applied_to_repl <- list()
+    n_alleles_over_f1 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
+        
+        freq_over_f1_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f1[[i]][[j]], 
+                                                         freq_repl_over_f1[[i]][[j]] > 0)
+        
+        n_alleles_over_f1[[i]][[j]] <- length(freq_over_f1_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
+          n_alleles_over_f1[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f1[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
+    perc_repl_over_f1_detect <- (repl_over_f1_detect / replic_num * 100)
+    perc_repl_over_f1_detect <- data.frame("samp_size" = names(perc_repl_over_f1_detect),
+                                           "percent_f1" = perc_repl_over_f1_detect)
+    perc_repl_over_f1_detect$samp_size <- 
+      factor(perc_repl_over_f1_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f1_detect$samp_size)))
+    
+    
+    # Percent of datasets with all alleles f > 0.05 are found 
+    freq_repl_over_f5 <- list()
+    freq_over_f5_applied_to_repl <- list()
+    n_alleles_over_f5 <- list()
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        freq_repl_over_f5[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f5]
+        
+        freq_over_f5_applied_to_repl[[i]][[j]] <- subset(freq_repl_over_f5[[i]][[j]], 
+                                                         freq_repl_over_f5[[i]][[j]] > 0)
+        
+        n_alleles_over_f5[[i]][[j]] <- length(freq_over_f5_applied_to_repl[[i]][[j]])
+      }
+    }
+    
+    for(i in samp_size){
+      for(j in 1:replic_num){
+        if(n_alleles_over_f5[[i]][[j]] != length(alleles_over_f5)){
+          n_alleles_over_f5[[i]][[j]] <- 0
+        }else{
+          n_alleles_over_f5[[i]][[j]] <- 1
+        }
+      }
+    }
+    
+    repl_over_f5_detect <- unlist(lapply(n_alleles_over_f5, sum))
+    perc_repl_over_f5_detect <- (repl_over_f5_detect / replic_num * 100)
+    perc_repl_over_f5_detect <- data.frame("samp_size" = names(perc_repl_over_f5_detect),
+                                           "percent_f5" = perc_repl_over_f5_detect)
+    perc_repl_over_f5_detect$samp_size <- 
+      factor(perc_repl_over_f5_detect$samp_size, levels = unique(
+        as.character(perc_repl_over_f5_detect$samp_size)))
+    
+    perc_repl_detect_01 <- left_join(perc_repl_over_f1_detect, perc_repl_over_f5_detect)
+    perc_repl_detect_01$marker_num <- "1 marker"
+    
+    
   }else{
     print("Unknown population - Cannot continue")
   }
@@ -4095,6 +7975,9 @@ system.time({
 
 pdf(paste(id, "100_repl.pdf", sep = "_"), 
     width = 24, height = 13.5, compress = FALSE)
+
+my_palette <- brewer.pal(12, "Set3") # create a new palette
+my_palette <- colorRampPalette(my_palette)(19) # how many colors this palette will have
 
 Hobs_means_tidy <- bind_rows(mget(ls(pattern = "Hobs_means_df_")))
 
@@ -4176,7 +8059,6 @@ if(id == "Abies_DE_Adult"){
     "Observed Heterozygosity (Ho) by sample size & marker number for slovenian seed population of ", 
     italic("F. sylvatica")))
   
-  
 }else{
   title_Ho <- expression(paste(
     "Observed Heterozygosity (Ho) by sample size & marker number"))}
@@ -4185,14 +8067,18 @@ if(id == "Abies_DE_Adult"){
 y_axis_Ho <- seq(0.05, 0.95, 0.05)
 
 p_Ho_tidy <- ggplot(Hobs_means_tidy, aes(x = samp_size, y = value)) + 
-  geom_boxplot() + 
+  geom_boxplot(aes(fill = samp_size)) + 
   facet_wrap(~ marker_num, nrow = 2)
 
-p_Ho_tidy + ggtitle(title_Ho) + xlab("Sample Size") + 
+p_Ho_tidy + ggtitle(title_Ho) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
   theme(text = element_text(size = 18)) +
   theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Observed Heterozygosity (Ho)", breaks = y_axis_Ho)
+  scale_y_continuous(name = "Observed Heterozygosity (Ho)", breaks = y_axis_Ho) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
 
 
 
@@ -4283,14 +8169,18 @@ if(id == "Abies_DE_Adult"){
 y_axis_He <- seq(0.05, 0.95, 0.05)
 
 p_He_tidy <- ggplot(Hexp_means_tidy, aes(x = samp_size, y = value)) + 
-  geom_boxplot() + 
+  geom_boxplot(aes(fill = samp_size)) + 
   facet_wrap(~ marker_num, nrow = 2)
 
 p_He_tidy + ggtitle(title_He) + xlab("Sample Size") + 
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
   theme(text = element_text(size = 18)) +
   theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Expected Heterozygosity (He)", breaks = y_axis_He)
+  scale_y_continuous(name = "Expected Heterozygosity (He)", breaks = y_axis_He) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
 
 
 
@@ -4381,14 +8271,126 @@ if(id == "Abies_DE_Adult"){
 y_axis_ar <- 1:30
 
 p_ar_tidy <- ggplot(ar_means_tidy, aes(x = samp_size, y = value)) + 
-  geom_boxplot() + 
+  geom_boxplot(aes(fill = samp_size)) + 
   facet_wrap(~ marker_num, nrow = 2)
 
 p_ar_tidy + ggtitle(title_ar) + xlab("Sample Size") + 
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
   theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
   theme(text = element_text(size = 18)) +
   theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Allelic richness (Ar)", breaks = y_axis_ar)
+  scale_y_continuous(name = "Allelic richness (Ar)", breaks = y_axis_ar) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+
+
+
+
+perc_repl_detect <- bind_rows(mget(ls(pattern = "perc_repl_detect_")))
+
+perc_repl_detect$marker_num <- 
+  factor(perc_repl_detect$marker_num, levels = unique(
+    as.character(perc_repl_detect$marker_num)))
+
+if(id == "Abies_DE_Adult"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for german adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Adult"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for greek adult population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Adult"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for slovenian adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Regen"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for german regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Regen"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for greek regeneration population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Regen"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for slovenian regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Seed"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for german seed population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Seed"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for greek seed population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Seed"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for slovenian seed population of ", 
+    italic("A. alba")))
+  
+}else if (id == "Fagus_DE_Adult"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for greek adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Adult"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for greek adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Adult"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for slovenian adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Regen"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for german regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Regen"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for greek regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Regen"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for slovenian regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Seed"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for german seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Seed"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for greek seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Seed"){
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number for slovenian seed population of ", 
+    italic("F. sylvatica")))
+  
+}else{
+  title_perc <- expression(paste(
+    "Allele detection by sample size & marker number"))}
+
+
+y_axis_perc <- seq(0, 100, 5)
+
+p_perc <- ggplot(perc_repl_detect, aes(x = samp_size, group = 1)) + 
+  geom_point(aes(y = percent_f1, colour = "percent_f1")) + 
+  geom_point(aes(y = percent_f5, colour = "percent_f5")) +
+  geom_line(aes(y = percent_f1, colour = "percent_f1", linetype = "percent_f5")) + 
+  geom_line(aes(y = percent_f5, colour = "percent_f5", linetype = "percent_f1")) +
+  geom_hline(yintercept = 95, linetype = "dashed") + 
+  facet_wrap(~ marker_num, nrow =2)
+
+p_perc + ggtitle(title_perc) + xlab("Sample Size") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(
+    name = "Replicates with all alleles > 0.05 (cyan solid line) & > 0.01 (red dashed line) detected (%)",
+    breaks = y_axis_perc) +
+  theme(legend.position = "none")
 
 dev.off()
 
