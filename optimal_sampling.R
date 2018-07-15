@@ -267,9 +267,9 @@ system.time({
     data_length <- nrow(obj_fix@tab)
     samp_size[length(samp_size)] <- as.character(data_length)
     
-    sim_data_01 <- list()
+    sim_data_01_fix <- list()
     for(i in samp_size){ 
-      sim_data_01[[i]] <-
+      sim_data_01_fix[[i]] <-
         replicate (replic_num, obj_fix[sample(1:nrow(obj_fix$tab), 
                                               i, replace = F)])
     }
@@ -277,8 +277,8 @@ system.time({
     # Change the name of highest sample size list element and reset samp_size to original value
     real_samp_size <- samp_size[length(samp_size)] 
     if (high_samp_size != real_samp_size){
-      sim_data_01[[high_samp_size]] <- sim_data_01[[real_samp_size]]
-      sim_data_01[[real_samp_size]] <- NULL
+      sim_data_01_fix[[high_samp_size]] <- sim_data_01_fix[[real_samp_size]]
+      sim_data_01_fix[[real_samp_size]] <- NULL
       samp_size[length(samp_size)] <- high_samp_size  # reset to original value
     }
     
@@ -286,7 +286,7 @@ system.time({
     ar <- list()
     for(i in samp_size){
       for(j in 1:replic_num){ # number of replications
-        ar[[i]][[j]] <- allelic.richness(sim_data_01[[i]][[j]])
+        ar[[i]][[j]] <- allelic.richness(sim_data_01_fix[[i]][[j]])
       }
     }
     
