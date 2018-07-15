@@ -487,8 +487,8 @@ system.time({
     results_01 <- results_fun(sim_data_01)
     Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
     Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
-    ar_means_df_01 <- ar_single_locus_fun()
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
+    ar_means_df_01 <- ar_single_locus_fun()
     
     
   }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
@@ -609,8 +609,8 @@ system.time({
     results_01 <- results_fun(sim_data_01)
     Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
     Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
-    ar_means_df_01 <- ar_single_locus_fun()
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
+    ar_means_df_01 <- ar_single_locus_fun()
     
     
   }else if(id %in% c("Fagus_GR_Adult", "Fagus_GR_Regen", "Fagus_GR_Seed", 
@@ -724,8 +724,8 @@ system.time({
     results_01 <- results_fun(sim_data_01)
     Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
     Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
-    ar_means_df_01 <- ar_single_locus_fun()
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
+    ar_means_df_01 <- ar_single_locus_fun()
     
   }else{
     print("Unknown population - Cannot continue")
