@@ -1137,9 +1137,9 @@ y_axis_perc <- seq(0, 100, 5)
 
 p_perc <- ggplot(perc_repl_detect, aes(x = samp_size, group = 1)) + 
   geom_point(aes(y = percent_f1, colour = "percent_f1")) + 
-  geom_point(aes(y = percent_f5, colour = "percent_f5")) +
-  geom_line(aes(y = percent_f1, colour = "percent_f1", linetype = "percent_f5")) + 
-  geom_line(aes(y = percent_f5, colour = "percent_f5", linetype = "percent_f1")) +
+  geom_point(aes(y = percent_f2, colour = "percent_f2")) +
+  geom_line(aes(y = percent_f1, colour = "percent_f1", linetype = "percent_f2")) + 
+  geom_line(aes(y = percent_f2, colour = "percent_f2", linetype = "percent_f1")) +
   geom_hline(yintercept = 95, linetype = "dashed") + 
   facet_wrap(~ marker_num, nrow =2)
 
