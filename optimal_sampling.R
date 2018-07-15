@@ -785,7 +785,7 @@ if(id == "Abies_DE_Adult"){
   
 }else if (id == "Fagus_DE_Adult"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for greek adult population of ", 
+    "Mean Observed Heterozygosity (Ho) by sample size & marker number for german adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_Ho <- expression(paste(
@@ -888,7 +888,7 @@ if(id == "Abies_DE_Adult"){
   
 }else if (id == "Fagus_DE_Adult"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for greek adult population of ", 
+    "Mean Expected Heterozygosity (He) by sample size & marker number for german adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_He <- expression(paste(
@@ -990,7 +990,7 @@ if(id == "Abies_DE_Adult"){
   
 }else if (id == "Fagus_DE_Adult"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek adult population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for german adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_ar <- expression(paste(
@@ -1093,7 +1093,7 @@ if(id == "Abies_DE_Adult"){
   
 }else if (id == "Fagus_DE_Adult"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek adult population of ", 
+    "Allele detection by sample size & marker number for german adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_perc <- expression(paste(
