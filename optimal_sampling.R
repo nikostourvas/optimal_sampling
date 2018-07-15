@@ -324,7 +324,7 @@ system.time({
     for(i in samp_size){
       for(j in 1:replic_num){
         freq_repl[[i]][[j]] <- apply(tab(sim_dataset[[i]][[j]], 
-                                         freq_repl=TRUE),2,mean, na.rm=TRUE)
+                                         freq=TRUE),2,mean, na.rm=TRUE)
       }
     }
     
