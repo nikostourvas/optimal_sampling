@@ -3,100 +3,70 @@ empirical <- read.genalexcel(
   sheet = "Abies_emp",             # name of sheet where the genotypes reside
   genclone = F)
 
-seppop(empirical)
-emp_list <- seppop(empirical)
-DE_Adult <- emp_list[[1]]
-GR_Adult <- emp_list[[7]]
-GR_Regen <- emp_list[[8]]
+empirical <- missingno(empirical, type = "mean")
 
+pop <- "emp_GR_Adult" # select pop to analyze (acceptable names: "DE_Adult", ")
 
-pop_pairs <- list()
-for(i in samp_size){
-  for(j in 1:replic_num){
-    pop_pairs[[i]][[j]] <- repool(sim_data_11[[i]][[j]], data[[11]], list = TRUE)
-  }
+# Seperate dataset by pop & select pop to analyze
+emp_list <- seppop(empirical) # separate pops
+empirical <- emp_list[[pop]]
+
+data <- list()
+for(i in 1:length(loci)){
+  data[[length(loci)+1-i]] <- empirical[, loc = loci[i:length(loci)]]
 }
 
-pop_pairs_200 <- lapply(pop_pairs[["200"]], repool)
-Cav_Sf_200 <- as.data.frame(sapply(pop_pairs_200, genet.dist, method = "Dch"))
-
-pop_pairs_test <- list()
-for(i in samp_size){
-  pop_pairs_test[[i]] <- lapply(pop_pairs[[i]], repool)
-}
-
-Cav_Sf <- list()
-for(i in samp_size){
-  Cav_Sf[[i]] <- as.data.frame(sapply(pop_pairs_test[[i]], genet.dist, method = "Dch"),
-                               colnames = i)
-}
-
-
-
-
-
-
-
-
-Cav_Sf <- list()
-for(i in samp_size){
-  for(j in 1:replic_num){
-Cav_Sf[[i]][[j]] <- genet.dist(pop_pairs[[i]][[j]], method = "Dch")
+#####################################################################################
+Dch_pairs <- function(sim_dataset, empirical){
+  
+  # Rename pop of empirical dataset, so that it can be distinguished from the replicate.
+  data_emp <- empirical
+  pop(data_emp) <- rep("emp", nrow(empirical@tab))
+  
+      
+  # Create list with one replicate & the empirical dataset
+  pop_pairs_list <- list()
+  for(i in samp_size){
+    for(j in 1:replic_num){
+      pop_pairs_list[[i]][[j]] <- repool(sim_dataset[[i]][[j]], data_emp, list = TRUE)
     }
-}
-
-
-DS_250 <- as.data.frame(0)
-
-pop_pairs_225 <- list()
-for(j in 1:replic_num){
-  pop_pairs_225[[j]] <- repool(data[[11]], sim_data_11[["225"]][[j]])
-}
-DS_225 <- as.data.frame(sapply(pop_pairs_225, genet.dist, method = "Dch"))
-DS_225$samp_size <- "225"
-
-pop_pairs_200 <- list()
-  for(j in 1:replic_num){
-    pop_pairs_200[[j]] <- repool(data[[11]], sim_data_11[["200"]][[j]])
   }
-DS_200 <- as.data.frame(sapply(pop_pairs_200, genet.dist, method = "Dch"))
-DS_200$samp_size <- "200"
+  
+  # Create genind objects with one replicate & the empirical dataset
+  pop_pairs <- list()
+  for(i in samp_size){
+    pop_pairs[[i]] <- lapply(pop_pairs_list[[i]], repool)
+  }
+  
+  # Calculate distance
+  Cav_Sf <- list()
+  for(i in samp_size){
+    Cav_Sf[[i]] <- as.data.frame(sapply(pop_pairs[[i]], genet.dist, method = "Dch"))
+  }
+  
+  for(i in samp_size){
+    Cav_Sf[[i]]$samp_size <- paste(i)
+    colnames(Cav_Sf[[i]]) <- c("Dch", "samp_size")
+  }
+  
+  # Create a single data.frame with all the distances
+  Cav_Sf_df <- as.data.frame(bind_rows(Cav_Sf))
+  Cav_Sf_df$marker_num <- if(length(nAll(sim_dataset[[1]][[1]])) > 1){ 
+                              paste(length(nAll(sim_dataset[[1]][[1]])), 
+                                    "markers", sep = " ")
+                            }else {
+                              paste(length(nAll(sim_dataset[[1]][[1]])), 
+                                    "marker", sep = " ")
+                            }
 
-pop_pairs_175 <- list()
-for(j in 1:replic_num){
-  pop_pairs_175[[j]] <- repool(data[[11]], sim_data_11[["175"]][[j]])
+  return(Cav_Sf_df)
 }
-DS_175 <- as.data.frame(sapply(pop_pairs_175, genet.dist, method = "Dch"))
-DS_175$samp_size <- "175"
 
+test <- Dch_pairs(sim_data_10, data[[10]])
+############################################################################
+# Rename pop of empirical dataset, so that it can be distinguished from the replicate.
+data_emp <- data
+pop(data_emp[[2]]) <- rep("emp_GR_Adult", nrow(data[[2]]@tab))
 
-
-
-
-
-
-DS <- list()
-for(j in 1:replic_num){
-DS[[j]] <- genet.dist(pop_pairs_250[[j]], method ="Dch")
-}
-
-
-
-
-DS <- lapply(pop_pairs_250, genet.dist)
-
-pegas_DS <- list()
-for(j in 1:replic_num){
-pegas_DS[[j]] <- Fst(as.loci(pop_pairs_250[[j]]))
-}
-
-
-pop_pairs <- lapply(data[[11]], sim_data_11, repool)
-
-pop_pairs <- repool(data[[11]], sim_data_11[[1]][[1]])
-
-
-
-
-
-                    
+test <- repool(sim_data_02[["50"]][[1]], data_emp[[2]])
+dch <- genet.dist(test)
