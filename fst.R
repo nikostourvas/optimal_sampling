@@ -51,6 +51,8 @@ Dch_pairs <- function(sim_dataset, empirical){
   
   # Create a single data.frame with all the distances
   Cav_Sf_df <- as.data.frame(bind_rows(Cav_Sf))
+  Cav_Sf_df$samp_size <- factor(Cav_Sf_df$samp_size, levels = unique(
+                                as.character(Cav_Sf_df$samp_size)))
   Cav_Sf_df$marker_num <- if(length(nAll(sim_dataset[[1]][[1]])) > 1){ 
                               paste(length(nAll(sim_dataset[[1]][[1]])), 
                                     "markers", sep = " ")
@@ -63,6 +65,8 @@ Dch_pairs <- function(sim_dataset, empirical){
 }
 
 test <- Dch_pairs(sim_data_10, data[[10]])
+
+p <- ggplot(test, aes(x = samp_size, y = Dch)) + geom_boxplot()
 ############################################################################
 # Rename pop of empirical dataset, so that it can be distinguished from the replicate.
 data_emp <- data
