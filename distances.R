@@ -172,10 +172,6 @@ system.time({
       colnames(distance[[i]]) <- c(method, "samp_size")
     }
 
-    # Replace negative values with zero
-    for(i in samp_size){
-      distance[[i]]$WC84[distance[[i]]$WC84 < 0] <- 0
-    }
     
     # Create a single data.frame with all the distances
     distance_df <- as.data.frame(bind_rows(distance))
@@ -188,6 +184,10 @@ system.time({
       paste(length(nAll(sim_dataset[[1]][[1]])), 
             "marker", sep = " ")
     }
+    
+    # Replace negative values with zero
+      distance_df[, method][distance_df[, method] < 0] <- 0
+  
     
     return(distance_df)
   }
@@ -242,6 +242,9 @@ system.time({
       paste(length(nAll(sim_dataset[[1]][[1]])),
             "marker", sep = " ")
     }
+    
+    # Replace negative values with zero
+    distance_df[, "D_Jost"][distance_df[, "D_Jost"] < 0] <- 0
     
     return(distance_df)
   }
