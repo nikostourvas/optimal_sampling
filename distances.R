@@ -455,7 +455,7 @@ system.time({
   }
   
   
-  jost_D_pairs <- function(sim_dataset, empirical){
+  jostD_pairs <- function(sim_dataset, empirical){
     
     # Rename pop of empirical dataset, so that it can be distinguished from the replicate.
     pop(empirical) <- rep("emp", nrow(empirical@tab))
@@ -522,7 +522,7 @@ system.time({
     # perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
     fst_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "WC84")
     dch_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "Dch")
-    jost_11 <- jost_D_pairs(sim_data_11, data[[11]])
+    jost_11 <- jostD_pairs(sim_data_11, data[[11]])
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
@@ -533,7 +533,7 @@ system.time({
     # perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
     fst_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "WC84")
     dch_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "Dch")
-    jost_10 <- jost_D_pairs(sim_data_10, data[[10]])
+    jost_10 <- jostD_pairs(sim_data_10, data[[10]])
     
     sim_data_09 <- sim_dataset_fun(data[[9]])
     # results_09 <- results_fun(sim_data_09)
@@ -543,7 +543,7 @@ system.time({
     # perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
     fst_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "WC84")
     dch_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "Dch")
-    jost_09 <- jost_D_pairs(sim_data_09, data[[09]])
+    jost_09 <- jostD_pairs(sim_data_09, data[[09]])
     
     sim_data_08 <- sim_dataset_fun(data[[8]])
     # results_08 <- results_fun(sim_data_08)
@@ -553,7 +553,7 @@ system.time({
     # perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
     fst_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "WC84")
     dch_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "Dch")
-    jost_08 <- jost_D_pairs(sim_data_08, data[[08]])
+    jost_08 <- jostD_pairs(sim_data_08, data[[08]])
     
     sim_data_07 <- sim_dataset_fun(data[[7]])
     # results_07 <- results_fun(sim_data_07)
@@ -563,7 +563,7 @@ system.time({
     # perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
     fst_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "WC84")
     dch_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "Dch")
-    jost_07 <- jost_D_pairs(sim_data_07, data[[07]])
+    jost_07 <- jostD_pairs(sim_data_07, data[[07]])
     
     sim_data_06 <- sim_dataset_fun(data[[6]])
     # results_06 <- results_fun(sim_data_06)
@@ -573,7 +573,7 @@ system.time({
     # perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
     fst_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "WC84")
     dch_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "Dch")
-    jost_06 <- jost_D_pairs(sim_data_06, data[[06]])
+    jost_06 <- jostD_pairs(sim_data_06, data[[06]])
     
     sim_data_05 <- sim_dataset_fun(data[[5]])
     # results_05 <- results_fun(sim_data_05)
@@ -583,7 +583,7 @@ system.time({
     # perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
     fst_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "WC84")
     dch_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "Dch")
-    jost_05 <- jost_D_pairs(sim_data_05, data[[05]])
+    jost_05 <- jostD_pairs(sim_data_05, data[[05]])
     
     sim_data_04 <- sim_dataset_fun(data[[4]])
     # results_04 <- results_fun(sim_data_04)
@@ -593,7 +593,7 @@ system.time({
     # perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
     fst_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "WC84")
     dch_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "Dch")
-    jost_04 <- jost_D_pairs(sim_data_04, data[[04]])
+    jost_04 <- jostD_pairs(sim_data_04, data[[04]])
     
     sim_data_03 <- sim_dataset_fun(data[[3]])
     # results_03 <- results_fun(sim_data_03)
@@ -603,7 +603,7 @@ system.time({
     # perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
     fst_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "WC84")
     dch_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "Dch")
-    jost_03 <- jost_D_pairs(sim_data_03, data[[03]])
+    jost_03 <- jostD_pairs(sim_data_03, data[[03]])
     
     sim_data_02 <- sim_dataset_fun(data[[2]])
     # results_02 <- results_fun(sim_data_02)
@@ -613,7 +613,7 @@ system.time({
     # perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
     fst_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "WC84")
     dch_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "Dch")
-    jost_02 <- jost_D_pairs(sim_data_02, data[[02]])
+    jost_02 <- jostD_pairs(sim_data_02, data[[02]])
     
     # sim_data_01 <- sim_dataset_fun(data[[1]])
     # results_01 <- results_fun(sim_data_01)
@@ -636,7 +636,7 @@ system.time({
     # perc_repl_detect_17 <- perc_detect_fun(sim_data_17, f1, f2)
     fst_17 <- genet_dist_pairs(sim_data_17, data[[17]], method = "WC84")
     dch_17 <- genet_dist_pairs(sim_data_17, data[[17]], method = "Dch")
-    jost_17 <- jost_D_pairs(sim_data_17, data[[17]])
+    jost_17 <- jostD_pairs(sim_data_17, data[[17]])
     
     sim_data_16 <- sim_dataset_fun(data[[16]])
     # results_16 <- results_fun(sim_data_16)
@@ -646,7 +646,7 @@ system.time({
     # perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
     fst_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "WC84")
     dch_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "Dch")
-    jost_16 <- jost_D_pairs(sim_data_16, data[[16]])
+    jost_16 <- jostD_pairs(sim_data_16, data[[16]])
     
     sim_data_15 <- sim_dataset_fun(data[[15]])
     # results_15 <- results_fun(sim_data_15)
@@ -656,7 +656,7 @@ system.time({
     # perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
     fst_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "WC84")
     dch_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "Dch")
-    jost_15 <- jost_D_pairs(sim_data_15, data[[15]])
+    jost_15 <- jostD_pairs(sim_data_15, data[[15]])
     
     sim_data_14 <- sim_dataset_fun(data[[14]])
     # results_14 <- results_fun(sim_data_14)
@@ -666,7 +666,7 @@ system.time({
     # perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
     fst_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "WC84")
     dch_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "Dch")
-    jost_14 <- jost_D_pairs(sim_data_14, data[[14]])
+    jost_14 <- jostD_pairs(sim_data_14, data[[14]])
     
     sim_data_13 <- sim_dataset_fun(data[[13]])
     # results_13 <- results_fun(sim_data_13)
@@ -676,7 +676,7 @@ system.time({
     # perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
     fst_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "WC84")
     dch_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "Dch")
-    jost_13 <- jost_D_pairs(sim_data_13, data[[13]])
+    jost_13 <- jostD_pairs(sim_data_13, data[[13]])
     
     sim_data_12 <- sim_dataset_fun(data[[12]])
     # results_12 <- results_fun(sim_data_12)
@@ -686,7 +686,7 @@ system.time({
     # perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
     fst_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "WC84")
     dch_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "Dch")
-    jost_12 <- jost_D_pairs(sim_data_12, data[[12]])
+    jost_12 <- jostD_pairs(sim_data_12, data[[12]])
     
     sim_data_11 <- sim_dataset_fun(data[[11]])
     # results_11 <- results_fun(sim_data_11)
@@ -696,7 +696,7 @@ system.time({
     # perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
     fst_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "WC84")
     dch_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "Dch")
-    jost_11 <- jost_D_pairs(sim_data_11, data[[11]])
+    jost_11 <- jostD_pairs(sim_data_11, data[[11]])
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
@@ -707,7 +707,7 @@ system.time({
     # perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
     fst_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "WC84")
     dch_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "Dch")
-    jost_10 <- jost_D_pairs(sim_data_10, data[[10]])
+    jost_10 <- jostD_pairs(sim_data_10, data[[10]])
     
     sim_data_09 <- sim_dataset_fun(data[[9]])
     # results_09 <- results_fun(sim_data_09)
@@ -717,7 +717,7 @@ system.time({
     # perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
     fst_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "WC84")
     dch_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "Dch")
-    jost_09 <- jost_D_pairs(sim_data_09, data[[09]])
+    jost_09 <- jostD_pairs(sim_data_09, data[[09]])
     
     sim_data_08 <- sim_dataset_fun(data[[8]])
     # results_08 <- results_fun(sim_data_08)
@@ -727,7 +727,7 @@ system.time({
     # perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
     fst_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "WC84")
     dch_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "Dch")
-    jost_08 <- jost_D_pairs(sim_data_08, data[[08]])
+    jost_08 <- jostD_pairs(sim_data_08, data[[08]])
     
     sim_data_07 <- sim_dataset_fun(data[[7]])
     # results_07 <- results_fun(sim_data_07)
@@ -737,7 +737,7 @@ system.time({
     # perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
     fst_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "WC84")
     dch_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "Dch")
-    jost_07 <- jost_D_pairs(sim_data_07, data[[07]])
+    jost_07 <- jostD_pairs(sim_data_07, data[[07]])
     
     sim_data_06 <- sim_dataset_fun(data[[6]])
     # results_06 <- results_fun(sim_data_06)
@@ -747,7 +747,7 @@ system.time({
     # perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
     fst_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "WC84")
     dch_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "Dch")
-    jost_06 <- jost_D_pairs(sim_data_06, data[[06]])
+    jost_06 <- jostD_pairs(sim_data_06, data[[06]])
     
     sim_data_05 <- sim_dataset_fun(data[[5]])
     # results_05 <- results_fun(sim_data_05)
@@ -757,7 +757,7 @@ system.time({
     # perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
     fst_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "WC84")
     dch_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "Dch")
-    jost_05 <- jost_D_pairs(sim_data_05, data[[05]])
+    jost_05 <- jostD_pairs(sim_data_05, data[[05]])
     
     sim_data_04 <- sim_dataset_fun(data[[4]])
     # results_04 <- results_fun(sim_data_04)
@@ -767,7 +767,7 @@ system.time({
     # perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
     fst_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "WC84")
     dch_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "Dch")
-    jost_04 <- jost_D_pairs(sim_data_04, data[[04]])
+    jost_04 <- jostD_pairs(sim_data_04, data[[04]])
     
     sim_data_03 <- sim_dataset_fun(data[[3]])
     # results_03 <- results_fun(sim_data_03)
@@ -777,7 +777,7 @@ system.time({
     # perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
     fst_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "WC84")
     dch_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "Dch")
-    jost_03 <- jost_D_pairs(sim_data_03, data[[03]])
+    jost_03 <- jostD_pairs(sim_data_03, data[[03]])
     
     sim_data_02 <- sim_dataset_fun(data[[2]])
     # results_02 <- results_fun(sim_data_02)
@@ -787,7 +787,7 @@ system.time({
     # perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
     fst_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "WC84")
     dch_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "Dch")
-    jost_02 <- jost_D_pairs(sim_data_02, data[[02]])
+    jost_02 <- jostD_pairs(sim_data_02, data[[02]])
     
     # sim_data_01 <- sim_dataset_fun(data[[1]])
     # results_01 <- results_fun(sim_data_01)
@@ -812,7 +812,7 @@ system.time({
     # perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
     fst_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "WC84")
     dch_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "Dch")
-    jost_11 <- jost_D_pairs(sim_data_11, data[[11]])
+    jost_11 <- jostD_pairs(sim_data_11, data[[11]])
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
@@ -823,7 +823,7 @@ system.time({
     # perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
     fst_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "WC84")
     dch_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "Dch")
-    jost_10 <- jost_D_pairs(sim_data_10, data[[10]])
+    jost_10 <- jostD_pairs(sim_data_10, data[[10]])
     
     sim_data_09 <- sim_dataset_fun(data[[9]])
     # results_09 <- results_fun(sim_data_09)
@@ -833,7 +833,7 @@ system.time({
     # perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
     fst_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "WC84")
     dch_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "Dch")
-    jost_09 <- jost_D_pairs(sim_data_09, data[[09]])
+    jost_09 <- jostD_pairs(sim_data_09, data[[09]])
     
     sim_data_08 <- sim_dataset_fun(data[[8]])
     # results_08 <- results_fun(sim_data_08)
@@ -843,7 +843,7 @@ system.time({
     # perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
     fst_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "WC84")
     dch_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "Dch")
-    jost_08 <- jost_D_pairs(sim_data_08, data[[08]])
+    jost_08 <- jostD_pairs(sim_data_08, data[[08]])
     
     sim_data_07 <- sim_dataset_fun(data[[7]])
     # results_07 <- results_fun(sim_data_07)
@@ -853,7 +853,7 @@ system.time({
     # perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
     fst_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "WC84")
     dch_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "Dch")
-    jost_07 <- jost_D_pairs(sim_data_07, data[[07]])
+    jost_07 <- jostD_pairs(sim_data_07, data[[07]])
     
     sim_data_06 <- sim_dataset_fun(data[[6]])
     # results_06 <- results_fun(sim_data_06)
@@ -863,7 +863,7 @@ system.time({
     # perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
     fst_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "WC84")
     dch_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "Dch")
-    jost_06 <- jost_D_pairs(sim_data_06, data[[06]])
+    jost_06 <- jostD_pairs(sim_data_06, data[[06]])
     
     sim_data_05 <- sim_dataset_fun(data[[5]])
     # results_05 <- results_fun(sim_data_05)
@@ -873,7 +873,7 @@ system.time({
     # perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
     fst_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "WC84")
     dch_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "Dch")
-    jost_05 <- jost_D_pairs(sim_data_05, data[[05]])
+    jost_05 <- jostD_pairs(sim_data_05, data[[05]])
     
     sim_data_04 <- sim_dataset_fun(data[[4]])
     # results_04 <- results_fun(sim_data_04)
@@ -883,7 +883,7 @@ system.time({
     # perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
     fst_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "WC84")
     dch_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "Dch")
-    jost_04 <- jost_D_pairs(sim_data_04, data[[04]])
+    jost_04 <- jostD_pairs(sim_data_04, data[[04]])
     
     sim_data_03 <- sim_dataset_fun(data[[3]])
     # results_03 <- results_fun(sim_data_03)
@@ -893,7 +893,7 @@ system.time({
     # perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
     fst_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "WC84")
     dch_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "Dch")
-    jost_03 <- jost_D_pairs(sim_data_03, data[[03]])
+    jost_03 <- jostD_pairs(sim_data_03, data[[03]])
     
     sim_data_02 <- sim_dataset_fun(data[[2]])
     # results_02 <- results_fun(sim_data_02)
@@ -903,7 +903,7 @@ system.time({
     # perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
     fst_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "WC84")
     dch_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "Dch")
-    jost_02 <- jost_D_pairs(sim_data_02, data[[02]])
+    jost_02 <- jostD_pairs(sim_data_02, data[[02]])
     
     # sim_data_01 <- sim_dataset_fun(data[[1]])
     # results_01 <- results_fun(sim_data_01)
@@ -1012,7 +1012,7 @@ if(id == "Abies_DE_Adult"){
   title_Fst <- expression(paste(
     "Mean pairwise Fst by sample size & marker number"))}
 
-y_axis_fst <- seq(0, 0.99, 0.001)
+y_axis_fst <- seq(0, 0.999, 0.01)
 
 p_fst_tidy <- ggplot(fst_tidy, aes(x = samp_size, y = WC84)) +
   geom_boxplot(aes(fill = samp_size)) +
