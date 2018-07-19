@@ -455,7 +455,7 @@ system.time({
   }
   
   
-    jost_D_pairs <- function(sim_dataset, empirical){
+  jost_D_pairs <- function(sim_dataset, empirical){
     
     # Rename pop of empirical dataset, so that it can be distinguished from the replicate.
     pop(empirical) <- rep("emp", nrow(empirical@tab))
@@ -513,288 +513,288 @@ system.time({
   if(id %in% c("Abies_DE_Adult", "Abies_DE_Regen", "Abies_DE_Seed",
                "Abies_GR_Adult", "Abies_GR_Regen", "Abies_GR_Seed",
                "Fagus_DE_Adult", "Fagus_DE_Regen", "Fagus_DE_Seed")){
-
+    
     sim_data_11 <- sim_dataset_fun(data[[11]])
-    results_11 <- results_fun(sim_data_11)
-    Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
-    Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
-    ar_means_df_11 <- ar_fun(sim_data_11)
-    perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
+    # results_11 <- results_fun(sim_data_11)
+    # Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
+    # Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
+    # ar_means_df_11 <- ar_fun(sim_data_11)
+    # perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
     fst_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "WC84")
     dch_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "Dch")
     jost_11 <- jost_D_pairs(sim_data_11, data[[11]])
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
-    results_10 <- results_fun(sim_data_10)
-    Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
-    Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
-    ar_means_df_10 <- ar_fun(sim_data_10)
-    perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
+    # results_10 <- results_fun(sim_data_10)
+    # Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
+    # Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
+    # ar_means_df_10 <- ar_fun(sim_data_10)
+    # perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
     fst_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "WC84")
     dch_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "Dch")
     jost_10 <- jost_D_pairs(sim_data_10, data[[10]])
     
     sim_data_09 <- sim_dataset_fun(data[[9]])
-    results_09 <- results_fun(sim_data_09)
-    Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
-    Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
-    ar_means_df_09 <- ar_fun(sim_data_09)
-    perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
-    fst_09 <- genet_dist_pairs(sim_data_09, data[[9]], method = "WC84")
-    dch_09 <- genet_dist_pairs(sim_data_09, data[[9]], method = "Dch")
-    jost_09 <- jost_D_pairs(sim_data_09, data[[9]])
-    
-    sim_data_08 <- sim_dataset_fun(data[[8]])
-    results_08 <- results_fun(sim_data_08)
-    Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
-    Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
-    ar_means_df_08 <- ar_fun(sim_data_08)
-    perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
-    fst_08 <- genet_dist_pairs(sim_data_08, data[[8]], method = "WC84")
-    dch_08 <- genet_dist_pairs(sim_data_08, data[[8]], method = "Dch")
-    jost_08 <- jost_D_pairs(sim_data_08, data[[8]])
-    
-    sim_data_07 <- sim_dataset_fun(data[[7]])
-    results_07 <- results_fun(sim_data_07)
-    Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
-    Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
-    ar_means_df_07 <- ar_fun(sim_data_07)
-    perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
-    fst_07 <- genet_dist_pairs(sim_data_07, data[[7]], method = "WC84")
-    dch_07 <- genet_dist_pairs(sim_data_07, data[[7]], method = "Dch")
-    jost_07 <- jost_D_pairs(sim_data_07, data[[7]])
-    
-    sim_data_06 <- sim_dataset_fun(data[[6]])
-    results_06 <- results_fun(sim_data_06)
-    Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
-    Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
-    ar_means_df_06 <- ar_fun(sim_data_06)
-    perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
-    fst_06 <- genet_dist_pairs(sim_data_06, data[[6]], method = "WC84")
-    dch_06 <- genet_dist_pairs(sim_data_06, data[[6]], method = "Dch")
-    jost_06 <- jost_D_pairs(sim_data_06, data[[6]])
-    
-    sim_data_05 <- sim_dataset_fun(data[[5]])
-    results_05 <- results_fun(sim_data_05)
-    Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
-    Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
-    ar_means_df_05 <- ar_fun(sim_data_05)
-    perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
-    fst_05 <- genet_dist_pairs(sim_data_05, data[[5]], method = "WC84")
-    dch_05 <- genet_dist_pairs(sim_data_05, data[[5]], method = "Dch")
-    jost_05 <- jost_D_pairs(sim_data_05, data[[5]])
-    
-    sim_data_04 <- sim_dataset_fun(data[[4]])
-    results_04 <- results_fun(sim_data_04)
-    Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
-    Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
-    ar_means_df_04 <- ar_fun(sim_data_04)
-    perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
-    fst_04 <- genet_dist_pairs(sim_data_04, data[[4]], method = "WC84")
-    dch_04 <- genet_dist_pairs(sim_data_04, data[[4]], method = "Dch")
-    jost_04 <- jost_D_pairs(sim_data_04, data[[4]])
-    
-    sim_data_03 <- sim_dataset_fun(data[[3]])
-    results_03 <- results_fun(sim_data_03)
-    Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
-    Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
-    ar_means_df_03 <- ar_fun(sim_data_03)
-    perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
-    fst_03 <- genet_dist_pairs(sim_data_03, data[[3]], method = "WC84")
-    dch_03 <- genet_dist_pairs(sim_data_03, data[[3]], method = "Dch")
-    jost_03 <- jost_D_pairs(sim_data_03, data[[3]])
-    
-    sim_data_02 <- sim_dataset_fun(data[[2]])
-    results_02 <- results_fun(sim_data_02)
-    Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
-    Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
-    ar_means_df_02 <- ar_fun(sim_data_02)
-    perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
-    fst_02 <- genet_dist_pairs(sim_data_02, data[[2]], method = "WC84")
-    dch_02 <- genet_dist_pairs(sim_data_02, data[[2]], method = "Dch")
-    jost_02 <- jost_D_pairs(sim_data_02, data[[2]])
-    
-    sim_data_01 <- sim_dataset_fun(data[[1]])
-    results_01 <- results_fun(sim_data_01)
-    Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
-    Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
-    perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
-    ar_means_df_01 <- ar_single_locus_fun()
-    # fst_01 <- genet_dist_pairs(sim_data_01, data[[1]], method = "WC84")
-    # dch_01 <- genet_dist_pairs(sim_data_01, data[[1]], method = "Dch")
-    # jost_01 <- d_jost_pairs(sim_data_01, data[[1]])
-    
-    
-  }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
-    
-    sim_data_17 <- sim_dataset_fun(data[[17]])
-    results_17 <- results_fun(sim_data_17)
-    Hobs_means_df_17 <- Hobs_fun(sim_data_17, results_17)
-    Hexp_means_df_17 <- Hexp_fun(sim_data_17, results_17)
-    ar_means_df_17 <- ar_fun(sim_data_17)
-    perc_repl_detect_17 <- perc_detect_fun(sim_data_17, f1, f2)
-    fst_17 <- genet_dist_pairs(sim_data_17, data[[17]], method = "WC84")
-    dch_17 <- genet_dist_pairs(sim_data_17, data[[17]], method = "Dch")
-    jost_17 <- jost_D_pairs(sim_data_17, data[[17]])
-    
-    sim_data_16 <- sim_dataset_fun(data[[16]])
-    results_16 <- results_fun(sim_data_16)
-    Hobs_means_df_16 <- Hobs_fun(sim_data_16, results_16)
-    Hexp_means_df_16 <- Hexp_fun(sim_data_16, results_16)
-    ar_means_df_16 <- ar_fun(sim_data_16)
-    perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
-    fst_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "WC84")
-    dch_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "Dch")
-    jost_16 <- jost_D_pairs(sim_data_16, data[[16]])
-    
-    sim_data_15 <- sim_dataset_fun(data[[15]])
-    results_15 <- results_fun(sim_data_15)
-    Hobs_means_df_15 <- Hobs_fun(sim_data_15, results_15)
-    Hexp_means_df_15 <- Hexp_fun(sim_data_15, results_15)
-    ar_means_df_15 <- ar_fun(sim_data_15)
-    perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
-    fst_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "WC84")
-    dch_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "Dch")
-    jost_15 <- jost_D_pairs(sim_data_15, data[[15]])
-    
-    sim_data_14 <- sim_dataset_fun(data[[14]])
-    results_14 <- results_fun(sim_data_14)
-    Hobs_means_df_14 <- Hobs_fun(sim_data_14, results_14)
-    Hexp_means_df_14 <- Hexp_fun(sim_data_14, results_14)
-    ar_means_df_14 <- ar_fun(sim_data_14)
-    perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
-    fst_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "WC84")
-    dch_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "Dch")
-    jost_14 <- jost_D_pairs(sim_data_14, data[[14]])
-    
-    sim_data_13 <- sim_dataset_fun(data[[13]])
-    results_13 <- results_fun(sim_data_13)
-    Hobs_means_df_13 <- Hobs_fun(sim_data_13, results_13)
-    Hexp_means_df_13 <- Hexp_fun(sim_data_13, results_13)
-    ar_means_df_13 <- ar_fun(sim_data_13)
-    perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
-    fst_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "WC84")
-    dch_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "Dch")
-    jost_13 <- jost_D_pairs(sim_data_13, data[[13]])
-    
-    sim_data_12 <- sim_dataset_fun(data[[12]])
-    results_12 <- results_fun(sim_data_12)
-    Hobs_means_df_12 <- Hobs_fun(sim_data_12, results_12)
-    Hexp_means_df_12 <- Hexp_fun(sim_data_12, results_12)
-    ar_means_df_12 <- ar_fun(sim_data_12)
-    perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
-    fst_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "WC84")
-    dch_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "Dch")
-    jost_12 <- jost_D_pairs(sim_data_12, data[[12]])
-    
-    sim_data_11 <- sim_dataset_fun(data[[11]])
-    results_11 <- results_fun(sim_data_11)
-    Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
-    Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
-    ar_means_df_11 <- ar_fun(sim_data_11)
-    perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
-    fst_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "WC84")
-    dch_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "Dch")
-    jost_11 <- jost_D_pairs(sim_data_11, data[[11]])
-    
-    
-    sim_data_10 <- sim_dataset_fun(data[[10]])
-    results_10 <- results_fun(sim_data_10)
-    Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
-    Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
-    ar_means_df_10 <- ar_fun(sim_data_10)
-    perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
-    fst_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "WC84")
-    dch_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "Dch")
-    jost_10 <- jost_D_pairs(sim_data_10, data[[10]])
-    
-    sim_data_09 <- sim_dataset_fun(data[[9]])
-    results_09 <- results_fun(sim_data_09)
-    Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
-    Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
-    ar_means_df_09 <- ar_fun(sim_data_09)
-    perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
+    # results_09 <- results_fun(sim_data_09)
+    # Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
+    # Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
+    # ar_means_df_09 <- ar_fun(sim_data_09)
+    # perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
     fst_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "WC84")
     dch_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "Dch")
     jost_09 <- jost_D_pairs(sim_data_09, data[[09]])
     
     sim_data_08 <- sim_dataset_fun(data[[8]])
-    results_08 <- results_fun(sim_data_08)
-    Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
-    Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
-    ar_means_df_08 <- ar_fun(sim_data_08)
-    perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
+    # results_08 <- results_fun(sim_data_08)
+    # Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
+    # Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
+    # ar_means_df_08 <- ar_fun(sim_data_08)
+    # perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
     fst_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "WC84")
     dch_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "Dch")
     jost_08 <- jost_D_pairs(sim_data_08, data[[08]])
     
     sim_data_07 <- sim_dataset_fun(data[[7]])
-    results_07 <- results_fun(sim_data_07)
-    Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
-    Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
-    ar_means_df_07 <- ar_fun(sim_data_07)
-    perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
+    # results_07 <- results_fun(sim_data_07)
+    # Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
+    # Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
+    # ar_means_df_07 <- ar_fun(sim_data_07)
+    # perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
     fst_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "WC84")
     dch_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "Dch")
     jost_07 <- jost_D_pairs(sim_data_07, data[[07]])
     
     sim_data_06 <- sim_dataset_fun(data[[6]])
-    results_06 <- results_fun(sim_data_06)
-    Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
-    Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
-    ar_means_df_06 <- ar_fun(sim_data_06)
-    perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
+    # results_06 <- results_fun(sim_data_06)
+    # Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
+    # Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
+    # ar_means_df_06 <- ar_fun(sim_data_06)
+    # perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
     fst_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "WC84")
     dch_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "Dch")
     jost_06 <- jost_D_pairs(sim_data_06, data[[06]])
     
     sim_data_05 <- sim_dataset_fun(data[[5]])
-    results_05 <- results_fun(sim_data_05)
-    Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
-    Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
-    ar_means_df_05 <- ar_fun(sim_data_05)
-    perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
+    # results_05 <- results_fun(sim_data_05)
+    # Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
+    # Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
+    # ar_means_df_05 <- ar_fun(sim_data_05)
+    # perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
     fst_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "WC84")
     dch_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "Dch")
     jost_05 <- jost_D_pairs(sim_data_05, data[[05]])
     
     sim_data_04 <- sim_dataset_fun(data[[4]])
-    results_04 <- results_fun(sim_data_04)
-    Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
-    Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
-    ar_means_df_04 <- ar_fun(sim_data_04)
-    perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
+    # results_04 <- results_fun(sim_data_04)
+    # Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
+    # Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
+    # ar_means_df_04 <- ar_fun(sim_data_04)
+    # perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
     fst_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "WC84")
     dch_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "Dch")
     jost_04 <- jost_D_pairs(sim_data_04, data[[04]])
     
     sim_data_03 <- sim_dataset_fun(data[[3]])
-    results_03 <- results_fun(sim_data_03)
-    Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
-    Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
-    ar_means_df_03 <- ar_fun(sim_data_03)
-    perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
+    # results_03 <- results_fun(sim_data_03)
+    # Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
+    # Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
+    # ar_means_df_03 <- ar_fun(sim_data_03)
+    # perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
     fst_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "WC84")
     dch_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "Dch")
     jost_03 <- jost_D_pairs(sim_data_03, data[[03]])
     
     sim_data_02 <- sim_dataset_fun(data[[2]])
-    results_02 <- results_fun(sim_data_02)
-    Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
-    Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
-    ar_means_df_02 <- ar_fun(sim_data_02)
-    perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
+    # results_02 <- results_fun(sim_data_02)
+    # Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
+    # Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
+    # ar_means_df_02 <- ar_fun(sim_data_02)
+    # perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
     fst_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "WC84")
     dch_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "Dch")
     jost_02 <- jost_D_pairs(sim_data_02, data[[02]])
     
-    sim_data_01 <- sim_dataset_fun(data[[1]])
-    results_01 <- results_fun(sim_data_01)
-    Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
-    Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
-    perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
-    ar_means_df_01 <- ar_single_locus_fun()
+    # sim_data_01 <- sim_dataset_fun(data[[1]])
+    # results_01 <- results_fun(sim_data_01)
+    # Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
+    # Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
+    # perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
+    # ar_means_df_01 <- ar_single_locus_fun()
+    # fst_01 <- genet_dist_pairs(sim_data_01, data[[01]], method = "WC84")
+    # dch_01 <- genet_dist_pairs(sim_data_01, data[[01]], method = "Dch")
+    # jost_01 <- d_jost_pairs(sim_data_01, data[[01]])
+    
+    
+  }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
+    
+    sim_data_17 <- sim_dataset_fun(data[[17]])
+    # results_17 <- results_fun(sim_data_17)
+    # Hobs_means_df_17 <- Hobs_fun(sim_data_17, results_17)
+    # Hexp_means_df_17 <- Hexp_fun(sim_data_17, results_17)
+    # ar_means_df_17 <- ar_fun(sim_data_17)
+    # perc_repl_detect_17 <- perc_detect_fun(sim_data_17, f1, f2)
+    fst_17 <- genet_dist_pairs(sim_data_17, data[[17]], method = "WC84")
+    dch_17 <- genet_dist_pairs(sim_data_17, data[[17]], method = "Dch")
+    jost_17 <- jost_D_pairs(sim_data_17, data[[17]])
+    
+    sim_data_16 <- sim_dataset_fun(data[[16]])
+    # results_16 <- results_fun(sim_data_16)
+    # Hobs_means_df_16 <- Hobs_fun(sim_data_16, results_16)
+    # Hexp_means_df_16 <- Hexp_fun(sim_data_16, results_16)
+    # ar_means_df_16 <- ar_fun(sim_data_16)
+    # perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
+    fst_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "WC84")
+    dch_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "Dch")
+    jost_16 <- jost_D_pairs(sim_data_16, data[[16]])
+    
+    sim_data_15 <- sim_dataset_fun(data[[15]])
+    # results_15 <- results_fun(sim_data_15)
+    # Hobs_means_df_15 <- Hobs_fun(sim_data_15, results_15)
+    # Hexp_means_df_15 <- Hexp_fun(sim_data_15, results_15)
+    # ar_means_df_15 <- ar_fun(sim_data_15)
+    # perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
+    fst_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "WC84")
+    dch_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "Dch")
+    jost_15 <- jost_D_pairs(sim_data_15, data[[15]])
+    
+    sim_data_14 <- sim_dataset_fun(data[[14]])
+    # results_14 <- results_fun(sim_data_14)
+    # Hobs_means_df_14 <- Hobs_fun(sim_data_14, results_14)
+    # Hexp_means_df_14 <- Hexp_fun(sim_data_14, results_14)
+    # ar_means_df_14 <- ar_fun(sim_data_14)
+    # perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
+    fst_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "WC84")
+    dch_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "Dch")
+    jost_14 <- jost_D_pairs(sim_data_14, data[[14]])
+    
+    sim_data_13 <- sim_dataset_fun(data[[13]])
+    # results_13 <- results_fun(sim_data_13)
+    # Hobs_means_df_13 <- Hobs_fun(sim_data_13, results_13)
+    # Hexp_means_df_13 <- Hexp_fun(sim_data_13, results_13)
+    # ar_means_df_13 <- ar_fun(sim_data_13)
+    # perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
+    fst_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "WC84")
+    dch_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "Dch")
+    jost_13 <- jost_D_pairs(sim_data_13, data[[13]])
+    
+    sim_data_12 <- sim_dataset_fun(data[[12]])
+    # results_12 <- results_fun(sim_data_12)
+    # Hobs_means_df_12 <- Hobs_fun(sim_data_12, results_12)
+    # Hexp_means_df_12 <- Hexp_fun(sim_data_12, results_12)
+    # ar_means_df_12 <- ar_fun(sim_data_12)
+    # perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
+    fst_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "WC84")
+    dch_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "Dch")
+    jost_12 <- jost_D_pairs(sim_data_12, data[[12]])
+    
+    sim_data_11 <- sim_dataset_fun(data[[11]])
+    # results_11 <- results_fun(sim_data_11)
+    # Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
+    # Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
+    # ar_means_df_11 <- ar_fun(sim_data_11)
+    # perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
+    fst_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "WC84")
+    dch_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "Dch")
+    jost_11 <- jost_D_pairs(sim_data_11, data[[11]])
+    
+    
+    sim_data_10 <- sim_dataset_fun(data[[10]])
+    # results_10 <- results_fun(sim_data_10)
+    # Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
+    # Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
+    # ar_means_df_10 <- ar_fun(sim_data_10)
+    # perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
+    fst_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "WC84")
+    dch_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "Dch")
+    jost_10 <- jost_D_pairs(sim_data_10, data[[10]])
+    
+    sim_data_09 <- sim_dataset_fun(data[[9]])
+    # results_09 <- results_fun(sim_data_09)
+    # Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
+    # Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
+    # ar_means_df_09 <- ar_fun(sim_data_09)
+    # perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
+    fst_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "WC84")
+    dch_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "Dch")
+    jost_09 <- jost_D_pairs(sim_data_09, data[[09]])
+    
+    sim_data_08 <- sim_dataset_fun(data[[8]])
+    # results_08 <- results_fun(sim_data_08)
+    # Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
+    # Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
+    # ar_means_df_08 <- ar_fun(sim_data_08)
+    # perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
+    fst_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "WC84")
+    dch_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "Dch")
+    jost_08 <- jost_D_pairs(sim_data_08, data[[08]])
+    
+    sim_data_07 <- sim_dataset_fun(data[[7]])
+    # results_07 <- results_fun(sim_data_07)
+    # Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
+    # Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
+    # ar_means_df_07 <- ar_fun(sim_data_07)
+    # perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
+    fst_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "WC84")
+    dch_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "Dch")
+    jost_07 <- jost_D_pairs(sim_data_07, data[[07]])
+    
+    sim_data_06 <- sim_dataset_fun(data[[6]])
+    # results_06 <- results_fun(sim_data_06)
+    # Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
+    # Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
+    # ar_means_df_06 <- ar_fun(sim_data_06)
+    # perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
+    fst_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "WC84")
+    dch_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "Dch")
+    jost_06 <- jost_D_pairs(sim_data_06, data[[06]])
+    
+    sim_data_05 <- sim_dataset_fun(data[[5]])
+    # results_05 <- results_fun(sim_data_05)
+    # Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
+    # Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
+    # ar_means_df_05 <- ar_fun(sim_data_05)
+    # perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
+    fst_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "WC84")
+    dch_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "Dch")
+    jost_05 <- jost_D_pairs(sim_data_05, data[[05]])
+    
+    sim_data_04 <- sim_dataset_fun(data[[4]])
+    # results_04 <- results_fun(sim_data_04)
+    # Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
+    # Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
+    # ar_means_df_04 <- ar_fun(sim_data_04)
+    # perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
+    fst_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "WC84")
+    dch_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "Dch")
+    jost_04 <- jost_D_pairs(sim_data_04, data[[04]])
+    
+    sim_data_03 <- sim_dataset_fun(data[[3]])
+    # results_03 <- results_fun(sim_data_03)
+    # Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
+    # Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
+    # ar_means_df_03 <- ar_fun(sim_data_03)
+    # perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
+    fst_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "WC84")
+    dch_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "Dch")
+    jost_03 <- jost_D_pairs(sim_data_03, data[[03]])
+    
+    sim_data_02 <- sim_dataset_fun(data[[2]])
+    # results_02 <- results_fun(sim_data_02)
+    # Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
+    # Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
+    # ar_means_df_02 <- ar_fun(sim_data_02)
+    # perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
+    fst_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "WC84")
+    dch_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "Dch")
+    jost_02 <- jost_D_pairs(sim_data_02, data[[02]])
+    
+    # sim_data_01 <- sim_dataset_fun(data[[1]])
+    # results_01 <- results_fun(sim_data_01)
+    # Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
+    # Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
+    # perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
+    # ar_means_df_01 <- ar_single_locus_fun()
     # fst_01 <- genet_dist_pairs(sim_data_01, data[[01]], method = "WC84")
     # dch_01 <- genet_dist_pairs(sim_data_01, data[[01]], method = "Dch")
     # jost_01 <- d_jost_pairs(sim_data_01, data[[01]])
@@ -804,166 +804,116 @@ system.time({
     
   }else if(id %in% c("Fagus_GR_Adult", "Fagus_GR_Regen", "Fagus_GR_Seed", 
                      "Fagus_SL_Adult", "Fagus_SL_Regen", "Fagus_SL_Seed")){
-    sim_data_16 <- sim_dataset_fun(data[[16]])
-    results_16 <- results_fun(sim_data_16)
-    Hobs_means_df_16 <- Hobs_fun(sim_data_16, results_16)
-    Hexp_means_df_16 <- Hexp_fun(sim_data_16, results_16)
-    ar_means_df_16 <- ar_fun(sim_data_16)
-    perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
-    fst_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "WC84")
-    dch_16 <- genet_dist_pairs(sim_data_16, data[[16]], method = "Dch")
-    jost_16 <- jost_D_pairs(sim_data_16, data[[16]])
-    
-    sim_data_15 <- sim_dataset_fun(data[[15]])
-    results_15 <- results_fun(sim_data_15)
-    Hobs_means_df_15 <- Hobs_fun(sim_data_15, results_15)
-    Hexp_means_df_15 <- Hexp_fun(sim_data_15, results_15)
-    ar_means_df_15 <- ar_fun(sim_data_15)
-    perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
-    fst_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "WC84")
-    dch_15 <- genet_dist_pairs(sim_data_15, data[[15]], method = "Dch")
-    jost_15 <- jost_D_pairs(sim_data_15, data[[15]])
-    
-    sim_data_14 <- sim_dataset_fun(data[[14]])
-    results_14 <- results_fun(sim_data_14)
-    Hobs_means_df_14 <- Hobs_fun(sim_data_14, results_14)
-    Hexp_means_df_14 <- Hexp_fun(sim_data_14, results_14)
-    ar_means_df_14 <- ar_fun(sim_data_14)
-    perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
-    fst_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "WC84")
-    dch_14 <- genet_dist_pairs(sim_data_14, data[[14]], method = "Dch")
-    jost_14 <- jost_D_pairs(sim_data_14, data[[14]])
-    
-    sim_data_13 <- sim_dataset_fun(data[[13]])
-    results_13 <- results_fun(sim_data_13)
-    Hobs_means_df_13 <- Hobs_fun(sim_data_13, results_13)
-    Hexp_means_df_13 <- Hexp_fun(sim_data_13, results_13)
-    ar_means_df_13 <- ar_fun(sim_data_13)
-    perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
-    fst_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "WC84")
-    dch_13 <- genet_dist_pairs(sim_data_13, data[[13]], method = "Dch")
-    jost_13 <- jost_D_pairs(sim_data_13, data[[13]])
-    
-    sim_data_12 <- sim_dataset_fun(data[[12]])
-    results_12 <- results_fun(sim_data_12)
-    Hobs_means_df_12 <- Hobs_fun(sim_data_12, results_12)
-    Hexp_means_df_12 <- Hexp_fun(sim_data_12, results_12)
-    ar_means_df_12 <- ar_fun(sim_data_12)
-    perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
-    fst_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "WC84")
-    dch_12 <- genet_dist_pairs(sim_data_12, data[[12]], method = "Dch")
-    jost_12 <- jost_D_pairs(sim_data_12, data[[12]])
-    
     sim_data_11 <- sim_dataset_fun(data[[11]])
-    results_11 <- results_fun(sim_data_11)
-    Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
-    Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
-    ar_means_df_11 <- ar_fun(sim_data_11)
-    perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
+    # results_11 <- results_fun(sim_data_11)
+    # Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
+    # Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
+    # ar_means_df_11 <- ar_fun(sim_data_11)
+    # perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
     fst_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "WC84")
     dch_11 <- genet_dist_pairs(sim_data_11, data[[11]], method = "Dch")
     jost_11 <- jost_D_pairs(sim_data_11, data[[11]])
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
-    results_10 <- results_fun(sim_data_10)
-    Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
-    Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
-    ar_means_df_10 <- ar_fun(sim_data_10)
-    perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
+    # results_10 <- results_fun(sim_data_10)
+    # Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
+    # Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
+    # ar_means_df_10 <- ar_fun(sim_data_10)
+    # perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
     fst_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "WC84")
     dch_10 <- genet_dist_pairs(sim_data_10, data[[10]], method = "Dch")
     jost_10 <- jost_D_pairs(sim_data_10, data[[10]])
     
     sim_data_09 <- sim_dataset_fun(data[[9]])
-    results_09 <- results_fun(sim_data_09)
-    Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
-    Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
-    ar_means_df_09 <- ar_fun(sim_data_09)
-    perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
+    # results_09 <- results_fun(sim_data_09)
+    # Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
+    # Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
+    # ar_means_df_09 <- ar_fun(sim_data_09)
+    # perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
     fst_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "WC84")
     dch_09 <- genet_dist_pairs(sim_data_09, data[[09]], method = "Dch")
     jost_09 <- jost_D_pairs(sim_data_09, data[[09]])
     
     sim_data_08 <- sim_dataset_fun(data[[8]])
-    results_08 <- results_fun(sim_data_08)
-    Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
-    Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
-    ar_means_df_08 <- ar_fun(sim_data_08)
-    perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
+    # results_08 <- results_fun(sim_data_08)
+    # Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
+    # Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
+    # ar_means_df_08 <- ar_fun(sim_data_08)
+    # perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
     fst_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "WC84")
     dch_08 <- genet_dist_pairs(sim_data_08, data[[08]], method = "Dch")
     jost_08 <- jost_D_pairs(sim_data_08, data[[08]])
     
     sim_data_07 <- sim_dataset_fun(data[[7]])
-    results_07 <- results_fun(sim_data_07)
-    Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
-    Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
-    ar_means_df_07 <- ar_fun(sim_data_07)
-    perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
+    # results_07 <- results_fun(sim_data_07)
+    # Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
+    # Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
+    # ar_means_df_07 <- ar_fun(sim_data_07)
+    # perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
     fst_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "WC84")
     dch_07 <- genet_dist_pairs(sim_data_07, data[[07]], method = "Dch")
     jost_07 <- jost_D_pairs(sim_data_07, data[[07]])
     
     sim_data_06 <- sim_dataset_fun(data[[6]])
-    results_06 <- results_fun(sim_data_06)
-    Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
-    Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
-    ar_means_df_06 <- ar_fun(sim_data_06)
-    perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
+    # results_06 <- results_fun(sim_data_06)
+    # Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
+    # Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
+    # ar_means_df_06 <- ar_fun(sim_data_06)
+    # perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
     fst_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "WC84")
     dch_06 <- genet_dist_pairs(sim_data_06, data[[06]], method = "Dch")
     jost_06 <- jost_D_pairs(sim_data_06, data[[06]])
     
     sim_data_05 <- sim_dataset_fun(data[[5]])
-    results_05 <- results_fun(sim_data_05)
-    Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
-    Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
-    ar_means_df_05 <- ar_fun(sim_data_05)
-    perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
+    # results_05 <- results_fun(sim_data_05)
+    # Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
+    # Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
+    # ar_means_df_05 <- ar_fun(sim_data_05)
+    # perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
     fst_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "WC84")
     dch_05 <- genet_dist_pairs(sim_data_05, data[[05]], method = "Dch")
     jost_05 <- jost_D_pairs(sim_data_05, data[[05]])
     
     sim_data_04 <- sim_dataset_fun(data[[4]])
-    results_04 <- results_fun(sim_data_04)
-    Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
-    Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
-    ar_means_df_04 <- ar_fun(sim_data_04)
-    perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
+    # results_04 <- results_fun(sim_data_04)
+    # Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
+    # Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
+    # ar_means_df_04 <- ar_fun(sim_data_04)
+    # perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
     fst_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "WC84")
     dch_04 <- genet_dist_pairs(sim_data_04, data[[04]], method = "Dch")
     jost_04 <- jost_D_pairs(sim_data_04, data[[04]])
     
     sim_data_03 <- sim_dataset_fun(data[[3]])
-    results_03 <- results_fun(sim_data_03)
-    Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
-    Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
-    ar_means_df_03 <- ar_fun(sim_data_03)
-    perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
+    # results_03 <- results_fun(sim_data_03)
+    # Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
+    # Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
+    # ar_means_df_03 <- ar_fun(sim_data_03)
+    # perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
     fst_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "WC84")
     dch_03 <- genet_dist_pairs(sim_data_03, data[[03]], method = "Dch")
     jost_03 <- jost_D_pairs(sim_data_03, data[[03]])
     
     sim_data_02 <- sim_dataset_fun(data[[2]])
-    results_02 <- results_fun(sim_data_02)
-    Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
-    Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
-    ar_means_df_02 <- ar_fun(sim_data_02)
-    perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
+    # results_02 <- results_fun(sim_data_02)
+    # Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
+    # Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
+    # ar_means_df_02 <- ar_fun(sim_data_02)
+    # perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
     fst_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "WC84")
     dch_02 <- genet_dist_pairs(sim_data_02, data[[02]], method = "Dch")
     jost_02 <- jost_D_pairs(sim_data_02, data[[02]])
     
-    sim_data_01 <- sim_dataset_fun(data[[1]])
-    results_01 <- results_fun(sim_data_01)
-    Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
-    Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
-    perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
-    ar_means_df_01 <- ar_single_locus_fun()
+    # sim_data_01 <- sim_dataset_fun(data[[1]])
+    # results_01 <- results_fun(sim_data_01)
+    # Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
+    # Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
+    # perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
+    # ar_means_df_01 <- ar_single_locus_fun()
     # fst_01 <- genet_dist_pairs(sim_data_01, data[[01]], method = "WC84")
     # dch_01 <- genet_dist_pairs(sim_data_01, data[[01]], method = "Dch")
-    # jost_01 <- jost_pairs(sim_data_01, data[[01]])
+    # jost_01 <- d_jost_pairs(sim_data_01, data[[01]])
     
   }else{
     print("Unknown population - Cannot continue")
@@ -977,419 +927,6 @@ pdf(paste(id, "100_repl.pdf", sep = "_"),
 
 my_palette <- brewer.pal(12, "Set3") # create a new palette
 my_palette <- colorRampPalette(my_palette)(19) # how many colors this palette will have
-
-Hobs_means_tidy <- bind_rows(mget(ls(pattern = "Hobs_means_df_")))
-
-Hobs_means_tidy$marker_num <- 
-  factor(Hobs_means_tidy$marker_num, levels = unique(
-    as.character(Hobs_means_tidy$marker_num)))
-
-if(id == "Abies_DE_Adult"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for german adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Adult"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for greek adult population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Adult"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for slovenian adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Regen"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for german regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Regen"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for greek regeneration population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Regen"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for slovenian regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Seed"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for german seed population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Seed"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for greek seed population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Seed"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for slovenian seed population of ", 
-    italic("A. alba")))
-  
-}else if (id == "Fagus_DE_Adult"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for german adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Adult"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for greek adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Adult"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for slovenian adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Regen"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for german regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Regen"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for greek regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Regen"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for slovenian regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Seed"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for german seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Seed"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for greek seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Seed"){
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number for slovenian seed population of ", 
-    italic("F. sylvatica")))
-  
-}else{
-  title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (Ho) by sample size & marker number"))}
-
-
-y_axis_Ho <- seq(0.05, 0.95, 0.05)
-
-p_Ho_tidy <- ggplot(Hobs_means_tidy, aes(x = samp_size, y = value)) + 
-  geom_boxplot(aes(fill = samp_size)) + 
-  facet_wrap(~ marker_num, nrow = 2)
-
-p_Ho_tidy + ggtitle(title_Ho) + xlab("Sample Size") +
-  scale_fill_manual(values = my_palette) +
-  theme_minimal() +
-  theme(legend.position = "none") +
-  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
-  theme(text = element_text(size = 18)) +
-  theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Mean Observed Heterozygosity (Ho)", breaks = y_axis_Ho) +
-  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
-
-
-
-Hexp_means_tidy <- bind_rows(mget(ls(pattern = "Hexp_means_df_")))
-
-Hexp_means_tidy$marker_num <- 
-  factor(Hexp_means_tidy$marker_num, levels = unique(
-    as.character(Hexp_means_tidy$marker_num)))
-
-if(id == "Abies_DE_Adult"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for german adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Adult"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for greek adult population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Adult"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for slovenian adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Regen"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for german regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Regen"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for greek regeneration population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Regen"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for slovenian regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Seed"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for german seed population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Seed"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for greek seed population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Seed"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for slovenian seed population of ", 
-    italic("A. alba")))
-  
-}else if (id == "Fagus_DE_Adult"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for german adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Adult"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for greek adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Adult"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for slovenian adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Regen"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for german regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Regen"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for greek regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Regen"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for slovenian regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Seed"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for german seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Seed"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for greek seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Seed"){
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number for slovenian seed population of ", 
-    italic("F. sylvatica")))
-  
-}else{
-  title_He <- expression(paste(
-    "Mean Expected Heterozygosity (He) by sample size & marker number"))}
-
-y_axis_He <- seq(0.05, 0.95, 0.05)
-
-p_He_tidy <- ggplot(Hexp_means_tidy, aes(x = samp_size, y = value)) + 
-  geom_boxplot(aes(fill = samp_size)) + 
-  facet_wrap(~ marker_num, nrow = 2)
-
-p_He_tidy + ggtitle(title_He) + xlab("Sample Size") + 
-  scale_fill_manual(values = my_palette) +
-  theme_minimal() +
-  theme(legend.position = "none") +
-  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
-  theme(text = element_text(size = 18)) +
-  theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Mean Expected Heterozygosity (He)", breaks = y_axis_He) +
-  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
-
-
-
-ar_means_tidy <- bind_rows(mget(ls(pattern = "ar_means_df_")))
-
-ar_means_tidy$marker_num <- 
-  factor(ar_means_tidy$marker_num, levels = unique(
-    as.character(ar_means_tidy$marker_num)))
-
-if(id == "Abies_DE_Adult"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Adult"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek adult population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Adult"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Regen"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Regen"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek regeneration population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Regen"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Seed"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german seed population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Seed"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek seed population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Seed"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian seed population of ", 
-    italic("A. alba")))
-  
-}else if (id == "Fagus_DE_Adult"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Adult"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Adult"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Regen"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Regen"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Regen"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Seed"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Seed"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Seed"){
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian seed population of ", 
-    italic("F. sylvatica")))
-  
-  
-}else{
-  title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number"))}
-y_axis_ar <- 1:30
-
-p_ar_tidy <- ggplot(ar_means_tidy, aes(x = samp_size, y = value)) + 
-  geom_boxplot(aes(fill = samp_size)) + 
-  facet_wrap(~ marker_num, nrow = 2)
-
-p_ar_tidy + ggtitle(title_ar) + xlab("Sample Size") + 
-  scale_fill_manual(values = my_palette) +
-  theme_minimal() +
-  theme(legend.position = "none") +
-  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
-  theme(text = element_text(size = 18)) +
-  theme(title = element_text(size = 18)) +
-  scale_y_continuous(name = "Mean Allelic richness (Ar)", breaks = y_axis_ar) +
-  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
-
-
-
-
-perc_repl_detect <- bind_rows(mget(ls(pattern = "perc_repl_detect_")))
-
-perc_repl_detect$marker_num <- 
-  factor(perc_repl_detect$marker_num, levels = unique(
-    as.character(perc_repl_detect$marker_num)))
-
-if(id == "Abies_DE_Adult"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Adult"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek adult population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Adult"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian adult population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Regen"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Regen"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek regeneration population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Regen"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian regeneration population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_DE_Seed"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german seed population of ", 
-    italic("A. alba")))
-}else if (id == "Abies_GR_Seed"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek seed population of ", 
-    italic("A. borisii-regis")))
-}else if (id == "Abies_SL_Seed"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian seed population of ", 
-    italic("A. alba")))
-  
-}else if (id == "Fagus_DE_Adult"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Adult"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Adult"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian adult population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Regen"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Regen"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Regen"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian regeneration population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_DE_Seed"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_GR_Seed"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek seed population of ", 
-    italic("F. sylvatica")))
-}else if (id == "Fagus_SL_Seed"){
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian seed population of ", 
-    italic("F. sylvatica")))
-  
-}else{
-  title_perc <- expression(paste(
-    "Allele detection by sample size & marker number"))}
-
-
-y_axis_perc <- seq(0, 100, 5)
-
-p_perc <- ggplot(perc_repl_detect, aes(x = samp_size, group = 1)) + 
-  geom_point(aes(y = percent_f1, colour = "percent_f1")) + 
-  geom_point(aes(y = percent_f2, colour = "percent_f2")) +
-  geom_line(aes(y = percent_f1, colour = "percent_f1", linetype = "percent_f2")) + 
-  geom_line(aes(y = percent_f2, colour = "percent_f2", linetype = "percent_f1")) +
-  geom_hline(yintercept = 95, linetype = "dashed") + 
-  facet_wrap(~ marker_num, nrow =2)
-
-p_perc + ggtitle(title_perc) + xlab("Sample Size") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
-  theme(text = element_text(size = 18)) +
-  theme(title = element_text(size = 18)) +
-  scale_y_continuous(
-    name = "Replicates with all alleles > 0.05 (cyan solid line) & > 0.01 (red dashed line) detected (%)",
-    breaks = y_axis_perc) +
-  theme(legend.position = "none")
 
 
 fst_tidy <- bind_rows(mget(ls(pattern = "fst_")))
