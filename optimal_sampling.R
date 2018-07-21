@@ -130,50 +130,60 @@ system.time({
   f2 <- 0.05
   
   # functions
+  # sim_dataset_fun without creating multiple iterations of the empirical data set
   sim_dataset_fun <- function(input){
     sim_data <- list()
-    for(i in samp_size){ 
+    for(i in samp_size[-length(samp_size)]){ 
       sim_data[[i]] <-
         replicate (replic_num, input[sample(1:nrow(input$tab), 
                                             i, replace = F)])
     }
+    
+    sim_data[[samp_size[length(samp_size)]]] <- input
     return(sim_data)
   }
   
-  
   results_fun <- function(sim_dataset){
     results <- list()
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){ # number of replications
         results[[i]][[j]] <- summary(sim_dataset[[i]][[j]])
       }
     }
+    
+    results[[samp_size[length(samp_size)]]] <- summary(sim_dataset[[samp_size[length(samp_size)]]])
+    
     return(results)
   }
   
-  Hobs_fun <- function(sim_dataset, results){
+  
+  Het_fun <- function(sim_dataset, results, heterozygosity){
     # Ho for each generated dataset 
-    Hobs <- list()
-    for(i in samp_size){
+    Het <- list()
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){ # number of replications
-        Hobs[[i]][[j]] <- results[[i]][[j]][["Hobs"]]
+        Het[[i]][[j]] <- results[[i]][[j]][[heterozygosity]]
       }
     }
+    
+    Het[[samp_size[length(samp_size)]]] <- results[[samp_size[length(samp_size)]]][[heterozygosity]]
     
     # Mean Ho values for each generated dataset 
-    Hobs_means <- list()
-    for(i in samp_size){
-      Hobs_means[[i]] <- lapply(Hobs[[i]], mean)
+    Het_means <- list()
+    for(i in samp_size[-length(samp_size)]){
+      Het_means[[i]] <- lapply(Het[[i]], mean)
     }
+    
+    Het_means[[samp_size[length(samp_size)]]] <- mean(Het[[samp_size[length(samp_size)]]])
     
     # Produce a data frame to be plotted by ggplot2
-    Hobs_means_df <- melt(Hobs_means)
-    colnames(Hobs_means_df) <- c("value", "replic", "samp_size")
-    Hobs_means_df$samp_size <- 
-      factor(Hobs_means_df$samp_size, levels = unique(
-        as.character(Hobs_means_df$samp_size)))
+    Het_means_df <- melt(Het_means)
+    colnames(Het_means_df) <- c("value", "replic", "samp_size")
+    Het_means_df$samp_size <- 
+      factor(Het_means_df$samp_size, levels = unique(
+        as.character(Het_means_df$samp_size)))
     
-    Hobs_means_df$marker_num <- if(length(nAll(sim_dataset[[1]][[1]])) > 1){ 
+    Het_means_df$marker_num <- if(length(nAll(sim_dataset[[1]][[1]])) > 1){ 
       paste(length(nAll(sim_dataset[[1]][[1]])), 
             "markers", sep = " ")
     }else {
@@ -181,61 +191,31 @@ system.time({
             "marker", sep = " ")
     }
     
-    return(Hobs_means_df)
+    return(Het_means_df)
   }
   
-  
-  Hexp_fun <- function(sim_dataset, results){
-    # He for each generated dataset 
-    Hexp <- list()
-    for(i in samp_size){
-      for(j in 1:replic_num){ # number of replications
-        Hexp[[i]][[j]] <- results[[i]][[j]][["Hexp"]]
-      }
-    }
-    
-    # Mean He values for each generated dataset 
-    Hexp_means <- list()
-    for(i in samp_size){
-      Hexp_means[[i]] <- lapply(Hexp[[i]], mean)
-    }
-    
-    # Produce a data frame to plotted by ggplot2
-    Hexp_means_df <- melt(Hexp_means)
-    colnames(Hexp_means_df) <- c("value", "replic", "samp_size")
-    Hexp_means_df$samp_size <- 
-      factor(Hexp_means_df$samp_size, levels = unique(
-        as.character(Hexp_means_df$samp_size)))
-    
-    Hexp_means_df$marker_num <- if(length(nAll(sim_dataset[[1]][[1]])) > 1){ 
-      paste(length(nAll(sim_dataset[[1]][[1]])), 
-            "markers", sep = " ")
-    }else {
-      paste(length(nAll(sim_dataset[[1]][[1]])), 
-            "marker", sep = " ")
-    }
-    
-    
-    return(Hexp_means_df)
-  }
   
   
   ar_fun <- function(sim_dataset){
     # Calculation of AR for each generated dataset
     ar <- list()
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){ # number of replications
         ar[[i]][[j]] <- allelic.richness(sim_dataset[[i]][[j]])
       }
     }
     
+    ar[[samp_size[length(samp_size)]]] <- allelic.richness(sim_dataset[[samp_size[length(samp_size)]]])
+    
     # Mean AR values for each generated dataset
     ar_means <- list() 
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){ # number of replications
         ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
       }
     }
+    
+    ar_means[[samp_size[length(samp_size)]]] <- colMeans(ar[[samp_size[length(samp_size)]]][["Ar"]])
     
     # Produce a data frame to plotted by ggplot2
     ar_means_df <- melt(ar_means)
@@ -256,6 +236,9 @@ system.time({
   }
   
   
+  
+  
+  
   ar_single_locus_fun <- function(){
     # Calculation of AR for each generated dataset
     
@@ -269,10 +252,12 @@ system.time({
     samp_size[length(samp_size)] <- as.character(data_length)
     
     sim_data_01_fix <- list()
-    for(i in samp_size){ 
+    for(i in samp_size[-length(samp_size)]){ 
       sim_data_01_fix[[i]] <-
         replicate (replic_num, obj_fix[sample(1:nrow(obj_fix$tab), 
                                               i, replace = F)])
+      
+      sim_data_01_fix[[samp_size[length(samp_size)]]] <- obj_fix
     }
     
     # Change the name of highest sample size list element and reset samp_size to original value
@@ -285,19 +270,23 @@ system.time({
     
     
     ar <- list()
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){ # number of replications
         ar[[i]][[j]] <- allelic.richness(sim_data_01_fix[[i]][[j]])
       }
     }
     
+    ar[[samp_size[length(samp_size)]]] <- allelic.richness(sim_data_01_fix[[samp_size[length(samp_size)]]])
+    
     # Mean AR values for each generated dataset
     ar_means <- list() 
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){ # number of replications
         ar_means[[i]][[j]] <- colMeans(ar[[i]][[j]][["Ar"]])
       }
     }
+    
+    ar_means[[samp_size[length(samp_size)]]] <- colMeans(ar[[samp_size[length(samp_size)]]][["Ar"]])
     
     # Produce a data frame to plotted by ggplot2
     ar_means_df_01 <- melt(ar_means)
@@ -312,8 +301,12 @@ system.time({
   }
   
   
+  
+  
+  
+  
   perc_detect_fun <- function(sim_dataset, f1, f2){
-    freq_empirical <- apply(tab(sim_dataset[[length(sim_dataset)]][[replic_num]], 
+    freq_empirical <- apply(tab(sim_dataset[[length(sim_dataset)]], 
                                 freq=TRUE),2,mean, na.rm=TRUE)
     freq_empirical_over_f1 <- subset(freq_empirical, freq_empirical > f1)
     alleles_over_f1 <- names(freq_empirical_over_f1)
@@ -322,18 +315,20 @@ system.time({
     alleles_over_f2 <- names(freq_empirical_over_f2)
     
     freq_repl <- list()
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){
         freq_repl[[i]][[j]] <- apply(tab(sim_dataset[[i]][[j]], 
                                          freq=TRUE),2,mean, na.rm=TRUE)
       }
     }
     
+    freq_repl[[samp_size[length(samp_size)]]] <- freq_empirical
+    
     # Percent of datasets with all alleles f > f1 are found 
     freq_repl_over_f1 <- list()
     freq_over_f1_applied_to_repl <- list()
     n_alleles_over_f1 <- list()
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){
         freq_repl_over_f1[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f1]
         
@@ -344,7 +339,17 @@ system.time({
       }
     }
     
-    for(i in samp_size){
+    freq_repl_over_f1[[samp_size[length(samp_size)]]] <- 
+      freq_repl[[samp_size[length(samp_size)]]][alleles_over_f1]
+    
+    freq_over_f1_applied_to_repl[[samp_size[length(samp_size)]]] <- 
+      subset(freq_repl_over_f1[[samp_size[length(samp_size)]]], 
+             freq_repl_over_f1[[samp_size[length(samp_size)]]] > 0)
+    
+    n_alleles_over_f1[[samp_size[length(samp_size)]]] <- 
+      length(freq_over_f1_applied_to_repl[[samp_size[length(samp_size)]]])
+    
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){
         if(n_alleles_over_f1[[i]][[j]] != length(alleles_over_f1)){
           n_alleles_over_f1[[i]][[j]] <- 0
@@ -352,6 +357,12 @@ system.time({
           n_alleles_over_f1[[i]][[j]] <- 1
         }
       }
+    }
+    
+    if(n_alleles_over_f1[[samp_size[length(samp_size)]]] != length(alleles_over_f1)){
+      n_alleles_over_f1[[samp_size[length(samp_size)]]] <- 0
+    }else{
+      n_alleles_over_f1[[samp_size[length(samp_size)]]] <- 1 * replic_num
     }
     
     repl_over_f1_detect <- unlist(lapply(n_alleles_over_f1, sum))
@@ -367,7 +378,7 @@ system.time({
     freq_repl_over_f2 <- list()
     freq_over_f2_applied_to_repl <- list()
     n_alleles_over_f2 <- list()
-    for(i in samp_size){
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){
         freq_repl_over_f2[[i]][[j]] <- freq_repl[[i]][[j]][alleles_over_f2]
         
@@ -378,7 +389,17 @@ system.time({
       }
     }
     
-    for(i in samp_size){
+    freq_repl_over_f2[[samp_size[length(samp_size)]]] <- 
+      freq_repl[[samp_size[length(samp_size)]]][alleles_over_f2]
+    
+    freq_over_f2_applied_to_repl[[samp_size[length(samp_size)]]] <- 
+      subset(freq_repl_over_f2[[samp_size[length(samp_size)]]], 
+             freq_repl_over_f2[[samp_size[length(samp_size)]]] > 0)
+    
+    n_alleles_over_f2[[samp_size[length(samp_size)]]] <- 
+      length(freq_over_f2_applied_to_repl[[samp_size[length(samp_size)]]])
+    
+    for(i in samp_size[-length(samp_size)]){
       for(j in 1:replic_num){
         if(n_alleles_over_f2[[i]][[j]] != length(alleles_over_f2)){
           n_alleles_over_f2[[i]][[j]] <- 0
@@ -386,6 +407,12 @@ system.time({
           n_alleles_over_f2[[i]][[j]] <- 1
         }
       }
+    }
+    
+    if(n_alleles_over_f2[[samp_size[length(samp_size)]]] != length(alleles_over_f2)){
+      n_alleles_over_f2[[samp_size[length(samp_size)]]] <- 0
+    }else{
+      n_alleles_over_f2[[samp_size[length(samp_size)]]] <- 1 * replic_num
     }
     
     repl_over_f2_detect <- unlist(lapply(n_alleles_over_f2, sum))
@@ -416,89 +443,88 @@ system.time({
 
     sim_data_11 <- sim_dataset_fun(data[[11]])
     results_11 <- results_fun(sim_data_11)
-    Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
-    Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
+    Hobs_means_df_11 <- Het_fun(sim_data_11, results_11, "Hobs")
+    Hexp_means_df_11 <- Het_fun(sim_data_11, results_11, "Hexp")
     ar_means_df_11 <- ar_fun(sim_data_11)
     perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
     
     
-    
     sim_data_10 <- sim_dataset_fun(data[[10]])
     results_10 <- results_fun(sim_data_10)
-    Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
-    Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
+    Hobs_means_df_10 <- Het_fun(sim_data_10, results_10, "Hobs")
+    Hexp_means_df_10 <- Het_fun(sim_data_10, results_10, "Hexp")
     ar_means_df_10 <- ar_fun(sim_data_10)
     perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
     
     
-    sim_data_09 <- sim_dataset_fun(data[[9]])
+    sim_data_09 <- sim_dataset_fun(data[[09]])
     results_09 <- results_fun(sim_data_09)
-    Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
-    Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
+    Hobs_means_df_09 <- Het_fun(sim_data_09, results_09, "Hobs")
+    Hexp_means_df_09 <- Het_fun(sim_data_09, results_09, "Hexp")
     ar_means_df_09 <- ar_fun(sim_data_09)
     perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
     
     
-    sim_data_08 <- sim_dataset_fun(data[[8]])
+    sim_data_08 <- sim_dataset_fun(data[[08]])
     results_08 <- results_fun(sim_data_08)
-    Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
-    Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
+    Hobs_means_df_08 <- Het_fun(sim_data_08, results_08, "Hobs")
+    Hexp_means_df_08 <- Het_fun(sim_data_08, results_08, "Hexp")
     ar_means_df_08 <- ar_fun(sim_data_08)
     perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
     
     
-    sim_data_07 <- sim_dataset_fun(data[[7]])
+    sim_data_07 <- sim_dataset_fun(data[[07]])
     results_07 <- results_fun(sim_data_07)
-    Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
-    Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
+    Hobs_means_df_07 <- Het_fun(sim_data_07, results_07, "Hobs")
+    Hexp_means_df_07 <- Het_fun(sim_data_07, results_07, "Hexp")
     ar_means_df_07 <- ar_fun(sim_data_07)
     perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
     
     
-    sim_data_06 <- sim_dataset_fun(data[[6]])
+    sim_data_06 <- sim_dataset_fun(data[[06]])
     results_06 <- results_fun(sim_data_06)
-    Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
-    Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
+    Hobs_means_df_06 <- Het_fun(sim_data_06, results_06, "Hobs")
+    Hexp_means_df_06 <- Het_fun(sim_data_06, results_06, "Hexp")
     ar_means_df_06 <- ar_fun(sim_data_06)
     perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
     
     
-    sim_data_05 <- sim_dataset_fun(data[[5]])
+    sim_data_05 <- sim_dataset_fun(data[[05]])
     results_05 <- results_fun(sim_data_05)
-    Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
-    Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
+    Hobs_means_df_05 <- Het_fun(sim_data_05, results_05, "Hobs")
+    Hexp_means_df_05 <- Het_fun(sim_data_05, results_05, "Hexp")
     ar_means_df_05 <- ar_fun(sim_data_05)
     perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
     
     
-    sim_data_04 <- sim_dataset_fun(data[[4]])
+    sim_data_04 <- sim_dataset_fun(data[[04]])
     results_04 <- results_fun(sim_data_04)
-    Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
-    Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
+    Hobs_means_df_04 <- Het_fun(sim_data_04, results_04, "Hobs")
+    Hexp_means_df_04 <- Het_fun(sim_data_04, results_04, "Hexp")
     ar_means_df_04 <- ar_fun(sim_data_04)
     perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
     
     
-    sim_data_03 <- sim_dataset_fun(data[[3]])
+    sim_data_03 <- sim_dataset_fun(data[[03]])
     results_03 <- results_fun(sim_data_03)
-    Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
-    Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
+    Hobs_means_df_03 <- Het_fun(sim_data_03, results_03, "Hobs")
+    Hexp_means_df_03 <- Het_fun(sim_data_03, results_03, "Hexp")
     ar_means_df_03 <- ar_fun(sim_data_03)
     perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
     
     
-    sim_data_02 <- sim_dataset_fun(data[[2]])
+    sim_data_02 <- sim_dataset_fun(data[[02]])
     results_02 <- results_fun(sim_data_02)
-    Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
-    Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
+    Hobs_means_df_02 <- Het_fun(sim_data_02, results_02, "Hobs")
+    Hexp_means_df_02 <- Het_fun(sim_data_02, results_02, "Hexp")
     ar_means_df_02 <- ar_fun(sim_data_02)
     perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
     
     
     sim_data_01 <- sim_dataset_fun(data[[1]])
     results_01 <- results_fun(sim_data_01)
-    Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
-    Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
+    Hobs_means_df_01 <- Het_fun(sim_data_01, results_01, "Hobs")
+    Hexp_means_df_01 <- Het_fun(sim_data_01, results_01, "Hexp")
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
     ar_means_df_01 <- ar_single_locus_fun()
     
@@ -507,137 +533,136 @@ system.time({
     
     sim_data_17 <- sim_dataset_fun(data[[17]])
     results_17 <- results_fun(sim_data_17)
-    Hobs_means_df_17 <- Hobs_fun(sim_data_17, results_17)
-    Hexp_means_df_17 <- Hexp_fun(sim_data_17, results_17)
+    Hobs_means_df_17 <- Het_fun(sim_data_17, results_17, "Hobs")
+    Hexp_means_df_17 <- Het_fun(sim_data_17, results_17, "Hexp")
     ar_means_df_17 <- ar_fun(sim_data_17)
     perc_repl_detect_17 <- perc_detect_fun(sim_data_17, f1, f2)
 
     
     sim_data_16 <- sim_dataset_fun(data[[16]])
     results_16 <- results_fun(sim_data_16)
-    Hobs_means_df_16 <- Hobs_fun(sim_data_16, results_16)
-    Hexp_means_df_16 <- Hexp_fun(sim_data_16, results_16)
+    Hobs_means_df_16 <- Het_fun(sim_data_16, results_16, "Hobs")
+    Hexp_means_df_16 <- Het_fun(sim_data_16, results_16, "Hexp")
     ar_means_df_16 <- ar_fun(sim_data_16)
     perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
 
     
     sim_data_15 <- sim_dataset_fun(data[[15]])
     results_15 <- results_fun(sim_data_15)
-    Hobs_means_df_15 <- Hobs_fun(sim_data_15, results_15)
-    Hexp_means_df_15 <- Hexp_fun(sim_data_15, results_15)
+    Hobs_means_df_15 <- Het_fun(sim_data_15, results_15, "Hobs")
+    Hexp_means_df_15 <- Het_fun(sim_data_15, results_15, "Hexp")
     ar_means_df_15 <- ar_fun(sim_data_15)
     perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
 
     
     sim_data_14 <- sim_dataset_fun(data[[14]])
     results_14 <- results_fun(sim_data_14)
-    Hobs_means_df_14 <- Hobs_fun(sim_data_14, results_14)
-    Hexp_means_df_14 <- Hexp_fun(sim_data_14, results_14)
+    Hobs_means_df_14 <- Het_fun(sim_data_14, results_14, "Hobs")
+    Hexp_means_df_14 <- Het_fun(sim_data_14, results_14, "Hexp")
     ar_means_df_14 <- ar_fun(sim_data_14)
     perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
 
     
     sim_data_13 <- sim_dataset_fun(data[[13]])
     results_13 <- results_fun(sim_data_13)
-    Hobs_means_df_13 <- Hobs_fun(sim_data_13, results_13)
-    Hexp_means_df_13 <- Hexp_fun(sim_data_13, results_13)
+    Hobs_means_df_13 <- Het_fun(sim_data_13, results_13, "Hobs")
+    Hexp_means_df_13 <- Het_fun(sim_data_13, results_13, "Hexp")
     ar_means_df_13 <- ar_fun(sim_data_13)
     perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
 
     
     sim_data_12 <- sim_dataset_fun(data[[12]])
     results_12 <- results_fun(sim_data_12)
-    Hobs_means_df_12 <- Hobs_fun(sim_data_12, results_12)
-    Hexp_means_df_12 <- Hexp_fun(sim_data_12, results_12)
+    Hobs_means_df_12 <- Het_fun(sim_data_12, results_12, "Hobs")
+    Hexp_means_df_12 <- Het_fun(sim_data_12, results_12, "Hexp")
     ar_means_df_12 <- ar_fun(sim_data_12)
     perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
 
     
     sim_data_11 <- sim_dataset_fun(data[[11]])
     results_11 <- results_fun(sim_data_11)
-    Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
-    Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
+    Hobs_means_df_11 <- Het_fun(sim_data_11, results_11, "Hobs")
+    Hexp_means_df_11 <- Het_fun(sim_data_11, results_11, "Hexp")
     ar_means_df_11 <- ar_fun(sim_data_11)
     perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
-
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
     results_10 <- results_fun(sim_data_10)
-    Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
-    Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
+    Hobs_means_df_10 <- Het_fun(sim_data_10, results_10, "Hobs")
+    Hexp_means_df_10 <- Het_fun(sim_data_10, results_10, "Hexp")
     ar_means_df_10 <- ar_fun(sim_data_10)
     perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
-
     
-    sim_data_09 <- sim_dataset_fun(data[[9]])
+    
+    sim_data_09 <- sim_dataset_fun(data[[09]])
     results_09 <- results_fun(sim_data_09)
-    Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
-    Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
+    Hobs_means_df_09 <- Het_fun(sim_data_09, results_09, "Hobs")
+    Hexp_means_df_09 <- Het_fun(sim_data_09, results_09, "Hexp")
     ar_means_df_09 <- ar_fun(sim_data_09)
     perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
-
     
-    sim_data_08 <- sim_dataset_fun(data[[8]])
+    
+    sim_data_08 <- sim_dataset_fun(data[[08]])
     results_08 <- results_fun(sim_data_08)
-    Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
-    Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
+    Hobs_means_df_08 <- Het_fun(sim_data_08, results_08, "Hobs")
+    Hexp_means_df_08 <- Het_fun(sim_data_08, results_08, "Hexp")
     ar_means_df_08 <- ar_fun(sim_data_08)
     perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
-
     
-    sim_data_07 <- sim_dataset_fun(data[[7]])
+    
+    sim_data_07 <- sim_dataset_fun(data[[07]])
     results_07 <- results_fun(sim_data_07)
-    Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
-    Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
+    Hobs_means_df_07 <- Het_fun(sim_data_07, results_07, "Hobs")
+    Hexp_means_df_07 <- Het_fun(sim_data_07, results_07, "Hexp")
     ar_means_df_07 <- ar_fun(sim_data_07)
     perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
-
     
-    sim_data_06 <- sim_dataset_fun(data[[6]])
+    
+    sim_data_06 <- sim_dataset_fun(data[[06]])
     results_06 <- results_fun(sim_data_06)
-    Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
-    Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
+    Hobs_means_df_06 <- Het_fun(sim_data_06, results_06, "Hobs")
+    Hexp_means_df_06 <- Het_fun(sim_data_06, results_06, "Hexp")
     ar_means_df_06 <- ar_fun(sim_data_06)
     perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
-
     
-    sim_data_05 <- sim_dataset_fun(data[[5]])
+    
+    sim_data_05 <- sim_dataset_fun(data[[05]])
     results_05 <- results_fun(sim_data_05)
-    Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
-    Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
+    Hobs_means_df_05 <- Het_fun(sim_data_05, results_05, "Hobs")
+    Hexp_means_df_05 <- Het_fun(sim_data_05, results_05, "Hexp")
     ar_means_df_05 <- ar_fun(sim_data_05)
     perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
-
     
-    sim_data_04 <- sim_dataset_fun(data[[4]])
+    
+    sim_data_04 <- sim_dataset_fun(data[[04]])
     results_04 <- results_fun(sim_data_04)
-    Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
-    Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
+    Hobs_means_df_04 <- Het_fun(sim_data_04, results_04, "Hobs")
+    Hexp_means_df_04 <- Het_fun(sim_data_04, results_04, "Hexp")
     ar_means_df_04 <- ar_fun(sim_data_04)
     perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
-
     
-    sim_data_03 <- sim_dataset_fun(data[[3]])
+    
+    sim_data_03 <- sim_dataset_fun(data[[03]])
     results_03 <- results_fun(sim_data_03)
-    Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
-    Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
+    Hobs_means_df_03 <- Het_fun(sim_data_03, results_03, "Hobs")
+    Hexp_means_df_03 <- Het_fun(sim_data_03, results_03, "Hexp")
     ar_means_df_03 <- ar_fun(sim_data_03)
     perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
-
     
-    sim_data_02 <- sim_dataset_fun(data[[2]])
+    
+    sim_data_02 <- sim_dataset_fun(data[[02]])
     results_02 <- results_fun(sim_data_02)
-    Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
-    Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
+    Hobs_means_df_02 <- Het_fun(sim_data_02, results_02, "Hobs")
+    Hexp_means_df_02 <- Het_fun(sim_data_02, results_02, "Hexp")
     ar_means_df_02 <- ar_fun(sim_data_02)
     perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
-
+    
     
     sim_data_01 <- sim_dataset_fun(data[[1]])
     results_01 <- results_fun(sim_data_01)
-    Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
-    Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
+    Hobs_means_df_01 <- Het_fun(sim_data_01, results_01, "Hobs")
+    Hexp_means_df_01 <- Het_fun(sim_data_01, results_01, "Hexp")
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
     ar_means_df_01 <- ar_single_locus_fun()
     
@@ -649,129 +674,128 @@ system.time({
     
     sim_data_16 <- sim_dataset_fun(data[[16]])
     results_16 <- results_fun(sim_data_16)
-    Hobs_means_df_16 <- Hobs_fun(sim_data_16, results_16)
-    Hexp_means_df_16 <- Hexp_fun(sim_data_16, results_16)
+    Hobs_means_df_16 <- Het_fun(sim_data_16, results_16, "Hobs")
+    Hexp_means_df_16 <- Het_fun(sim_data_16, results_16, "Hexp")
     ar_means_df_16 <- ar_fun(sim_data_16)
     perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
     
     
     sim_data_15 <- sim_dataset_fun(data[[15]])
     results_15 <- results_fun(sim_data_15)
-    Hobs_means_df_15 <- Hobs_fun(sim_data_15, results_15)
-    Hexp_means_df_15 <- Hexp_fun(sim_data_15, results_15)
+    Hobs_means_df_15 <- Het_fun(sim_data_15, results_15, "Hobs")
+    Hexp_means_df_15 <- Het_fun(sim_data_15, results_15, "Hexp")
     ar_means_df_15 <- ar_fun(sim_data_15)
     perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
     
     
     sim_data_14 <- sim_dataset_fun(data[[14]])
     results_14 <- results_fun(sim_data_14)
-    Hobs_means_df_14 <- Hobs_fun(sim_data_14, results_14)
-    Hexp_means_df_14 <- Hexp_fun(sim_data_14, results_14)
+    Hobs_means_df_14 <- Het_fun(sim_data_14, results_14, "Hobs")
+    Hexp_means_df_14 <- Het_fun(sim_data_14, results_14, "Hexp")
     ar_means_df_14 <- ar_fun(sim_data_14)
     perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
     
     
     sim_data_13 <- sim_dataset_fun(data[[13]])
     results_13 <- results_fun(sim_data_13)
-    Hobs_means_df_13 <- Hobs_fun(sim_data_13, results_13)
-    Hexp_means_df_13 <- Hexp_fun(sim_data_13, results_13)
+    Hobs_means_df_13 <- Het_fun(sim_data_13, results_13, "Hobs")
+    Hexp_means_df_13 <- Het_fun(sim_data_13, results_13, "Hexp")
     ar_means_df_13 <- ar_fun(sim_data_13)
     perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
     
     
     sim_data_12 <- sim_dataset_fun(data[[12]])
     results_12 <- results_fun(sim_data_12)
-    Hobs_means_df_12 <- Hobs_fun(sim_data_12, results_12)
-    Hexp_means_df_12 <- Hexp_fun(sim_data_12, results_12)
+    Hobs_means_df_12 <- Het_fun(sim_data_12, results_12, "Hobs")
+    Hexp_means_df_12 <- Het_fun(sim_data_12, results_12, "Hexp")
     ar_means_df_12 <- ar_fun(sim_data_12)
     perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
     
     
     sim_data_11 <- sim_dataset_fun(data[[11]])
     results_11 <- results_fun(sim_data_11)
-    Hobs_means_df_11 <- Hobs_fun(sim_data_11, results_11)
-    Hexp_means_df_11 <- Hexp_fun(sim_data_11, results_11)
+    Hobs_means_df_11 <- Het_fun(sim_data_11, results_11, "Hobs")
+    Hexp_means_df_11 <- Het_fun(sim_data_11, results_11, "Hexp")
     ar_means_df_11 <- ar_fun(sim_data_11)
     perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
     
     
-    
     sim_data_10 <- sim_dataset_fun(data[[10]])
     results_10 <- results_fun(sim_data_10)
-    Hobs_means_df_10 <- Hobs_fun(sim_data_10, results_10)
-    Hexp_means_df_10 <- Hexp_fun(sim_data_10, results_10)
+    Hobs_means_df_10 <- Het_fun(sim_data_10, results_10, "Hobs")
+    Hexp_means_df_10 <- Het_fun(sim_data_10, results_10, "Hexp")
     ar_means_df_10 <- ar_fun(sim_data_10)
     perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
     
     
-    sim_data_09 <- sim_dataset_fun(data[[9]])
+    sim_data_09 <- sim_dataset_fun(data[[09]])
     results_09 <- results_fun(sim_data_09)
-    Hobs_means_df_09 <- Hobs_fun(sim_data_09, results_09)
-    Hexp_means_df_09 <- Hexp_fun(sim_data_09, results_09)
+    Hobs_means_df_09 <- Het_fun(sim_data_09, results_09, "Hobs")
+    Hexp_means_df_09 <- Het_fun(sim_data_09, results_09, "Hexp")
     ar_means_df_09 <- ar_fun(sim_data_09)
     perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
     
     
-    sim_data_08 <- sim_dataset_fun(data[[8]])
+    sim_data_08 <- sim_dataset_fun(data[[08]])
     results_08 <- results_fun(sim_data_08)
-    Hobs_means_df_08 <- Hobs_fun(sim_data_08, results_08)
-    Hexp_means_df_08 <- Hexp_fun(sim_data_08, results_08)
+    Hobs_means_df_08 <- Het_fun(sim_data_08, results_08, "Hobs")
+    Hexp_means_df_08 <- Het_fun(sim_data_08, results_08, "Hexp")
     ar_means_df_08 <- ar_fun(sim_data_08)
     perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
     
     
-    sim_data_07 <- sim_dataset_fun(data[[7]])
+    sim_data_07 <- sim_dataset_fun(data[[07]])
     results_07 <- results_fun(sim_data_07)
-    Hobs_means_df_07 <- Hobs_fun(sim_data_07, results_07)
-    Hexp_means_df_07 <- Hexp_fun(sim_data_07, results_07)
+    Hobs_means_df_07 <- Het_fun(sim_data_07, results_07, "Hobs")
+    Hexp_means_df_07 <- Het_fun(sim_data_07, results_07, "Hexp")
     ar_means_df_07 <- ar_fun(sim_data_07)
     perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
     
     
-    sim_data_06 <- sim_dataset_fun(data[[6]])
+    sim_data_06 <- sim_dataset_fun(data[[06]])
     results_06 <- results_fun(sim_data_06)
-    Hobs_means_df_06 <- Hobs_fun(sim_data_06, results_06)
-    Hexp_means_df_06 <- Hexp_fun(sim_data_06, results_06)
+    Hobs_means_df_06 <- Het_fun(sim_data_06, results_06, "Hobs")
+    Hexp_means_df_06 <- Het_fun(sim_data_06, results_06, "Hexp")
     ar_means_df_06 <- ar_fun(sim_data_06)
     perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
     
     
-    sim_data_05 <- sim_dataset_fun(data[[5]])
+    sim_data_05 <- sim_dataset_fun(data[[05]])
     results_05 <- results_fun(sim_data_05)
-    Hobs_means_df_05 <- Hobs_fun(sim_data_05, results_05)
-    Hexp_means_df_05 <- Hexp_fun(sim_data_05, results_05)
+    Hobs_means_df_05 <- Het_fun(sim_data_05, results_05, "Hobs")
+    Hexp_means_df_05 <- Het_fun(sim_data_05, results_05, "Hexp")
     ar_means_df_05 <- ar_fun(sim_data_05)
     perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
     
     
-    sim_data_04 <- sim_dataset_fun(data[[4]])
+    sim_data_04 <- sim_dataset_fun(data[[04]])
     results_04 <- results_fun(sim_data_04)
-    Hobs_means_df_04 <- Hobs_fun(sim_data_04, results_04)
-    Hexp_means_df_04 <- Hexp_fun(sim_data_04, results_04)
+    Hobs_means_df_04 <- Het_fun(sim_data_04, results_04, "Hobs")
+    Hexp_means_df_04 <- Het_fun(sim_data_04, results_04, "Hexp")
     ar_means_df_04 <- ar_fun(sim_data_04)
     perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
     
     
-    sim_data_03 <- sim_dataset_fun(data[[3]])
+    sim_data_03 <- sim_dataset_fun(data[[03]])
     results_03 <- results_fun(sim_data_03)
-    Hobs_means_df_03 <- Hobs_fun(sim_data_03, results_03)
-    Hexp_means_df_03 <- Hexp_fun(sim_data_03, results_03)
+    Hobs_means_df_03 <- Het_fun(sim_data_03, results_03, "Hobs")
+    Hexp_means_df_03 <- Het_fun(sim_data_03, results_03, "Hexp")
     ar_means_df_03 <- ar_fun(sim_data_03)
     perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
     
     
-    sim_data_02 <- sim_dataset_fun(data[[2]])
+    sim_data_02 <- sim_dataset_fun(data[[02]])
     results_02 <- results_fun(sim_data_02)
-    Hobs_means_df_02 <- Hobs_fun(sim_data_02, results_02)
-    Hexp_means_df_02 <- Hexp_fun(sim_data_02, results_02)
+    Hobs_means_df_02 <- Het_fun(sim_data_02, results_02, "Hobs")
+    Hexp_means_df_02 <- Het_fun(sim_data_02, results_02, "Hexp")
     ar_means_df_02 <- ar_fun(sim_data_02)
     perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
     
     
     sim_data_01 <- sim_dataset_fun(data[[1]])
     results_01 <- results_fun(sim_data_01)
-    Hobs_means_df_01 <- Hobs_fun(sim_data_01, results_01)
-    Hexp_means_df_01 <- Hexp_fun(sim_data_01, results_01)
+    Hobs_means_df_01 <- Het_fun(sim_data_01, results_01, "Hobs")
+    Hexp_means_df_01 <- Het_fun(sim_data_01, results_01, "Hexp")
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
     ar_means_df_01 <- ar_single_locus_fun()
     
