@@ -131,15 +131,15 @@ system.time({
   
   # functions
   # sim_dataset_fun without creating multiple iterations of the empirical data set
-  sim_dataset_fun <- function(input){
+  sim_dataset_fun <- function(empirical){
     sim_data <- list()
     for(i in samp_size[-length(samp_size)]){ 
       sim_data[[i]] <-
-        replicate (replic_num, input[sample(1:nrow(input$tab), 
+        replicate (replic_num, empirical[sample(1:nrow(empirical$tab), 
                                             i, replace = F)])
     }
     
-    sim_data[[samp_size[length(samp_size)]]] <- input
+    sim_data[[samp_size[length(samp_size)]]] <- empirical
     return(sim_data)
   }
   
