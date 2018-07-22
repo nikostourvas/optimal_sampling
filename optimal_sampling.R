@@ -47,7 +47,7 @@ obj <- read.genalexcel(
 obj <- missingno(obj, type = "mean")
 
 species <- "Abies"  # "Abies" or "Fagus"
-pop <- "GR_Adult" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
+pop <- "GR_Regen" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
 
 replic_num <- 100   # set number of replications
 
