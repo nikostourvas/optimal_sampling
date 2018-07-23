@@ -77,23 +77,20 @@ system.time({
   # The workaround implemented here, is to create a new dataset where the single locus
   # is duplicated, so mean measures of Ar are unaffected.
   
-  # # Convert obj to data.frame in order to manipulate it easily
-  # obj_fix <- genind2df(obj)
-  # obj_fix <- obj_fix[,c("pop", most_poly_locus)]
-  # 
-  # # Duplicate column - Create genind object
-  # duplicate_col <- obj_fix[,2]
-  # obj_fix$duplicate <- duplicate_col
-  # 
-  # # Remove pop columns as they are wrongly made into alleles in df2genind
-  # obj_fix <- obj_fix[-1]
-  # 
-  # # Create genind object
-  # obj_fix <- df2genind(obj_fix, sep=NULL, ncode = 3)
-  # pop(obj_fix) <- rep(pop, nrow(obj_fix@tab))
-  
-  obj_fix <- seploc(obj)
-  obj_fix <- obj_fix[most_poly_locus]
+  # Convert obj to data.frame in order to manipulate it easily
+  obj_fix <- genind2df(obj)
+  obj_fix <- obj_fix[,c("pop", most_poly_locus)]
+
+  # Duplicate column - Create genind object
+  duplicate_col <- obj_fix[,2]
+  obj_fix$duplicate <- duplicate_col
+
+  # Remove pop columns as they are wrongly made into alleles in df2genind
+  obj_fix <- obj_fix[-1]
+
+  # Create genind object
+  obj_fix <- df2genind(obj_fix, sep=NULL, ncode = 3)
+  pop(obj_fix) <- rep(pop, nrow(obj_fix@tab))
   
   
   # Set sample size

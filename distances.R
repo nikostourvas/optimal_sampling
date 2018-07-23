@@ -49,7 +49,7 @@ obj <- missingno(obj, type = "mean")
 species <- "Abies"  # "Abies" or "Fagus"
 pop <- "GR_Regen" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
 
-replic_num <- 100   # set number of replications
+replic_num <- 2   # set number of replications
 
 # Simulations ####
 system.time({
@@ -63,28 +63,6 @@ most_poly_locus <- loci[length(loci)]
 obj_list <- seppop(obj) # separate pops
 obj <- obj_list[[pop]] 
 id <- paste(species, pop, sep = "_")
-
-
-# There is a bug in the current versions of hierfstat (on cran & development version)
-# which prevents the package from calculating Ar for single-locus datasets.
-# A bug report has been sent: https://github.com/jgx65/hierfstat/issues/25
-# The workaround implemented here, is to create a new dataset where the single locus
-# is duplicated, so mean measures of Ar are unaffected.
-
-# Convert obj to data.frame in order to manipulate it easily
-obj_fix <- genind2df(obj)
-obj_fix <- obj_fix[,c("pop", most_poly_locus)]
-
-# Duplicate column - Create genind object
-duplicate_col <- obj_fix[,2]
-obj_fix$duplicate <- duplicate_col
-
-# Remove pop columns as they are wrongly made into alleles in df2genind
-obj_fix <- obj_fix[-1]
-
-# Create genind object
-obj_fix <- df2genind(obj_fix, sep=NULL, ncode = 3)
-pop(obj_fix) <- rep(pop, nrow(obj_fix@tab))
 
 
 # Set sample size
@@ -328,7 +306,6 @@ jostD_pairs <- function(pop_pairs, empirical){
     dch_02 <- genet_dist_pairs(pop_pairs_02, method = "Dch")
     jost_02 <- jostD_pairs(pop_pairs_02, data[[02]])
 
-    
     
   }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
     
