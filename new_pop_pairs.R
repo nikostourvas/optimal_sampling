@@ -24,6 +24,8 @@ pairs_creator <- function(sim_dataset, empirical){
   pop_pairs[[samp_size[length(samp_size)]]] <- pop_pairs_list[[samp_size[length(samp_size)]]]
   
   return(pop_pairs)
+
+  
 }
 
 
@@ -31,10 +33,16 @@ pairs_creator <- function(sim_dataset, empirical){
 
 sim_data_01 <- sim_dataset_fun(data[[01]])
 sim_dataset <- sim_data_01
+pop_pairs_01 <- pairs_creator(sim_data_01, data[[01]])
 empirical <- data[[01]]
+jost <- jostD_pairs(pop_pairs, data[[01]])
+gst <- Gst_pairs(pop_pairs, data[[01]])
+dch <- genet_dist_pairs(pop_pairs_01, method = "Dch")
+nei87 <- genet_dist_pairs(pop_pairs_01, method = "Nei87")
+
 ########################
 # The following code does not throw warnings!
-
+system.time({
 
 pop_name <- list()
 temp <- list()
@@ -64,3 +72,5 @@ for(i in samp_size[-length(samp_size)]){
 
 temp[[samp_size[length(samp_size)]]] <- 
   Allpops[pop = c(paste(pop_name[[samp_size[length(samp_size)]]]), "GR_Seed")]
+
+})
