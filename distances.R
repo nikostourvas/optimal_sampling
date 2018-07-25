@@ -287,6 +287,7 @@ Gst_pairs <- function(pop_pairs, empirical){
   }
   
   # Replace negative values with zero
+  distance_df$original_values <- distance_df[, "Gst_Nei"] # keep original values
   distance_df[, "Gst_Nei"][distance_df[, "Gst_Nei"] < 0] <- 0
   
   return(distance_df)
