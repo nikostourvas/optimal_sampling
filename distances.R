@@ -47,9 +47,9 @@ obj <- read.genalexcel(
 obj <- missingno(obj, type = "mean")
 
 species <- "Abies"  # "Abies" or "Fagus"
-pop <- "GR_Regen" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
+pop <- "GR_Seed" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
 
-replic_num <- 2   # set number of replications
+replic_num <- 100   # set number of replications
 
 # Simulations ####
 system.time({
@@ -183,6 +183,7 @@ genet_dist_pairs <- function(pop_pairs, method){
   }
   
   # Replace negative values with zero
+  distance_df$original_values <- distance_df[, method] # keep original values
   distance_df[, method][distance_df[, method] < 0] <- 0
   
   
@@ -235,11 +236,61 @@ jostD_pairs <- function(pop_pairs, empirical){
   }
   
   # Replace negative values with zero
+  distance_df$original_values <- distance_df[, "D_Jost"] # keep original values
   distance_df[, "D_Jost"][distance_df[, "D_Jost"] < 0] <- 0
   
   return(distance_df)
 }
   
+
+
+Gst_pairs <- function(pop_pairs, empirical){
+  
+  # Calculate distance
+  distance <- list()
+  for(i in samp_size[-length(samp_size)]){
+    distance[[i]] <- lapply(pop_pairs[[i]], Gst_Nei)
+  }
+  
+  # for empirical data set
+  distance[[samp_size[length(samp_size)]]] <- Gst_Nei(pop_pairs[[samp_size[length(samp_size)]]])
+  
+  for(i in samp_size[-length(samp_size)]){
+    for(j in 1:replic_num){
+      distance[[i]][[j]] <- as.data.frame(distance[[i]][[j]][["global"]])
+    }
+  }
+  
+  # for empirical data set
+  distance[[samp_size[length(samp_size)]]] <- as.data.frame(
+    distance[[samp_size[length(samp_size)]]][["global"]])
+  
+  for(i in samp_size){
+    distance[[i]] <- as.data.frame(bind_rows(distance[[i]]))
+    distance[[i]]$samp_size <- paste(i)
+  }
+  
+  # for empirical data set
+  colnames(distance[[samp_size[length(samp_size)]]]) <- colnames(distance[[1]])
+  
+  # Create a single data.frame with all the distances
+  distance_df <- as.data.frame(bind_rows(distance))
+  colnames(distance_df) <- c("Gst_Nei", "samp_size")
+  distance_df$samp_size <- factor(distance_df$samp_size, levels = unique(
+    as.character(distance_df$samp_size)))
+  distance_df$marker_num <- if(length(nAll(pop_pairs[[1]][[1]])) > 1){
+    paste(length(nAll(pop_pairs[[1]][[1]])),
+          "markers", sep = " ")
+  }else {
+    paste(length(nAll(pop_pairs[[1]][[1]])),
+          "marker", sep = " ")
+  }
+  
+  # Replace negative values with zero
+  distance_df[, "Gst_Nei"][distance_df[, "Gst_Nei"] < 0] <- 0
+  
+  return(distance_df)
+}
   
   # Simulations
   if(id %in% c("Abies_DE_Adult", "Abies_DE_Regen", "Abies_DE_Seed",
@@ -507,7 +558,7 @@ jostD_pairs <- function(pop_pairs, empirical){
 
 # Plots ####  
 
-pdf(paste(id, "100_repl.pdf", sep = "_"), 
+pdf(paste(id, "distances_100_repl.pdf", sep = "_"), 
     width = 24, height = 13.5, compress = FALSE)
 
 my_palette <- brewer.pal(12, "Set3") # create a new palette
