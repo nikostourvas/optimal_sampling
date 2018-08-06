@@ -3,7 +3,12 @@
 # Set working directory, where the input file is. On RStudio you can achieve 
 # this by navigating to "Session" -> "Set Working Directory" -> "Choose Directory"
 
-# Warning of entirely non-type individuals when importing datasets
+# When importing data sets the following warning might occur:
+# Warning message:
+#   In df2genind(gena2, sep = "/", ind.names = ind.vec, pop = pop.vec,  :
+#                  entirely non-type individual(s) deleted
+# This is displayed because a few individuals in Abies GR_Seed have no information at all.
+# These samples are automatically excluded from the analysis.
 
 # After running some of the commands the following warnings appear: 
 # "In validityMethod(object) :
@@ -17,10 +22,6 @@ if (!require("adegenet")) install.packages("adegenet")
 library(adegenet)
 if (!require("popprxl")) install.packages("popprxl")
 library(popprxl)
-if (!require("hierfstat")) install.packages("hierfstat")
-library(hierfstat)
-if (!require("mmod")) install.packages("mmod")
-library(mmod)
 if (!require("reshape2")) install.packages("reshape2")
 library(reshape2)
 if (!require("ggplot2")) install.packages("ggplot2") 
@@ -31,6 +32,10 @@ if (!require("tidyr")) install.packages("tidyr")
 library(tidyr)
 if (!require("RColorBrewer")) install.packages("RColorBrewer") 
 library(RColorBrewer)
+if (!require("devtools")) install.packages("devtools") 
+library(devtools)
+if (!require("hierfstat")) install_github("jgx65/hierfstat") 
+library("hierfstat")
 
 set.seed(1994)
 
@@ -47,18 +52,12 @@ obj <- read.genalexcel(
 obj <- missingno(obj, type = "mean")
 
 species <- "Abies"  # "Abies" or "Fagus"
-pop <- "DE_Adult" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
+pop <- "SL_Seed" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen", "SL_Seed")
 
 replic_num <- 100   # set number of replications
 
 # Simulations ####
 system.time({
-  
-  # If you'de like to calculate only for EST-SSRs or nSSRs of the Abies dataset uncomment the 
-  # appropriate of the following three lines.
-  #nSSRs <- c("SF1", "NFF3", "Aag01", "NFH15", "NFF7", "SFb4")
-  #EST_SSRs <- c("Aat06", "Aat11", "Aat15", "Aat01", "Aat04")
-  #obj <- obj[loc = EST_SSRs]   # EST_SSRs or nSSRs
   
   loci <- sort(nAll(obj)) # vector containing loci from least to
   # most polymorphic according to the pooled dataset from all countries and pops
@@ -85,7 +84,7 @@ system.time({
   duplicate_col <- obj_fix[,2]
   obj_fix$duplicate <- duplicate_col
 
-  # Remove pop columns as they are wrongly made into alleles in df2genind
+  # Remove pop columns as they are wrongly made into allele columns in df2genind
   obj_fix <- obj_fix[-1]
 
   # Create genind object
@@ -851,7 +850,7 @@ system.time({
 # Plots ####  
 
 pdf(paste(id, "100_repl.pdf", sep = "_"), 
-    width = 24, height = 13.5, compress = FALSE)
+    width = 32, height = 13.5, compress = FALSE)
 
 my_palette <- brewer.pal(12, "Set3") # create a new palette
 my_palette <- colorRampPalette(my_palette)(19) # how many colors this palette will have

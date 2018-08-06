@@ -3,7 +3,12 @@
 # Set working directory, where the input file is. On RStudio you can achieve 
 # this by navigating to "Session" -> "Set Working Directory" -> "Choose Directory"
 
-# Warning of entirely non-type individuals when importing datasets
+# When importing data sets the following warning might occur:
+# Warning message:
+#   In df2genind(gena2, sep = "/", ind.names = ind.vec, pop = pop.vec,  :
+#                  entirely non-type individual(s) deleted
+# This is displayed because a few individuals in Abies GR_Seed have no information at all.
+# These samples are automatically excluded from the analysis.
 
 # After running some of the commands the following warnings appear: 
 # "In validityMethod(object) :
@@ -99,9 +104,6 @@ for(i in 1:length(loci)){
 # Save the highest sample size 
 high_samp_size <- samp_size[length(samp_size)]# added because of hierfstat bug 
 
-# Calculates allelic frequencies for empirical dataset
-f1 <- 0.01 # insert frequency
-f2 <- 0.05
 
 # functions
 
@@ -647,7 +649,7 @@ Gst_pairs <- function(pop_pairs, empirical){
 # Plots ####  
 
 pdf(paste(id, "distances_100_repl.pdf", sep = "_"), 
-    width = 24, height = 13.5, compress = FALSE)
+    width = 32, height = 13.5, compress = FALSE)
 
 my_palette <- brewer.pal(12, "Set3") # create a new palette
 my_palette <- colorRampPalette(my_palette)(19) # how many colors this palette will have
