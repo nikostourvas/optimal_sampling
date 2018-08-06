@@ -47,7 +47,7 @@ obj <- read.genalexcel(
 obj <- missingno(obj, type = "mean")
 
 species <- "Abies"  # "Abies" or "Fagus"
-pop <- "GR_Regen" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
+pop <- "DE_Adult" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
 
 replic_num <- 100   # set number of replications
 
@@ -447,6 +447,7 @@ system.time({
     Hexp_means_df_11 <- Het_fun(sim_data_11, results_11, "Hexp")
     ar_means_df_11 <- ar_fun(sim_data_11)
     perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
+    rm(sim_data_11, results_11)
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
@@ -455,6 +456,7 @@ system.time({
     Hexp_means_df_10 <- Het_fun(sim_data_10, results_10, "Hexp")
     ar_means_df_10 <- ar_fun(sim_data_10)
     perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
+    rm(sim_data_10, results_10)
     
     
     sim_data_09 <- sim_dataset_fun(data[[09]])
@@ -463,6 +465,7 @@ system.time({
     Hexp_means_df_09 <- Het_fun(sim_data_09, results_09, "Hexp")
     ar_means_df_09 <- ar_fun(sim_data_09)
     perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
+    rm(sim_data_09, results_09)
     
     
     sim_data_08 <- sim_dataset_fun(data[[08]])
@@ -471,6 +474,7 @@ system.time({
     Hexp_means_df_08 <- Het_fun(sim_data_08, results_08, "Hexp")
     ar_means_df_08 <- ar_fun(sim_data_08)
     perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
+    rm(sim_data_08, results_08)
     
     
     sim_data_07 <- sim_dataset_fun(data[[07]])
@@ -479,6 +483,7 @@ system.time({
     Hexp_means_df_07 <- Het_fun(sim_data_07, results_07, "Hexp")
     ar_means_df_07 <- ar_fun(sim_data_07)
     perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
+    rm(sim_data_07, results_07)
     
     
     sim_data_06 <- sim_dataset_fun(data[[06]])
@@ -487,6 +492,7 @@ system.time({
     Hexp_means_df_06 <- Het_fun(sim_data_06, results_06, "Hexp")
     ar_means_df_06 <- ar_fun(sim_data_06)
     perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
+    rm(sim_data_06, results_06)
     
     
     sim_data_05 <- sim_dataset_fun(data[[05]])
@@ -495,6 +501,7 @@ system.time({
     Hexp_means_df_05 <- Het_fun(sim_data_05, results_05, "Hexp")
     ar_means_df_05 <- ar_fun(sim_data_05)
     perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
+    rm(sim_data_05, results_05)
     
     
     sim_data_04 <- sim_dataset_fun(data[[04]])
@@ -503,6 +510,7 @@ system.time({
     Hexp_means_df_04 <- Het_fun(sim_data_04, results_04, "Hexp")
     ar_means_df_04 <- ar_fun(sim_data_04)
     perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
+    rm(sim_data_04, results_04)
     
     
     sim_data_03 <- sim_dataset_fun(data[[03]])
@@ -511,6 +519,7 @@ system.time({
     Hexp_means_df_03 <- Het_fun(sim_data_03, results_03, "Hexp")
     ar_means_df_03 <- ar_fun(sim_data_03)
     perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
+    rm(sim_data_03, results_03)
     
     
     sim_data_02 <- sim_dataset_fun(data[[02]])
@@ -519,6 +528,7 @@ system.time({
     Hexp_means_df_02 <- Het_fun(sim_data_02, results_02, "Hexp")
     ar_means_df_02 <- ar_fun(sim_data_02)
     perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
+    rm(sim_data_02, results_02)
     
     
     sim_data_01 <- sim_dataset_fun(data[[1]])
@@ -527,6 +537,7 @@ system.time({
     Hexp_means_df_01 <- Het_fun(sim_data_01, results_01, "Hexp")
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
     ar_means_df_01 <- ar_single_locus_fun()
+    rm(sim_data_01, results_01)
     
     
   }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
@@ -537,6 +548,7 @@ system.time({
     Hexp_means_df_17 <- Het_fun(sim_data_17, results_17, "Hexp")
     ar_means_df_17 <- ar_fun(sim_data_17)
     perc_repl_detect_17 <- perc_detect_fun(sim_data_17, f1, f2)
+    rm(sim_data_17, results_17)
 
     
     sim_data_16 <- sim_dataset_fun(data[[16]])
@@ -545,7 +557,8 @@ system.time({
     Hexp_means_df_16 <- Het_fun(sim_data_16, results_16, "Hexp")
     ar_means_df_16 <- ar_fun(sim_data_16)
     perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
-
+    rm(sim_data_16, results_16)
+    
     
     sim_data_15 <- sim_dataset_fun(data[[15]])
     results_15 <- results_fun(sim_data_15)
@@ -553,7 +566,8 @@ system.time({
     Hexp_means_df_15 <- Het_fun(sim_data_15, results_15, "Hexp")
     ar_means_df_15 <- ar_fun(sim_data_15)
     perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
-
+    rm(sim_data_15, results_15)
+    
     
     sim_data_14 <- sim_dataset_fun(data[[14]])
     results_14 <- results_fun(sim_data_14)
@@ -561,7 +575,8 @@ system.time({
     Hexp_means_df_14 <- Het_fun(sim_data_14, results_14, "Hexp")
     ar_means_df_14 <- ar_fun(sim_data_14)
     perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
-
+    rm(sim_data_14, results_14)
+    
     
     sim_data_13 <- sim_dataset_fun(data[[13]])
     results_13 <- results_fun(sim_data_13)
@@ -569,7 +584,8 @@ system.time({
     Hexp_means_df_13 <- Het_fun(sim_data_13, results_13, "Hexp")
     ar_means_df_13 <- ar_fun(sim_data_13)
     perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
-
+    rm(sim_data_13, results_13)
+    
     
     sim_data_12 <- sim_dataset_fun(data[[12]])
     results_12 <- results_fun(sim_data_12)
@@ -577,7 +593,8 @@ system.time({
     Hexp_means_df_12 <- Het_fun(sim_data_12, results_12, "Hexp")
     ar_means_df_12 <- ar_fun(sim_data_12)
     perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
-
+    rm(sim_data_12, results_12)
+    
     
     sim_data_11 <- sim_dataset_fun(data[[11]])
     results_11 <- results_fun(sim_data_11)
@@ -585,6 +602,7 @@ system.time({
     Hexp_means_df_11 <- Het_fun(sim_data_11, results_11, "Hexp")
     ar_means_df_11 <- ar_fun(sim_data_11)
     perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
+    rm(sim_data_11, results_11)
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
@@ -593,6 +611,7 @@ system.time({
     Hexp_means_df_10 <- Het_fun(sim_data_10, results_10, "Hexp")
     ar_means_df_10 <- ar_fun(sim_data_10)
     perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
+    rm(sim_data_10, results_10)
     
     
     sim_data_09 <- sim_dataset_fun(data[[09]])
@@ -601,6 +620,7 @@ system.time({
     Hexp_means_df_09 <- Het_fun(sim_data_09, results_09, "Hexp")
     ar_means_df_09 <- ar_fun(sim_data_09)
     perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
+    rm(sim_data_09, results_09)
     
     
     sim_data_08 <- sim_dataset_fun(data[[08]])
@@ -609,6 +629,7 @@ system.time({
     Hexp_means_df_08 <- Het_fun(sim_data_08, results_08, "Hexp")
     ar_means_df_08 <- ar_fun(sim_data_08)
     perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
+    rm(sim_data_08, results_08)
     
     
     sim_data_07 <- sim_dataset_fun(data[[07]])
@@ -617,6 +638,7 @@ system.time({
     Hexp_means_df_07 <- Het_fun(sim_data_07, results_07, "Hexp")
     ar_means_df_07 <- ar_fun(sim_data_07)
     perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
+    rm(sim_data_07, results_07)
     
     
     sim_data_06 <- sim_dataset_fun(data[[06]])
@@ -625,6 +647,7 @@ system.time({
     Hexp_means_df_06 <- Het_fun(sim_data_06, results_06, "Hexp")
     ar_means_df_06 <- ar_fun(sim_data_06)
     perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
+    rm(sim_data_06, results_06)
     
     
     sim_data_05 <- sim_dataset_fun(data[[05]])
@@ -633,6 +656,7 @@ system.time({
     Hexp_means_df_05 <- Het_fun(sim_data_05, results_05, "Hexp")
     ar_means_df_05 <- ar_fun(sim_data_05)
     perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
+    rm(sim_data_05, results_05)
     
     
     sim_data_04 <- sim_dataset_fun(data[[04]])
@@ -641,6 +665,7 @@ system.time({
     Hexp_means_df_04 <- Het_fun(sim_data_04, results_04, "Hexp")
     ar_means_df_04 <- ar_fun(sim_data_04)
     perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
+    rm(sim_data_04, results_04)
     
     
     sim_data_03 <- sim_dataset_fun(data[[03]])
@@ -649,6 +674,7 @@ system.time({
     Hexp_means_df_03 <- Het_fun(sim_data_03, results_03, "Hexp")
     ar_means_df_03 <- ar_fun(sim_data_03)
     perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
+    rm(sim_data_03, results_03)
     
     
     sim_data_02 <- sim_dataset_fun(data[[02]])
@@ -657,6 +683,7 @@ system.time({
     Hexp_means_df_02 <- Het_fun(sim_data_02, results_02, "Hexp")
     ar_means_df_02 <- ar_fun(sim_data_02)
     perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
+    rm(sim_data_02, results_02)
     
     
     sim_data_01 <- sim_dataset_fun(data[[1]])
@@ -665,6 +692,7 @@ system.time({
     Hexp_means_df_01 <- Het_fun(sim_data_01, results_01, "Hexp")
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
     ar_means_df_01 <- ar_single_locus_fun()
+    rm(sim_data_01, results_01)
     
     
     
@@ -678,6 +706,7 @@ system.time({
     Hexp_means_df_16 <- Het_fun(sim_data_16, results_16, "Hexp")
     ar_means_df_16 <- ar_fun(sim_data_16)
     perc_repl_detect_16 <- perc_detect_fun(sim_data_16, f1, f2)
+    rm(sim_data_16, results_16)
     
     
     sim_data_15 <- sim_dataset_fun(data[[15]])
@@ -686,6 +715,7 @@ system.time({
     Hexp_means_df_15 <- Het_fun(sim_data_15, results_15, "Hexp")
     ar_means_df_15 <- ar_fun(sim_data_15)
     perc_repl_detect_15 <- perc_detect_fun(sim_data_15, f1, f2)
+    rm(sim_data_15, results_15)
     
     
     sim_data_14 <- sim_dataset_fun(data[[14]])
@@ -694,6 +724,7 @@ system.time({
     Hexp_means_df_14 <- Het_fun(sim_data_14, results_14, "Hexp")
     ar_means_df_14 <- ar_fun(sim_data_14)
     perc_repl_detect_14 <- perc_detect_fun(sim_data_14, f1, f2)
+    rm(sim_data_14, results_14)
     
     
     sim_data_13 <- sim_dataset_fun(data[[13]])
@@ -702,6 +733,7 @@ system.time({
     Hexp_means_df_13 <- Het_fun(sim_data_13, results_13, "Hexp")
     ar_means_df_13 <- ar_fun(sim_data_13)
     perc_repl_detect_13 <- perc_detect_fun(sim_data_13, f1, f2)
+    rm(sim_data_13, results_13)
     
     
     sim_data_12 <- sim_dataset_fun(data[[12]])
@@ -710,6 +742,7 @@ system.time({
     Hexp_means_df_12 <- Het_fun(sim_data_12, results_12, "Hexp")
     ar_means_df_12 <- ar_fun(sim_data_12)
     perc_repl_detect_12 <- perc_detect_fun(sim_data_12, f1, f2)
+    rm(sim_data_12, results_12)
     
     
     sim_data_11 <- sim_dataset_fun(data[[11]])
@@ -718,6 +751,7 @@ system.time({
     Hexp_means_df_11 <- Het_fun(sim_data_11, results_11, "Hexp")
     ar_means_df_11 <- ar_fun(sim_data_11)
     perc_repl_detect_11 <- perc_detect_fun(sim_data_11, f1, f2)
+    rm(sim_data_11, results_11)
     
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
@@ -726,6 +760,7 @@ system.time({
     Hexp_means_df_10 <- Het_fun(sim_data_10, results_10, "Hexp")
     ar_means_df_10 <- ar_fun(sim_data_10)
     perc_repl_detect_10 <- perc_detect_fun(sim_data_10, f1, f2)
+    rm(sim_data_10, results_10)
     
     
     sim_data_09 <- sim_dataset_fun(data[[09]])
@@ -734,6 +769,7 @@ system.time({
     Hexp_means_df_09 <- Het_fun(sim_data_09, results_09, "Hexp")
     ar_means_df_09 <- ar_fun(sim_data_09)
     perc_repl_detect_09 <- perc_detect_fun(sim_data_09, f1, f2)
+    rm(sim_data_09, results_09)
     
     
     sim_data_08 <- sim_dataset_fun(data[[08]])
@@ -742,6 +778,7 @@ system.time({
     Hexp_means_df_08 <- Het_fun(sim_data_08, results_08, "Hexp")
     ar_means_df_08 <- ar_fun(sim_data_08)
     perc_repl_detect_08 <- perc_detect_fun(sim_data_08, f1, f2)
+    rm(sim_data_08, results_08)
     
     
     sim_data_07 <- sim_dataset_fun(data[[07]])
@@ -750,6 +787,7 @@ system.time({
     Hexp_means_df_07 <- Het_fun(sim_data_07, results_07, "Hexp")
     ar_means_df_07 <- ar_fun(sim_data_07)
     perc_repl_detect_07 <- perc_detect_fun(sim_data_07, f1, f2)
+    rm(sim_data_07, results_07)
     
     
     sim_data_06 <- sim_dataset_fun(data[[06]])
@@ -758,6 +796,7 @@ system.time({
     Hexp_means_df_06 <- Het_fun(sim_data_06, results_06, "Hexp")
     ar_means_df_06 <- ar_fun(sim_data_06)
     perc_repl_detect_06 <- perc_detect_fun(sim_data_06, f1, f2)
+    rm(sim_data_06, results_06)
     
     
     sim_data_05 <- sim_dataset_fun(data[[05]])
@@ -766,6 +805,7 @@ system.time({
     Hexp_means_df_05 <- Het_fun(sim_data_05, results_05, "Hexp")
     ar_means_df_05 <- ar_fun(sim_data_05)
     perc_repl_detect_05 <- perc_detect_fun(sim_data_05, f1, f2)
+    rm(sim_data_05, results_05)
     
     
     sim_data_04 <- sim_dataset_fun(data[[04]])
@@ -774,6 +814,7 @@ system.time({
     Hexp_means_df_04 <- Het_fun(sim_data_04, results_04, "Hexp")
     ar_means_df_04 <- ar_fun(sim_data_04)
     perc_repl_detect_04 <- perc_detect_fun(sim_data_04, f1, f2)
+    rm(sim_data_04, results_04)
     
     
     sim_data_03 <- sim_dataset_fun(data[[03]])
@@ -782,6 +823,7 @@ system.time({
     Hexp_means_df_03 <- Het_fun(sim_data_03, results_03, "Hexp")
     ar_means_df_03 <- ar_fun(sim_data_03)
     perc_repl_detect_03 <- perc_detect_fun(sim_data_03, f1, f2)
+    rm(sim_data_03, results_03)
     
     
     sim_data_02 <- sim_dataset_fun(data[[02]])
@@ -790,6 +832,7 @@ system.time({
     Hexp_means_df_02 <- Het_fun(sim_data_02, results_02, "Hexp")
     ar_means_df_02 <- ar_fun(sim_data_02)
     perc_repl_detect_02 <- perc_detect_fun(sim_data_02, f1, f2)
+    rm(sim_data_02, results_02)
     
     
     sim_data_01 <- sim_dataset_fun(data[[1]])
@@ -798,6 +841,7 @@ system.time({
     Hexp_means_df_01 <- Het_fun(sim_data_01, results_01, "Hexp")
     perc_repl_detect_01 <- perc_detect_fun(sim_data_01, f1, f2)
     ar_means_df_01 <- ar_single_locus_fun()
+    rm(sim_data_01, results_01)
     
   }else{
     print("Unknown population - Cannot continue")

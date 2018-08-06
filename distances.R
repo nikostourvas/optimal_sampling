@@ -40,7 +40,7 @@ set.seed(1994)
 # A GenAlEx formatted excel sheet is the required input
 obj <- read.genalexcel(
   "LGM_DE_SI_GR_final.xlsx",   # name of excel file
-  sheet = "Abies",             # name of sheet where the genotypes reside
+  sheet = "Fagus",             # name of sheet where the genotypes reside
   genclone = F) 
 
 # Real-world datasets are expected to contain missing data which might introduce bias in 
@@ -48,8 +48,8 @@ obj <- read.genalexcel(
 # Comment next line to leave missing data as they are.
 obj <- missingno(obj, type = "mean")
 
-species <- "Abies"  # "Abies" or "Fagus"
-pop <- "GR_Regen" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen",)
+species <- "Fagus"  # "Abies" or "Fagus"
+pop <- "DE_Seed" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen", "SL_Seed")
 
 replic_num <- 100   # set number of replications
 
@@ -643,6 +643,7 @@ Gst_pairs <- function(pop_pairs, empirical){
   }
 }) 
 
+
 # Plots ####  
 
 pdf(paste(id, "distances_100_repl.pdf", sep = "_"), 
@@ -734,12 +735,12 @@ if(id == "Abies_DE_Adult"){
 }else{
   title_Fst <- expression(paste(
     "Mean pairwise Fst by sample size & marker number"))}
+  
+y_axis_fst <- seq(-0.200, 0.950, 0.025)
 
-y_axis_fst <- seq(0, 0.999, 0.01)
-
-p_fst_tidy <- ggplot(fst_tidy, aes(x = samp_size, y = Nei87)) +
-  geom_boxplot(aes(fill = samp_size)) +
-  facet_wrap(~ marker_num, nrow = 2)
+p_fst_tidy <- ggplot(fst_tidy, aes(x = samp_size, y = original_values)) +
+geom_boxplot(aes(fill = samp_size)) +
+facet_wrap(~ marker_num, nrow = 2)
 
 p_fst_tidy + ggtitle(title_Fst) + xlab("Sample Size") +
   scale_fill_manual(values = my_palette) +
@@ -753,7 +754,12 @@ p_fst_tidy + ggtitle(title_Fst) + xlab("Sample Size") +
 
 
 
+
+
+
+
 dch_tidy <- bind_rows(mget(ls(pattern = "dch_")))
+
 dch_tidy$marker_num <- 
   factor(dch_tidy$marker_num, levels = unique(
     as.character(dch_tidy$marker_num)))
@@ -836,7 +842,7 @@ if(id == "Abies_DE_Adult"){
   title_dch <- expression(paste(
     "Cavalli-Sforza and Edwards Chord distance by sample size & marker number"))}
 
-y_axis_dch <- seq(0, 0.99, 0.01)
+y_axis_dch <- seq(-0.10, 0.95, 0.05)
 
 p_dch_tidy <- ggplot(dch_tidy, aes(x = samp_size, y = Dch)) +
   geom_boxplot(aes(fill = samp_size)) +
@@ -937,9 +943,9 @@ if(id == "Abies_DE_Adult"){
   title_jost <- expression(paste(
     "Jost's D by sample size & marker number"))}
 
-y_axis_jost <- seq(0, 0.99, 0.01)
+y_axis_jost <- seq(-0.20, 0.95, 0.05)
 
-p_jost_tidy <- ggplot(jost_tidy, aes(x = samp_size, y = D_Jost)) +
+p_jost_tidy <- ggplot(jost_tidy, aes(x = samp_size, y = original_values)) +
   geom_boxplot(aes(fill = samp_size)) +
   facet_wrap(~ marker_num, nrow = 2)
 
@@ -956,4 +962,4 @@ p_jost_tidy + ggtitle(title_jost) + xlab("Sample Size") +
 dev.off()
 
 # Reproducibility ####
-writeLines(capture.output(sessionInfo()), paste("sessionInfo", id, ".txt", sep = "_"))
+writeLines(capture.output(sessionInfo()), paste("sessionInfo", id, "distances.txt", sep = "_"))

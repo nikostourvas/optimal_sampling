@@ -1,3 +1,5 @@
+# Plots of common sample sizes ####  
+
 pdf(paste(id, "100_repl_compact.pdf", sep = "_"), 
     width = 24, height = 13.5, compress = FALSE)
 
