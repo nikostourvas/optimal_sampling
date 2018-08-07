@@ -15,76 +15,76 @@ Hobs_means_tidy_compact$marker_num <-
 
 if(id == "Abies_DE_Adult"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for german adult population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for German adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Adult"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for greek adult population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Greek adult population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Adult"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for slovenian adult population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Slovenian adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Regen"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for german regeneration population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for German regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Regen"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for greek regeneration population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Greek regeneration population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Regen"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for slovenian regeneration population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Slovenian regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Seed"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for german seed population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for German seed population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Seed"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for greek seed population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Greek seed population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Seed"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for slovenian seed population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Slovenian seed population of ", 
     italic("A. alba")))
   
 }else if (id == "Fagus_DE_Adult"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for german adult population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for German adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for greek adult population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Greek adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Adult"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for slovenian adult population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Slovenian adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Regen"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for german regeneration population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for German regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Regen"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for greek regeneration population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Greek regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Regen"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for slovenian regeneration population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Slovenian regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Seed"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for german seed population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for German seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Seed"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for greek seed population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Greek seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Seed"){
   title_Ho <- expression(paste(
-    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for slovenian seed population of ", 
+    "Mean Observed Heterozygosity (", H[o], ") by sample size & marker number for Slovenian seed population of ", 
     italic("F. sylvatica")))
   
 }else{
@@ -121,76 +121,76 @@ Hexp_means_tidy_compact$marker_num <-
 
 if(id == "Abies_DE_Adult"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for german adult population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for German adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Adult"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for greek adult population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Greek adult population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Adult"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for slovenian adult population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Slovenian adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Regen"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for german regeneration population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for German regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Regen"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for greek regeneration population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Greek regeneration population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Regen"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for slovenian regeneration population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Slovenian regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Seed"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for german seed population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for German seed population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Seed"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for greek seed population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Greek seed population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Seed"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for slovenian seed population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Slovenian seed population of ", 
     italic("A. alba")))
   
 }else if (id == "Fagus_DE_Adult"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for german adult population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for German adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for greek adult population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Greek adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Adult"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for slovenian adult population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Slovenian adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Regen"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for german regeneration population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for German regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Regen"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for greek regeneration population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Greek regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Regen"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for slovenian regeneration population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Slovenian regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Seed"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for german seed population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for German seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Seed"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for greek seed population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Greek seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Seed"){
   title_He <- expression(paste(
-    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for slovenian seed population of ", 
+    "Mean Expected Heterozygosity (", H[e], ") by sample size & marker number for Slovenian seed population of ", 
     italic("F. sylvatica")))
   
 }else{
@@ -226,76 +226,76 @@ ar_means_tidy_compact$marker_num <-
 
 if(id == "Abies_DE_Adult"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german adult population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for German adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Adult"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek adult population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Greek adult population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Adult"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian adult population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Slovenian adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Regen"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german regeneration population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for German regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Regen"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek regeneration population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Greek regeneration population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Regen"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian regeneration population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Slovenian regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Seed"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german seed population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for German seed population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Seed"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek seed population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Greek seed population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Seed"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian seed population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Slovenian seed population of ", 
     italic("A. alba")))
   
 }else if (id == "Fagus_DE_Adult"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german adult population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for German adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek adult population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Greek adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Adult"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian adult population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Slovenian adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Regen"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german regeneration population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for German regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Regen"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek regeneration population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Greek regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Regen"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian regeneration population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Slovenian regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Seed"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for german seed population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for German seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Seed"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for greek seed population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Greek seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Seed"){
   title_ar <- expression(paste(
-    "Mean Allelic richness (Ar) by sample size & marker number for slovenian seed population of ", 
+    "Mean Allelic richness (Ar) by sample size & marker number for Slovenian seed population of ", 
     italic("F. sylvatica")))
   
   
@@ -330,76 +330,76 @@ perc_repl_detect_compact$marker_num <-
 
 if(id == "Abies_DE_Adult"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german adult population of ", 
+    "Allele detection by sample size & marker number for German adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Adult"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek adult population of ", 
+    "Allele detection by sample size & marker number for Greek adult population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Adult"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian adult population of ", 
+    "Allele detection by sample size & marker number for Slovenian adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Regen"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german regeneration population of ", 
+    "Allele detection by sample size & marker number for German regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Regen"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek regeneration population of ", 
+    "Allele detection by sample size & marker number for Greek regeneration population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Regen"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian regeneration population of ", 
+    "Allele detection by sample size & marker number for Slovenian regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Seed"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german seed population of ", 
+    "Allele detection by sample size & marker number for German seed population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Seed"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek seed population of ", 
+    "Allele detection by sample size & marker number for Greek seed population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Seed"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian seed population of ", 
+    "Allele detection by sample size & marker number for Slovenian seed population of ", 
     italic("A. alba")))
   
 }else if (id == "Fagus_DE_Adult"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german adult population of ", 
+    "Allele detection by sample size & marker number for German adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek adult population of ", 
+    "Allele detection by sample size & marker number for Greek adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Adult"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian adult population of ", 
+    "Allele detection by sample size & marker number for Slovenian adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Regen"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german regeneration population of ", 
+    "Allele detection by sample size & marker number for German regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Regen"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek regeneration population of ", 
+    "Allele detection by sample size & marker number for Greek regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Regen"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian regeneration population of ", 
+    "Allele detection by sample size & marker number for Slovenian regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Seed"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for german seed population of ", 
+    "Allele detection by sample size & marker number for German seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Seed"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for greek seed population of ", 
+    "Allele detection by sample size & marker number for Greek seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Seed"){
   title_perc <- expression(paste(
-    "Allele detection by sample size & marker number for slovenian seed population of ", 
+    "Allele detection by sample size & marker number for Slovenian seed population of ", 
     italic("F. sylvatica")))
   
 }else{
