@@ -33,7 +33,7 @@ Please notify for any discrepancy.
     - load excel input file: set the name of excel file and name of the sheet where the genotypes reside and press Ctrl + Enter
     - set species name
 
-    ![](non-type-inds.png)
+    ![](non-type-inds.PNG)
     - set population name
     - set replication number
 
