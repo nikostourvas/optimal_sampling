@@ -2,7 +2,7 @@
 
 ### Description
 - One script for H~e~, H~o~, Ar, Allele detection (calculation & pdf output).
-- One script for F~ST~, Jost's D, Cavalli-Sforza chord distance (calculation & pdf output).
+- One script for F<sub>ST</sub>, Jost's D, Cavalli-Sforza chord distance (calculation & pdf output).
 - Two more scripts containing code to produce compact pdf outputs, displaying statistics only for sample sizes of 25, 30, 50, 75 individuals.
 
 ### Before running the scripts
