@@ -1,4 +1,8 @@
-# optimal sampling
+# Optimal Sampling
+
+### Aims
+1. Determination of optimal sampling for accurate estimates of genetic diversity
+2. Determination of optimal number of loci for accurate estimates of genetic diversity
 
 ### Description
 - One script for H<sub>e</sub>, H<sub>o</sub>, Ar, Allele detection (calculation & pdf output).
@@ -8,6 +12,7 @@
 ### Before running the scripts
 
 - The scripts' input file is a GenAlEx formatted excel sheet just like the one SFI, ASP and AUTH share for the common LGM data set. Because loci rank is determined based on the pooled empirical data set, a new excel sheet has to be created containing all the loci intended to be analyzed. If a locus has not been genotyped for all populations, it should be added as missing data. Note that the only statistic that is calculated from this pooled data set is loci rank. All other statistics are calculated on per population basis.
+![](excel_extra_markers.PNG)
 
 - Note that population names are hardcoded and should be **exactly** the following in the GenAlEx input file: 
 **SL_Adult, SL_Regen, SL_Seed, DE_Adult, DE_Regen, DE_Seed, GR_Adult, GR_Regen, GR_Seed**
@@ -32,11 +37,14 @@ Please notify for any discrepancy.
     - place cursor on first library line and press Ctrl + Enter
     - load excel input file: set the name of excel file and name of the sheet where the genotypes reside and press Ctrl + Enter
     - set species name
-
-    ![](non-type-inds.PNG)
     - set population name
     - set replication number
 
 - Placing the cursor on a line, excecutes the code in this line
 
 - Warnings (include images)
+
+![](non-type-inds.PNG)
+![](adegenet_warning_1.PNG)
+![](adegenet_warning_3.PNG)
+
