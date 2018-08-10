@@ -331,79 +331,79 @@ Gst_pairs <- function(pop_pairs, empirical){
     sim_data_11 <- sim_dataset_fun(data[[11]])
     pop_pairs_all <- pairs_initial(sim_data_11)
     pop_pairs_11 <- pop_pairs_all
-    fst_11 <- genet_dist_pairs(pop_pairs_11, method = "Nei87")
-    dch_11 <- genet_dist_pairs(pop_pairs_11, method = "Dch")
-    jost_11 <- jostD_pairs(pop_pairs_11, data[[11]])
+    fst_df_11 <- genet_dist_pairs(pop_pairs_11, method = "Nei87")
+    dch_df_11 <- genet_dist_pairs(pop_pairs_11, method = "Dch")
+    jost_df_11 <- jostD_pairs(pop_pairs_11, data[[11]])
     rm(sim_data_11, pop_pairs_11)
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
     pop_pairs_10 <-pairs_creator(10)
-    fst_10 <- genet_dist_pairs(pop_pairs_10, method = "Nei87")
-    dch_10 <- genet_dist_pairs(pop_pairs_10, method = "Dch")
-    jost_10 <- jostD_pairs(pop_pairs_10, data[[10]])
+    fst_df_10 <- genet_dist_pairs(pop_pairs_10, method = "Nei87")
+    dch_df_10 <- genet_dist_pairs(pop_pairs_10, method = "Dch")
+    jost_df_10 <- jostD_pairs(pop_pairs_10, data[[10]])
     rm(sim_data_10, pop_pairs_10)
     
     sim_data_09 <- sim_dataset_fun(data[[09]])
     pop_pairs_09 <- pairs_creator(09)
-    fst_09 <- genet_dist_pairs(pop_pairs_09, method = "Nei87")
-    dch_09 <- genet_dist_pairs(pop_pairs_09, method = "Dch")
-    jost_09 <- jostD_pairs(pop_pairs_09, data[[09]])
+    fst_df_09 <- genet_dist_pairs(pop_pairs_09, method = "Nei87")
+    dch_df_09 <- genet_dist_pairs(pop_pairs_09, method = "Dch")
+    jost_df_09 <- jostD_pairs(pop_pairs_09, data[[09]])
     rm(sim_data_09, pop_pairs_09)
     
     sim_data_08 <- sim_dataset_fun(data[[08]])
     pop_pairs_08 <- pairs_creator(08)
-    fst_08 <- genet_dist_pairs(pop_pairs_08, method = "Nei87")
-    dch_08 <- genet_dist_pairs(pop_pairs_08, method = "Dch")
-    jost_08 <- jostD_pairs(pop_pairs_08, data[[08]])
+    fst_df_08 <- genet_dist_pairs(pop_pairs_08, method = "Nei87")
+    dch_df_08 <- genet_dist_pairs(pop_pairs_08, method = "Dch")
+    jost_df_08 <- jostD_pairs(pop_pairs_08, data[[08]])
     rm(sim_data_08, pop_pairs_08)
     
     sim_data_07 <- sim_dataset_fun(data[[07]])
     pop_pairs_07 <- pairs_creator(07)
-    fst_07 <- genet_dist_pairs(pop_pairs_07, method = "Nei87")
-    dch_07 <- genet_dist_pairs(pop_pairs_07, method = "Dch")
-    jost_07 <- jostD_pairs(pop_pairs_07, data[[07]])
+    fst_df_07 <- genet_dist_pairs(pop_pairs_07, method = "Nei87")
+    dch_df_07 <- genet_dist_pairs(pop_pairs_07, method = "Dch")
+    jost_df_07 <- jostD_pairs(pop_pairs_07, data[[07]])
     rm(sim_data_07, pop_pairs_07)
     
     sim_data_06 <- sim_dataset_fun(data[[06]])
     pop_pairs_06 <- pairs_creator(06)
-    fst_06 <- genet_dist_pairs(pop_pairs_06, method = "Nei87")
-    dch_06 <- genet_dist_pairs(pop_pairs_06, method = "Dch")
-    jost_06 <- jostD_pairs(pop_pairs_06, data[[06]])
+    fst_df_06 <- genet_dist_pairs(pop_pairs_06, method = "Nei87")
+    dch_df_06 <- genet_dist_pairs(pop_pairs_06, method = "Dch")
+    jost_df_06 <- jostD_pairs(pop_pairs_06, data[[06]])
     rm(sim_data_06, pop_pairs_06)
     
     sim_data_05 <- sim_dataset_fun(data[[05]])
     pop_pairs_05 <- pairs_creator(05)
-    fst_05 <- genet_dist_pairs(pop_pairs_05, method = "Nei87")
-    dch_05 <- genet_dist_pairs(pop_pairs_05, method = "Dch")
-    jost_05 <- jostD_pairs(pop_pairs_05, data[[05]])
+    fst_df_05 <- genet_dist_pairs(pop_pairs_05, method = "Nei87")
+    dch_df_05 <- genet_dist_pairs(pop_pairs_05, method = "Dch")
+    jost_df_05 <- jostD_pairs(pop_pairs_05, data[[05]])
     rm(sim_data_05, pop_pairs_05)
     
     sim_data_04 <- sim_dataset_fun(data[[04]])
     pop_pairs_04 <- pairs_creator(04)
-    fst_04 <- genet_dist_pairs(pop_pairs_04, method = "Nei87")
-    dch_04 <- genet_dist_pairs(pop_pairs_04, method = "Dch")
-    jost_04 <- jostD_pairs(pop_pairs_04, data[[04]])
+    fst_df_04 <- genet_dist_pairs(pop_pairs_04, method = "Nei87")
+    dch_df_04 <- genet_dist_pairs(pop_pairs_04, method = "Dch")
+    jost_df_04 <- jostD_pairs(pop_pairs_04, data[[04]])
     rm(sim_data_04, pop_pairs_04)
     
     sim_data_03 <- sim_dataset_fun(data[[03]])
     pop_pairs_03 <- pairs_creator(03)
-    fst_03 <- genet_dist_pairs(pop_pairs_03, method = "Nei87")
-    dch_03 <- genet_dist_pairs(pop_pairs_03, method = "Dch")
-    jost_03 <- jostD_pairs(pop_pairs_03, data[[03]])
+    fst_df_03 <- genet_dist_pairs(pop_pairs_03, method = "Nei87")
+    dch_df_03 <- genet_dist_pairs(pop_pairs_03, method = "Dch")
+    jost_df_03 <- jostD_pairs(pop_pairs_03, data[[03]])
     rm(sim_data_03, pop_pairs_03)
     
     sim_data_02 <- sim_dataset_fun(data[[02]])
     pop_pairs_02 <- pairs_creator(02)
-    fst_02 <- genet_dist_pairs(pop_pairs_02, method = "Nei87")
-    dch_02 <- genet_dist_pairs(pop_pairs_02, method = "Dch")
-    jost_02 <- jostD_pairs(pop_pairs_02, data[[02]])
+    fst_df_02 <- genet_dist_pairs(pop_pairs_02, method = "Nei87")
+    dch_df_02 <- genet_dist_pairs(pop_pairs_02, method = "Dch")
+    jost_df_02 <- jostD_pairs(pop_pairs_02, data[[02]])
     rm(sim_data_02, pop_pairs_02)
     
     sim_data_01 <- sim_dataset_fun(data[[01]])
     pop_pairs_01 <- pairs_creator(01)
-    fst_01 <- genet_dist_pairs(pop_pairs_01, method = "Nei87")
-    dch_01 <- genet_dist_pairs(pop_pairs_01, method = "Dch")
-    jost_01 <- jostD_pairs(pop_pairs_01, data[[01]])
+    fst_df_01 <- genet_dist_pairs(pop_pairs_01, method = "Nei87")
+    dch_df_01 <- genet_dist_pairs(pop_pairs_01, method = "Dch")
+    jost_df_01 <- jostD_pairs(pop_pairs_01, data[[01]])
     rm(sim_data_01, pop_pairs_01)
     
   }else if(id %in% c("Abies_SL_Adult", "Abies_SL_Regen", "Abies_SL_Seed")){
@@ -411,121 +411,121 @@ Gst_pairs <- function(pop_pairs, empirical){
     sim_data_17 <- sim_dataset_fun(data[[17]])
     pop_pairs_all <- pairs_initial(sim_data_17)
     pop_pairs_17 <- pop_pairs_all
-    fst_17 <- genet_dist_pairs(pop_pairs_17, method = "Nei87")
-    dch_17 <- genet_dist_pairs(pop_pairs_17, method = "Dch")
-    jost_17 <- jostD_pairs(pop_pairs_17, data[[17]])
+    fst_df_17 <- genet_dist_pairs(pop_pairs_17, method = "Nei87")
+    dch_df_17 <- genet_dist_pairs(pop_pairs_17, method = "Dch")
+    jost_df_17 <- jostD_pairs(pop_pairs_17, data[[17]])
     rm(sim_data_17, pop_pairs_17)
     
     sim_data_16 <- sim_dataset_fun(data[[16]])
     pop_pairs_16 <- pairs_creator(16)
-    fst_16 <- genet_dist_pairs(pop_pairs_16, method = "Nei87")
-    dch_16 <- genet_dist_pairs(pop_pairs_16, method = "Dch")
-    jost_16 <- jostD_pairs(pop_pairs_16, data[[16]])
+    fst_df_16 <- genet_dist_pairs(pop_pairs_16, method = "Nei87")
+    dch_df_16 <- genet_dist_pairs(pop_pairs_16, method = "Dch")
+    jost_df_16 <- jostD_pairs(pop_pairs_16, data[[16]])
     rm(sim_data_16, pop_pairs_16)
     
     sim_data_15 <- sim_dataset_fun(data[[15]])
     pop_pairs_15 <- pairs_creator(15)
-    fst_15 <- genet_dist_pairs(pop_pairs_15, method = "Nei87")
-    dch_15 <- genet_dist_pairs(pop_pairs_15, method = "Dch")
-    jost_15 <- jostD_pairs(pop_pairs_15, data[[15]])
+    fst_df_15 <- genet_dist_pairs(pop_pairs_15, method = "Nei87")
+    dch_df_15 <- genet_dist_pairs(pop_pairs_15, method = "Dch")
+    jost_df_15 <- jostD_pairs(pop_pairs_15, data[[15]])
     rm(sim_data_15, pop_pairs_15)
     
     sim_data_14 <- sim_dataset_fun(data[[14]])
     pop_pairs_14 <- pairs_creator(14)
-    fst_14 <- genet_dist_pairs(pop_pairs_14, method = "Nei87")
-    dch_14 <- genet_dist_pairs(pop_pairs_14, method = "Dch")
-    jost_14 <- jostD_pairs(pop_pairs_14, data[[14]])
+    fst_df_14 <- genet_dist_pairs(pop_pairs_14, method = "Nei87")
+    dch_df_14 <- genet_dist_pairs(pop_pairs_14, method = "Dch")
+    jost_df_14 <- jostD_pairs(pop_pairs_14, data[[14]])
     rm(sim_data_14, pop_pairs_14)
     
     sim_data_13 <- sim_dataset_fun(data[[13]])
     pop_pairs_13 <- pairs_creator(13)
-    fst_13 <- genet_dist_pairs(pop_pairs_13, method = "Nei87")
-    dch_13 <- genet_dist_pairs(pop_pairs_13, method = "Dch")
-    jost_13 <- jostD_pairs(pop_pairs_13, data[[13]])
+    fst_df_13 <- genet_dist_pairs(pop_pairs_13, method = "Nei87")
+    dch_df_13 <- genet_dist_pairs(pop_pairs_13, method = "Dch")
+    jost_df_13 <- jostD_pairs(pop_pairs_13, data[[13]])
     rm(sim_data_13, pop_pairs_13)
     
     sim_data_12 <- sim_dataset_fun(data[[12]])
     pop_pairs_12 <- pairs_creator(12)
-    fst_12 <- genet_dist_pairs(pop_pairs_12, method = "Nei87")
-    dch_12 <- genet_dist_pairs(pop_pairs_12, method = "Dch")
-    jost_12 <- jostD_pairs(pop_pairs_12, data[[12]])
+    fst_df_12 <- genet_dist_pairs(pop_pairs_12, method = "Nei87")
+    dch_df_12 <- genet_dist_pairs(pop_pairs_12, method = "Dch")
+    jost_df_12 <- jostD_pairs(pop_pairs_12, data[[12]])
     rm(sim_data_12, pop_pairs_12)
     
     sim_data_11 <- sim_dataset_fun(data[[11]])
     pop_pairs_11 <- pairs_creator(11)
-    fst_11 <- genet_dist_pairs(pop_pairs_11, method = "Nei87")
-    dch_11 <- genet_dist_pairs(pop_pairs_11, method = "Dch")
-    jost_11 <- jostD_pairs(pop_pairs_11, data[[11]])
+    fst_df_11 <- genet_dist_pairs(pop_pairs_11, method = "Nei87")
+    dch_df_11 <- genet_dist_pairs(pop_pairs_11, method = "Dch")
+    jost_df_11 <- jostD_pairs(pop_pairs_11, data[[11]])
     rm(sim_data_11, pop_pairs_11)
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
     pop_pairs_10 <-pairs_creator(10)
-    fst_10 <- genet_dist_pairs(pop_pairs_10, method = "Nei87")
-    dch_10 <- genet_dist_pairs(pop_pairs_10, method = "Dch")
-    jost_10 <- jostD_pairs(pop_pairs_10, data[[10]])
+    fst_df_10 <- genet_dist_pairs(pop_pairs_10, method = "Nei87")
+    dch_df_10 <- genet_dist_pairs(pop_pairs_10, method = "Dch")
+    jost_df_10 <- jostD_pairs(pop_pairs_10, data[[10]])
     rm(sim_data_10, pop_pairs_10)
     
     sim_data_09 <- sim_dataset_fun(data[[09]])
     pop_pairs_09 <- pairs_creator(09)
-    fst_09 <- genet_dist_pairs(pop_pairs_09, method = "Nei87")
-    dch_09 <- genet_dist_pairs(pop_pairs_09, method = "Dch")
-    jost_09 <- jostD_pairs(pop_pairs_09, data[[09]])
+    fst_df_09 <- genet_dist_pairs(pop_pairs_09, method = "Nei87")
+    dch_df_09 <- genet_dist_pairs(pop_pairs_09, method = "Dch")
+    jost_df_09 <- jostD_pairs(pop_pairs_09, data[[09]])
     rm(sim_data_09, pop_pairs_09)
     
     sim_data_08 <- sim_dataset_fun(data[[08]])
     pop_pairs_08 <- pairs_creator(08)
-    fst_08 <- genet_dist_pairs(pop_pairs_08, method = "Nei87")
-    dch_08 <- genet_dist_pairs(pop_pairs_08, method = "Dch")
-    jost_08 <- jostD_pairs(pop_pairs_08, data[[08]])
+    fst_df_08 <- genet_dist_pairs(pop_pairs_08, method = "Nei87")
+    dch_df_08 <- genet_dist_pairs(pop_pairs_08, method = "Dch")
+    jost_df_08 <- jostD_pairs(pop_pairs_08, data[[08]])
     rm(sim_data_08, pop_pairs_08)
     
     sim_data_07 <- sim_dataset_fun(data[[07]])
     pop_pairs_07 <- pairs_creator(07)
-    fst_07 <- genet_dist_pairs(pop_pairs_07, method = "Nei87")
-    dch_07 <- genet_dist_pairs(pop_pairs_07, method = "Dch")
-    jost_07 <- jostD_pairs(pop_pairs_07, data[[07]])
+    fst_df_07 <- genet_dist_pairs(pop_pairs_07, method = "Nei87")
+    dch_df_07 <- genet_dist_pairs(pop_pairs_07, method = "Dch")
+    jost_df_07 <- jostD_pairs(pop_pairs_07, data[[07]])
     rm(sim_data_07, pop_pairs_07)
     
     sim_data_06 <- sim_dataset_fun(data[[06]])
     pop_pairs_06 <- pairs_creator(06)
-    fst_06 <- genet_dist_pairs(pop_pairs_06, method = "Nei87")
-    dch_06 <- genet_dist_pairs(pop_pairs_06, method = "Dch")
-    jost_06 <- jostD_pairs(pop_pairs_06, data[[06]])
+    fst_df_06 <- genet_dist_pairs(pop_pairs_06, method = "Nei87")
+    dch_df_06 <- genet_dist_pairs(pop_pairs_06, method = "Dch")
+    jost_df_06 <- jostD_pairs(pop_pairs_06, data[[06]])
     rm(sim_data_06, pop_pairs_06)
     
     sim_data_05 <- sim_dataset_fun(data[[05]])
     pop_pairs_05 <- pairs_creator(05)
-    fst_05 <- genet_dist_pairs(pop_pairs_05, method = "Nei87")
-    dch_05 <- genet_dist_pairs(pop_pairs_05, method = "Dch")
-    jost_05 <- jostD_pairs(pop_pairs_05, data[[05]])
+    fst_df_05 <- genet_dist_pairs(pop_pairs_05, method = "Nei87")
+    dch_df_05 <- genet_dist_pairs(pop_pairs_05, method = "Dch")
+    jost_df_05 <- jostD_pairs(pop_pairs_05, data[[05]])
     rm(sim_data_05, pop_pairs_05)
     
     sim_data_04 <- sim_dataset_fun(data[[04]])
     pop_pairs_04 <- pairs_creator(04)
-    fst_04 <- genet_dist_pairs(pop_pairs_04, method = "Nei87")
-    dch_04 <- genet_dist_pairs(pop_pairs_04, method = "Dch")
-    jost_04 <- jostD_pairs(pop_pairs_04, data[[04]])
+    fst_df_04 <- genet_dist_pairs(pop_pairs_04, method = "Nei87")
+    dch_df_04 <- genet_dist_pairs(pop_pairs_04, method = "Dch")
+    jost_df_04 <- jostD_pairs(pop_pairs_04, data[[04]])
     rm(sim_data_04, pop_pairs_04)
     
     sim_data_03 <- sim_dataset_fun(data[[03]])
     pop_pairs_03 <- pairs_creator(03)
-    fst_03 <- genet_dist_pairs(pop_pairs_03, method = "Nei87")
-    dch_03 <- genet_dist_pairs(pop_pairs_03, method = "Dch")
-    jost_03 <- jostD_pairs(pop_pairs_03, data[[03]])
+    fst_df_03 <- genet_dist_pairs(pop_pairs_03, method = "Nei87")
+    dch_df_03 <- genet_dist_pairs(pop_pairs_03, method = "Dch")
+    jost_df_03 <- jostD_pairs(pop_pairs_03, data[[03]])
     rm(sim_data_03, pop_pairs_03)
     
     sim_data_02 <- sim_dataset_fun(data[[02]])
     pop_pairs_02 <- pairs_creator(02)
-    fst_02 <- genet_dist_pairs(pop_pairs_02, method = "Nei87")
-    dch_02 <- genet_dist_pairs(pop_pairs_02, method = "Dch")
-    jost_02 <- jostD_pairs(pop_pairs_02, data[[02]])
+    fst_df_02 <- genet_dist_pairs(pop_pairs_02, method = "Nei87")
+    dch_df_02 <- genet_dist_pairs(pop_pairs_02, method = "Dch")
+    jost_df_02 <- jostD_pairs(pop_pairs_02, data[[02]])
     rm(sim_data_02, pop_pairs_02)
     
     sim_data_01 <- sim_dataset_fun(data[[01]])
     pop_pairs_01 <- pairs_creator(01)
-    fst_01 <- genet_dist_pairs(pop_pairs_01, method = "Nei87")
-    dch_01 <- genet_dist_pairs(pop_pairs_01, method = "Dch")
-    jost_01 <- jostD_pairs(pop_pairs_01, data[[01]])
+    fst_df_01 <- genet_dist_pairs(pop_pairs_01, method = "Nei87")
+    dch_df_01 <- genet_dist_pairs(pop_pairs_01, method = "Dch")
+    jost_df_01 <- jostD_pairs(pop_pairs_01, data[[01]])
     rm(sim_data_01, pop_pairs_01)
     
     
@@ -536,114 +536,114 @@ Gst_pairs <- function(pop_pairs, empirical){
     sim_data_16 <- sim_dataset_fun(data[[16]])
     pop_pairs_all <- pairs_initial(sim_data_16)
     pop_pairs_16 <- pop_pairs_all
-    fst_16 <- genet_dist_pairs(pop_pairs_16, method = "Nei87")
-    dch_16 <- genet_dist_pairs(pop_pairs_16, method = "Dch")
-    jost_16 <- jostD_pairs(pop_pairs_16, data[[16]])
+    fst_df_16 <- genet_dist_pairs(pop_pairs_16, method = "Nei87")
+    dch_df_16 <- genet_dist_pairs(pop_pairs_16, method = "Dch")
+    jost_df_16 <- jostD_pairs(pop_pairs_16, data[[16]])
     rm(sim_data_16, pop_pairs_16)
     
     sim_data_15 <- sim_dataset_fun(data[[15]])
     pop_pairs_15 <- pairs_creator(15)
-    fst_15 <- genet_dist_pairs(pop_pairs_15, method = "Nei87")
-    dch_15 <- genet_dist_pairs(pop_pairs_15, method = "Dch")
-    jost_15 <- jostD_pairs(pop_pairs_15, data[[15]])
+    fst_df_15 <- genet_dist_pairs(pop_pairs_15, method = "Nei87")
+    dch_df_15 <- genet_dist_pairs(pop_pairs_15, method = "Dch")
+    jost_df_15 <- jostD_pairs(pop_pairs_15, data[[15]])
     rm(sim_data_15, pop_pairs_15)
     
     sim_data_14 <- sim_dataset_fun(data[[14]])
     pop_pairs_14 <- pairs_creator(14)
-    fst_14 <- genet_dist_pairs(pop_pairs_14, method = "Nei87")
-    dch_14 <- genet_dist_pairs(pop_pairs_14, method = "Dch")
-    jost_14 <- jostD_pairs(pop_pairs_14, data[[14]])
+    fst_df_14 <- genet_dist_pairs(pop_pairs_14, method = "Nei87")
+    dch_df_14 <- genet_dist_pairs(pop_pairs_14, method = "Dch")
+    jost_df_14 <- jostD_pairs(pop_pairs_14, data[[14]])
     rm(sim_data_14, pop_pairs_14)
     
     sim_data_13 <- sim_dataset_fun(data[[13]])
     pop_pairs_13 <- pairs_creator(13)
-    fst_13 <- genet_dist_pairs(pop_pairs_13, method = "Nei87")
-    dch_13 <- genet_dist_pairs(pop_pairs_13, method = "Dch")
-    jost_13 <- jostD_pairs(pop_pairs_13, data[[13]])
+    fst_df_13 <- genet_dist_pairs(pop_pairs_13, method = "Nei87")
+    dch_df_13 <- genet_dist_pairs(pop_pairs_13, method = "Dch")
+    jost_df_13 <- jostD_pairs(pop_pairs_13, data[[13]])
     rm(sim_data_13, pop_pairs_13)
     
     sim_data_12 <- sim_dataset_fun(data[[12]])
     pop_pairs_12 <- pairs_creator(12)
-    fst_12 <- genet_dist_pairs(pop_pairs_12, method = "Nei87")
-    dch_12 <- genet_dist_pairs(pop_pairs_12, method = "Dch")
-    jost_12 <- jostD_pairs(pop_pairs_12, data[[12]])
+    fst_df_12 <- genet_dist_pairs(pop_pairs_12, method = "Nei87")
+    dch_df_12 <- genet_dist_pairs(pop_pairs_12, method = "Dch")
+    jost_df_12 <- jostD_pairs(pop_pairs_12, data[[12]])
     rm(sim_data_12, pop_pairs_12)
     
     sim_data_11 <- sim_dataset_fun(data[[11]])
     pop_pairs_11 <- pairs_creator(11)
-    fst_11 <- genet_dist_pairs(pop_pairs_11, method = "Nei87")
-    dch_11 <- genet_dist_pairs(pop_pairs_11, method = "Dch")
-    jost_11 <- jostD_pairs(pop_pairs_11, data[[11]])
+    fst_df_11 <- genet_dist_pairs(pop_pairs_11, method = "Nei87")
+    dch_df_11 <- genet_dist_pairs(pop_pairs_11, method = "Dch")
+    jost_df_11 <- jostD_pairs(pop_pairs_11, data[[11]])
     rm(sim_data_11, pop_pairs_11)
     
     sim_data_10 <- sim_dataset_fun(data[[10]])
     pop_pairs_10 <-pairs_creator(10)
-    fst_10 <- genet_dist_pairs(pop_pairs_10, method = "Nei87")
-    dch_10 <- genet_dist_pairs(pop_pairs_10, method = "Dch")
-    jost_10 <- jostD_pairs(pop_pairs_10, data[[10]])
+    fst_df_10 <- genet_dist_pairs(pop_pairs_10, method = "Nei87")
+    dch_df_10 <- genet_dist_pairs(pop_pairs_10, method = "Dch")
+    jost_df_10 <- jostD_pairs(pop_pairs_10, data[[10]])
     rm(sim_data_10, pop_pairs_10)
     
     sim_data_09 <- sim_dataset_fun(data[[09]])
     pop_pairs_09 <- pairs_creator(09)
-    fst_09 <- genet_dist_pairs(pop_pairs_09, method = "Nei87")
-    dch_09 <- genet_dist_pairs(pop_pairs_09, method = "Dch")
-    jost_09 <- jostD_pairs(pop_pairs_09, data[[09]])
+    fst_df_09 <- genet_dist_pairs(pop_pairs_09, method = "Nei87")
+    dch_df_09 <- genet_dist_pairs(pop_pairs_09, method = "Dch")
+    jost_df_09 <- jostD_pairs(pop_pairs_09, data[[09]])
     rm(sim_data_09, pop_pairs_09)
     
     sim_data_08 <- sim_dataset_fun(data[[08]])
     pop_pairs_08 <- pairs_creator(08)
-    fst_08 <- genet_dist_pairs(pop_pairs_08, method = "Nei87")
-    dch_08 <- genet_dist_pairs(pop_pairs_08, method = "Dch")
-    jost_08 <- jostD_pairs(pop_pairs_08, data[[08]])
+    fst_df_08 <- genet_dist_pairs(pop_pairs_08, method = "Nei87")
+    dch_df_08 <- genet_dist_pairs(pop_pairs_08, method = "Dch")
+    jost_df_08 <- jostD_pairs(pop_pairs_08, data[[08]])
     rm(sim_data_08, pop_pairs_08)
     
     sim_data_07 <- sim_dataset_fun(data[[07]])
     pop_pairs_07 <- pairs_creator(07)
-    fst_07 <- genet_dist_pairs(pop_pairs_07, method = "Nei87")
-    dch_07 <- genet_dist_pairs(pop_pairs_07, method = "Dch")
-    jost_07 <- jostD_pairs(pop_pairs_07, data[[07]])
+    fst_df_07 <- genet_dist_pairs(pop_pairs_07, method = "Nei87")
+    dch_df_07 <- genet_dist_pairs(pop_pairs_07, method = "Dch")
+    jost_df_07 <- jostD_pairs(pop_pairs_07, data[[07]])
     rm(sim_data_07, pop_pairs_07)
     
     sim_data_06 <- sim_dataset_fun(data[[06]])
     pop_pairs_06 <- pairs_creator(06)
-    fst_06 <- genet_dist_pairs(pop_pairs_06, method = "Nei87")
-    dch_06 <- genet_dist_pairs(pop_pairs_06, method = "Dch")
-    jost_06 <- jostD_pairs(pop_pairs_06, data[[06]])
+    fst_df_06 <- genet_dist_pairs(pop_pairs_06, method = "Nei87")
+    dch_df_06 <- genet_dist_pairs(pop_pairs_06, method = "Dch")
+    jost_df_06 <- jostD_pairs(pop_pairs_06, data[[06]])
     rm(sim_data_06, pop_pairs_06)
     
     sim_data_05 <- sim_dataset_fun(data[[05]])
     pop_pairs_05 <- pairs_creator(05)
-    fst_05 <- genet_dist_pairs(pop_pairs_05, method = "Nei87")
-    dch_05 <- genet_dist_pairs(pop_pairs_05, method = "Dch")
-    jost_05 <- jostD_pairs(pop_pairs_05, data[[05]])
+    fst_df_05 <- genet_dist_pairs(pop_pairs_05, method = "Nei87")
+    dch_df_05 <- genet_dist_pairs(pop_pairs_05, method = "Dch")
+    jost_df_05 <- jostD_pairs(pop_pairs_05, data[[05]])
     rm(sim_data_05, pop_pairs_05)
     
     sim_data_04 <- sim_dataset_fun(data[[04]])
     pop_pairs_04 <- pairs_creator(04)
-    fst_04 <- genet_dist_pairs(pop_pairs_04, method = "Nei87")
-    dch_04 <- genet_dist_pairs(pop_pairs_04, method = "Dch")
-    jost_04 <- jostD_pairs(pop_pairs_04, data[[04]])
+    fst_df_04 <- genet_dist_pairs(pop_pairs_04, method = "Nei87")
+    dch_df_04 <- genet_dist_pairs(pop_pairs_04, method = "Dch")
+    jost_df_04 <- jostD_pairs(pop_pairs_04, data[[04]])
     rm(sim_data_04, pop_pairs_04)
     
     sim_data_03 <- sim_dataset_fun(data[[03]])
     pop_pairs_03 <- pairs_creator(03)
-    fst_03 <- genet_dist_pairs(pop_pairs_03, method = "Nei87")
-    dch_03 <- genet_dist_pairs(pop_pairs_03, method = "Dch")
-    jost_03 <- jostD_pairs(pop_pairs_03, data[[03]])
+    fst_df_03 <- genet_dist_pairs(pop_pairs_03, method = "Nei87")
+    dch_df_03 <- genet_dist_pairs(pop_pairs_03, method = "Dch")
+    jost_df_03 <- jostD_pairs(pop_pairs_03, data[[03]])
     rm(sim_data_03, pop_pairs_03)
     
     sim_data_02 <- sim_dataset_fun(data[[02]])
     pop_pairs_02 <- pairs_creator(02)
-    fst_02 <- genet_dist_pairs(pop_pairs_02, method = "Nei87")
-    dch_02 <- genet_dist_pairs(pop_pairs_02, method = "Dch")
-    jost_02 <- jostD_pairs(pop_pairs_02, data[[02]])
+    fst_df_02 <- genet_dist_pairs(pop_pairs_02, method = "Nei87")
+    dch_df_02 <- genet_dist_pairs(pop_pairs_02, method = "Dch")
+    jost_df_02 <- jostD_pairs(pop_pairs_02, data[[02]])
     rm(sim_data_02, pop_pairs_02)
     
     sim_data_01 <- sim_dataset_fun(data[[01]])
     pop_pairs_01 <- pairs_creator(01)
-    fst_01 <- genet_dist_pairs(pop_pairs_01, method = "Nei87")
-    dch_01 <- genet_dist_pairs(pop_pairs_01, method = "Dch")
-    jost_01 <- jostD_pairs(pop_pairs_01, data[[01]])
+    fst_df_01 <- genet_dist_pairs(pop_pairs_01, method = "Nei87")
+    dch_df_01 <- genet_dist_pairs(pop_pairs_01, method = "Dch")
+    jost_df_01 <- jostD_pairs(pop_pairs_01, data[[01]])
     rm(sim_data_01, pop_pairs_01)
     
   }else{
@@ -660,7 +660,7 @@ fst_tidy$marker_num <-
   factor(fst_tidy$marker_num, levels = unique(
     as.character(fst_tidy$marker_num)))
 
-rm(list = ls(pattern = "fst_")) 
+rm(list = ls(pattern = "fst_df_")) 
 
 
 
@@ -670,7 +670,7 @@ dch_tidy$marker_num <-
   factor(dch_tidy$marker_num, levels = unique(
     as.character(dch_tidy$marker_num)))
 
-rm(list = ls(pattern = "dch_")) 
+rm(list = ls(pattern = "dch_df_")) 
 
 
 jost_tidy <- bind_rows(mget(ls(pattern = "jost_")))
@@ -679,7 +679,9 @@ jost_tidy$marker_num <-
   factor(jost_tidy$marker_num, levels = unique(
     as.character(jost_tidy$marker_num)))
 
-rm(list = ls(pattern = "jost_")) 
+rm(list = ls(pattern = "jost_df_")) 
+
+rm(data, pop_pairs_all)
 
 # Save results in working directory
 save.image(file = paste(id, replic_num, "repl_differentiation_results.RData", sep = "_"))
@@ -1089,81 +1091,81 @@ pdf(paste(id, replic_num, "repl_differentiation_all_loci.pdf", sep = "_"),
 
 if(id == "Abies_DE_Adult"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for German adult population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for German adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Adult"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Greek adult population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Greek adult population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Adult"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Slovenian adult population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Slovenian adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Regen"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for German regeneration population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for German regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Regen"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Greek regeneration population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Greek regeneration population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Regen"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Slovenian regeneration population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Slovenian regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Seed"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for German seed population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for German seed population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Seed"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Greek seed population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Greek seed population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Seed"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Slovenian seed population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Slovenian seed population of ", 
     italic("A. alba")))
   
 }else if (id == "Fagus_DE_Adult"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for German adult population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for German adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Greek adult population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Greek adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Adult"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Slovenian adult population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Slovenian adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Regen"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for German regeneration population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for German regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Regen"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Greek regeneration population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Greek regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Regen"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Slovenian regeneration population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Slovenian regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Seed"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for German seed population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for German seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Seed"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Greek seed population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Greek seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Seed"){
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size for Slovenian seed population of ", 
+    "Mean pairwise ", F[ST], " by sample size (all loci included) for Slovenian seed population of ", 
     italic("F. sylvatica")))
   
 }else{
   title_Fst <- expression(paste(
-    "Mean pairwise ", F[ST], " by sample size"))}
+    "Mean pairwise ", F[ST], " by sample size (all loci included)"))}
 
 y_axis_fst <- seq(-0.200, 0.950, 0.002)
 
@@ -1186,81 +1188,81 @@ p_fst_all + ggtitle(title_Fst) + xlab("Sample Size") +
 
 if(id == "Abies_DE_Adult"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for German adult population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for German adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Adult"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek adult population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Greek adult population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Adult"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian adult population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Slovenian adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Regen"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for German regeneration population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for German regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Regen"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek regeneration population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Greek regeneration population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Regen"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian regeneration population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Slovenian regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Seed"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for German seed population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for German seed population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Seed"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek seed population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Greek seed population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Seed"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian seed population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Slovenian seed population of ", 
     italic("A. alba")))
   
 }else if (id == "Fagus_DE_Adult"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for German adult population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for German adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek adult population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Greek adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Adult"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian adult population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Slovenian adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Regen"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for German regeneration population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for German regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Regen"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek regeneration population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Greek regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Regen"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian regeneration population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Slovenian regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Seed"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for German seed population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for German seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Seed"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek seed population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Greek seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Seed"){
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian seed population of ", 
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included) for Slovenian seed population of ", 
     italic("F. sylvatica")))
   
 }else{
   title_dch <- expression(paste(
-    "Cavalli-Sforza and Edwards Chord distance by sample size"))}
+    "Cavalli-Sforza and Edwards Chord distance by sample size (all loci included)"))}
 
 y_axis_dch <- seq(0, 0.95, 0.01)
 
@@ -1284,81 +1286,81 @@ p_dch_all + ggtitle(title_dch) + xlab("Sample Size") +
 
 if(id == "Abies_DE_Adult"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for German adult population of ", 
+    "Jost's D by sample size (all loci included) for German adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Adult"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Greek adult population of ", 
+    "Jost's D by sample size (all loci included) for Greek adult population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Adult"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Slovenian adult population of ", 
+    "Jost's D by sample size (all loci included) for Slovenian adult population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Regen"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for German regeneration population of ", 
+    "Jost's D by sample size (all loci included) for German regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Regen"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Greek regeneration population of ", 
+    "Jost's D by sample size (all loci included) for Greek regeneration population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Regen"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Slovenian regeneration population of ", 
+    "Jost's D by sample size (all loci included) for Slovenian regeneration population of ", 
     italic("A. alba")))
 }else if (id == "Abies_DE_Seed"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for German seed population of ", 
+    "Jost's D by sample size (all loci included) for German seed population of ", 
     italic("A. alba")))
 }else if (id == "Abies_GR_Seed"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Greek seed population of ", 
+    "Jost's D by sample size (all loci included) for Greek seed population of ", 
     italic("A. borisii-regis")))
 }else if (id == "Abies_SL_Seed"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Slovenian seed population of ", 
+    "Jost's D by sample size (all loci included) for Slovenian seed population of ", 
     italic("A. alba")))
   
 }else if (id == "Fagus_DE_Adult"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for German adult population of ", 
+    "Jost's D by sample size (all loci included) for German adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Adult"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Greek adult population of ", 
+    "Jost's D by sample size (all loci included) for Greek adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Adult"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Slovenian adult population of ", 
+    "Jost's D by sample size (all loci included) for Slovenian adult population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Regen"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for German regeneration population of ", 
+    "Jost's D by sample size (all loci included) for German regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Regen"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Greek regeneration population of ", 
+    "Jost's D by sample size (all loci included) for Greek regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Regen"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Slovenian regeneration population of ", 
+    "Jost's D by sample size (all loci included) for Slovenian regeneration population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_DE_Seed"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for German seed population of ", 
+    "Jost's D by sample size (all loci included) for German seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_GR_Seed"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Greek seed population of ", 
+    "Jost's D by sample size (all loci included) for Greek seed population of ", 
     italic("F. sylvatica")))
 }else if (id == "Fagus_SL_Seed"){
   title_jost <- expression(paste(
-    "Jost's D by sample size for Slovenian seed population of ", 
+    "Jost's D by sample size (all loci included) for Slovenian seed population of ", 
     italic("F. sylvatica")))
   
 }else{
   title_jost <- expression(paste(
-    "Jost's D by sample size"))}
+    "Jost's D by sample size (all loci included)"))}
 
 y_axis_jost <- seq(-0.20, 0.95, 0.01)
 
