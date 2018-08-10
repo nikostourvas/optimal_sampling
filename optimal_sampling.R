@@ -55,7 +55,7 @@ obj <- read.genalexcel(
 obj <- missingno(obj, type = "mean")
 
 species <- "Abies"  # "Abies" or "Fagus"
-pop <- "GR_Seed" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen", "SL_Seed")
+pop <- "GR_Regen" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen", "SL_Seed")
 
 replic_num <- 100   # set number of replications
 
@@ -75,28 +75,8 @@ system.time({
   obj_list <- seppop(obj) # separate pops
   obj <- obj_list[[pop]] 
   id <- paste(species, pop, sep = "_")
+  rm(obj_list)
   
-  
-  # There is a bug in the current versions of hierfstat (on cran & development version)
-  # which prevents the package from calculating Ar for single-locus datasets.
-  # A bug report has been sent: https://github.com/jgx65/hierfstat/issues/25
-  # The workaround implemented here, is to create a new dataset where the single locus
-  # is duplicated, so mean measures of Ar are unaffected.
-  
-  # Convert obj to data.frame in order to manipulate it easily
-  obj_fix <- genind2df(obj)
-  obj_fix <- obj_fix[,c("pop", most_poly_locus)]
-
-  # Duplicate column - Create genind object
-  duplicate_col <- obj_fix[,2]
-  obj_fix$duplicate <- duplicate_col
-
-  # Remove pop columns as they are wrongly made into allele columns in df2genind
-  obj_fix <- obj_fix[-1]
-
-  # Create genind object
-  obj_fix <- df2genind(obj_fix, sep=NULL, ncode = 3)
-  pop(obj_fix) <- rep(pop, nrow(obj_fix@tab))
   
   
   # Set sample size
@@ -246,14 +226,30 @@ system.time({
   
   
   ar_single_locus_fun <- function(){
-    # Calculation of AR for each generated dataset
     
-    # Seperate dataset by pop & select pop to analyze
-    # obj_fix_list <- seppop(obj_fix) # separate pops
-    # obj_fix <- obj_fix_list[[pop]] # select pop to analyze
+    # There is a bug in the current versions of hierfstat (on cran & development version)
+    # which prevents the package from calculating Ar for single-locus datasets.
+    # A bug report has been sent: https://github.com/jgx65/hierfstat/issues/25
+    # The workaround implemented here, is to create a new dataset where the single locus
+    # is duplicated, so mean measures of Ar are unaffected.
     
-    # If there are missing data in a single-locus dataset, poppr package deletes the individual
-    # For this reason it might be needed to reduce the highest sample size that can be sampled.
+    # Convert obj to data.frame in order to manipulate it easily
+    obj_fix <- genind2df(obj)
+    obj_fix <- obj_fix[,c("pop", most_poly_locus)]
+    
+    # Duplicate column - Create genind object
+    duplicate_col <- obj_fix[,2]
+    obj_fix$duplicate <- duplicate_col
+    
+    # Remove pop columns as they are wrongly made into allele columns in df2genind
+    obj_fix <- obj_fix[-1]
+    
+    # Create genind object
+    obj_fix <- df2genind(obj_fix, sep=NULL, ncode = 3)
+    pop(obj_fix) <- rep(pop, nrow(obj_fix@tab))
+    
+    
+    
     data_length <- nrow(obj_fix@tab)
     samp_size[length(samp_size)] <- as.character(data_length)
     
