@@ -41,6 +41,9 @@ library("hierfstat")
 
 set.seed(1994)
 
+# Setup -------------------------------------------------------------------
+
+
 # Load dataset
 # A GenAlEx formatted excel sheet is the required input
 obj <- read.genalexcel(
@@ -58,7 +61,10 @@ pop <- "DE_Seed" # select pop to analyze (acceptable names: "SL_Adult", "SL_Rege
 
 replic_num <- 100   # set number of replications
 
-# Simulations ####
+
+# Simulations -------------------------------------------------------------
+
+
 system.time({
 
 loci <- sort(nAll(obj)) # vector containing loci from least to
@@ -643,25 +649,53 @@ Gst_pairs <- function(pop_pairs, empirical){
   }else{
     print("Unknown population - Cannot continue")
   }
-}) 
 
+
+# tidy data.frames & save output ------------------------------------------
+
+
+fst_tidy <- bind_rows(mget(ls(pattern = "fst_")))
+
+fst_tidy$marker_num <- 
+  factor(fst_tidy$marker_num, levels = unique(
+    as.character(fst_tidy$marker_num)))
+
+rm(list = ls(pattern = "fst_")) 
+
+
+
+dch_tidy <- bind_rows(mget(ls(pattern = "dch_")))
+
+dch_tidy$marker_num <- 
+  factor(dch_tidy$marker_num, levels = unique(
+    as.character(dch_tidy$marker_num)))
+
+rm(list = ls(pattern = "dch_")) 
+
+
+jost_tidy <- bind_rows(mget(ls(pattern = "jost_")))
+
+jost_tidy$marker_num <- 
+  factor(jost_tidy$marker_num, levels = unique(
+    as.character(jost_tidy$marker_num)))
+
+rm(list = ls(pattern = "jost_")) 
 
 # Save results in working directory
 save.image(file = paste(id, replic_num, "repl_differentiation_results.RData", sep = "_"))
+}) 
 
-# Plots ####  
+# Plots -------------------------------------------------------------------
 
-pdf(paste(id, "distances_100_repl.pdf", sep = "_"), 
-    width = 32, height = 13.5, compress = FALSE)
+
+pdf(paste(id, replic_num, "repl_differentiation.pdf", sep = "_"), 
+    width = 24, height = 13.5, compress = FALSE)
 
 my_palette <- brewer.pal(12, "Set3") # create a new palette
 my_palette <- colorRampPalette(my_palette)(19) # how many colors this palette will have
 
 
-fst_tidy <- bind_rows(mget(ls(pattern = "fst_")))
-fst_tidy$marker_num <- 
-  factor(fst_tidy$marker_num, levels = unique(
-    as.character(fst_tidy$marker_num)))
+
 
 if(id == "Abies_DE_Adult"){
   title_Fst <- expression(paste(
@@ -763,11 +797,7 @@ p_fst_tidy + ggtitle(title_Fst) + xlab("Sample Size") +
 
 
 
-dch_tidy <- bind_rows(mget(ls(pattern = "dch_")))
 
-dch_tidy$marker_num <- 
-  factor(dch_tidy$marker_num, levels = unique(
-    as.character(dch_tidy$marker_num)))
 
 if(id == "Abies_DE_Adult"){
   title_dch <- expression(paste(
@@ -865,10 +895,6 @@ p_dch_tidy + ggtitle(title_dch) + xlab("Sample Size") +
 
 
 
-jost_tidy <- bind_rows(mget(ls(pattern = "jost_")))
-jost_tidy$marker_num <- 
-  factor(jost_tidy$marker_num, levels = unique(
-    as.character(jost_tidy$marker_num)))
 
 if(id == "Abies_DE_Adult"){
   title_jost <- expression(paste(
@@ -966,5 +992,395 @@ p_jost_tidy + ggtitle(title_jost) + xlab("Sample Size") +
 
 dev.off()
 
-# Reproducibility ####
+
+# Plots of common sample sizes --------------------------------------------
+
+
+
+pdf(paste(id, replic_num, "repl_differentiation_compact.pdf", sep = "_"), 
+    width = 24, height = 13.5, compress = FALSE)
+
+
+fst_tidy_compact <- subset(fst_tidy,
+                           samp_size == 25 | samp_size == 30 | samp_size == 50 | samp_size == 75)
+fst_tidy_compact$marker_num <- 
+  factor(fst_tidy_compact$marker_num, levels = unique(
+    as.character(fst_tidy_compact$marker_num)))
+
+
+
+y_axis_fst <- seq(-0.200, 0.950, 0.005)
+
+p_fst_tidy <- ggplot(fst_tidy_compact, aes(x = samp_size, y = original_values)) +
+  geom_boxplot(aes(fill = samp_size)) +
+  facet_wrap(~ marker_num, nrow = 2)
+
+p_fst_tidy + ggtitle(title_Fst) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(name = expression(paste("Mean pairwise ", F[ST])), breaks = y_axis_fst) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+
+
+
+
+dch_tidy_compact <- subset(dch_tidy,
+                           samp_size == 25 | samp_size == 30 | samp_size == 50 | samp_size == 75)
+
+dch_tidy_compact$marker_num <- 
+  factor(dch_tidy_compact$marker_num, levels = unique(
+    as.character(dch_tidy_compact$marker_num)))
+
+
+y_axis_dch <- seq(-0.10, 0.95, 0.02)
+
+p_dch_tidy <- ggplot(dch_tidy_compact, aes(x = samp_size, y = Dch)) +
+  geom_boxplot(aes(fill = samp_size)) +
+  facet_wrap(~ marker_num, nrow = 2)
+
+p_dch_tidy + ggtitle(title_dch) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(name = "Cavalli-Sforza and Edwards Chord distance", breaks = y_axis_dch) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+
+
+
+jost_tidy_compact <- subset(jost_tidy,
+                            samp_size == 25 | samp_size == 30 | samp_size == 50 | samp_size == 75)
+jost_tidy_compact$marker_num <- 
+  factor(jost_tidy_compact$marker_num, levels = unique(
+    as.character(jost_tidy_compact$marker_num)))
+
+
+
+y_axis_jost <- seq(-0.20, 0.95, 0.02)
+
+p_jost_tidy <- ggplot(jost_tidy_compact, aes(x = samp_size, y = original_values)) +
+  geom_boxplot(aes(fill = samp_size)) +
+  facet_wrap(~ marker_num, nrow = 2)
+
+p_jost_tidy + ggtitle(title_jost) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(name = "Jost's D", breaks = y_axis_jost) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+
+dev.off()
+
+
+# Plot for all available loci ---------------------------------------------
+
+
+pdf(paste(id, replic_num, "repl_differentiation_all_loci.pdf", sep = "_"), 
+    width = 24, height = 13.5, compress = FALSE)
+
+if(id == "Abies_DE_Adult"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for German adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Adult"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Greek adult population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Adult"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Slovenian adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Regen"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for German regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Regen"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Greek regeneration population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Regen"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Slovenian regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Seed"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for German seed population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Seed"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Greek seed population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Seed"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Slovenian seed population of ", 
+    italic("A. alba")))
+  
+}else if (id == "Fagus_DE_Adult"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for German adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Adult"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Greek adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Adult"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Slovenian adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Regen"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for German regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Regen"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Greek regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Regen"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Slovenian regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Seed"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for German seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Seed"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Greek seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Seed"){
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size for Slovenian seed population of ", 
+    italic("F. sylvatica")))
+  
+}else{
+  title_Fst <- expression(paste(
+    "Mean pairwise ", F[ST], " by sample size"))}
+
+y_axis_fst <- seq(-0.200, 0.950, 0.002)
+
+p_fst_all <- ggplot(
+  subset(fst_tidy, marker_num == paste(length(loci), "markers", sep = " ")), 
+  aes(x = samp_size, y = original_values)) +
+  geom_boxplot(aes(fill = samp_size)) 
+
+p_fst_all + ggtitle(title_Fst) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(name = expression(paste("Mean pairwise ", F[ST])), breaks = y_axis_fst) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+
+
+
+if(id == "Abies_DE_Adult"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for German adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Adult"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek adult population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Adult"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Regen"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for German regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Regen"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek regeneration population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Regen"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Seed"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for German seed population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Seed"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek seed population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Seed"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian seed population of ", 
+    italic("A. alba")))
+  
+}else if (id == "Fagus_DE_Adult"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for German adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Adult"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Adult"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Regen"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for German regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Regen"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Regen"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Seed"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for German seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Seed"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Greek seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Seed"){
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size for Slovenian seed population of ", 
+    italic("F. sylvatica")))
+  
+}else{
+  title_dch <- expression(paste(
+    "Cavalli-Sforza and Edwards Chord distance by sample size"))}
+
+y_axis_dch <- seq(0, 0.95, 0.01)
+
+p_dch_all <- ggplot(
+  subset(dch_tidy, marker_num == paste(length(loci), "markers", sep = " ")), 
+  aes(x = samp_size, y = Dch)) +
+  geom_boxplot(aes(fill = samp_size))
+
+p_dch_all + ggtitle(title_dch) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(name = "Cavalli-Sforza and Edwards Chord distance", breaks = y_axis_dch) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+
+
+
+
+if(id == "Abies_DE_Adult"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for German adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Adult"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Greek adult population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Adult"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Slovenian adult population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Regen"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for German regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Regen"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Greek regeneration population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Regen"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Slovenian regeneration population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_DE_Seed"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for German seed population of ", 
+    italic("A. alba")))
+}else if (id == "Abies_GR_Seed"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Greek seed population of ", 
+    italic("A. borisii-regis")))
+}else if (id == "Abies_SL_Seed"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Slovenian seed population of ", 
+    italic("A. alba")))
+  
+}else if (id == "Fagus_DE_Adult"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for German adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Adult"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Greek adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Adult"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Slovenian adult population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Regen"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for German regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Regen"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Greek regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Regen"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Slovenian regeneration population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_DE_Seed"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for German seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_GR_Seed"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Greek seed population of ", 
+    italic("F. sylvatica")))
+}else if (id == "Fagus_SL_Seed"){
+  title_jost <- expression(paste(
+    "Jost's D by sample size for Slovenian seed population of ", 
+    italic("F. sylvatica")))
+  
+}else{
+  title_jost <- expression(paste(
+    "Jost's D by sample size"))}
+
+y_axis_jost <- seq(-0.20, 0.95, 0.01)
+
+p_jost_all <- ggplot(
+  subset(jost_tidy, marker_num == paste(length(loci), "markers", sep = " ")), 
+  aes(x = samp_size, y = original_values)) +
+  geom_boxplot(aes(fill = samp_size))
+
+p_jost_all + ggtitle(title_jost) + xlab("Sample Size") +
+  scale_fill_manual(values = my_palette) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(name = "Jost's D", breaks = y_axis_jost) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+
+
+dev.off()
+
+# Reproducibility ---------------------------------------------------------
+
+
 writeLines(capture.output(sessionInfo()), paste("sessionInfo", id, "distances.txt", sep = "_"))
