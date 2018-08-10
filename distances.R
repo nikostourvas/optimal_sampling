@@ -76,7 +76,7 @@ most_poly_locus <- loci[length(loci)]
 obj_list <- seppop(obj) # separate pops
 obj <- obj_list[[pop]] 
 id <- paste(species, pop, sep = "_")
-
+rm(obj_list)
 
 # Set sample size
 if(id %in% c("Abies_DE_Adult", "Abies_GR_Adult", "Fagus_DE_Adult", "Fagus_GR_Adult")){
