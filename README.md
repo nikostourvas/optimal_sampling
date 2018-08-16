@@ -5,8 +5,8 @@
 2. Determination of optimal number of loci for accurate estimates of genetic diversity
 
 ### Description
-- One script for H<sub>e</sub>, H<sub>o</sub>, Ar, Allele detection.
-- One script for F<sub>ST</sub>, Jost's D, Cavalli-Sforza chord distance.
+- One script for H<sub>e</sub>, H<sub>o</sub>, Ar, Allele detection (optimal_sampling.R).
+- One script for F<sub>ST</sub>, Jost's D, Cavalli-Sforza chord distance (differentiation.R).
 
 The scripts need to be run individually for each population.
 
