@@ -1385,4 +1385,5 @@ dev.off()
 # Reproducibility ---------------------------------------------------------
 
 
-writeLines(capture.output(sessionInfo()), paste("sessionInfo", id, "distances.txt", sep = "_"))
+writeLines(capture.output(devtools::session_info()), paste("sessionInfo", 
+                                                 id, "differentiation.txt", sep = "_"))

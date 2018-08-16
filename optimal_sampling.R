@@ -1,7 +1,8 @@
 # A GenAlEx formatted excel sheet (.xlsx) is the required input file.
 
-# Set working directory, where the input file is. On RStudio you can achieve 
-# this by navigating to "Session" -> "Set Working Directory" -> "Choose Directory"
+# Set working directory, where the input file is. You can achieve 
+# this with the setwd function or by navigating to RStudio's menu 
+# "Session" -> "Set Working Directory" -> "Choose Directory"
 
 # When importing data sets the following warning might occur:
 # Warning message:
@@ -1833,4 +1834,4 @@ dev.off()
 # Reproducibility ---------------------------------------------------------
 
 
-writeLines(capture.output(sessionInfo()), paste("sessionInfo", id, ".txt", sep = "_"))
+writeLines(capture.output(devtools::session_info()), paste("sessionInfo", id, ".txt", sep = "_"))
