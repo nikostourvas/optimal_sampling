@@ -8,15 +8,17 @@
 - One script for H<sub>e</sub>, H<sub>o</sub>, Ar, Allele detection.
 - One script for F<sub>ST</sub>, Jost's D, Cavalli-Sforza chord distance.
 
+The scripts need to be run individually for each population.
+
 ### Before running the scripts
 
 - The scripts' input file is a GenAlEx formatted excel sheet just like the one SFI, ASP and AUTH share for the common LGM data set. Because loci rank is determined based on the pooled empirical data set, a new excel sheet has to be created containing all the loci intended to be analyzed. Even if a locus has not been genotyped for a population, it should be added as missing data. Note that the only statistic that is calculated from this pooled data set is loci rank. All other statistics are calculated on per population basis.
 ![Extra markers are added as missing data.](excel_extra_markers.PNG)
 
-- Note that population names are hardcoded and should be **exactly** the following in the GenAlEx input file: 
+- Note that population names are hard-coded and should be **exactly** the following in the GenAlEx input file: 
 **SL_Adult, SL_Regen, SL_Seed, DE_Adult, DE_Regen, DE_Seed, GR_Adult, GR_Regen, GR_Seed**
 
-- Note that the number of individuals in each population is hardcoded as following:
+- Note that the number of individuals in each population is hard-coded as following:
 
     - "Abies_DE_Adult", "Abies_GR_Adult", "Fagus_DE_Adult", "Fagus_GR_Adult": **250** trees
     - "Abies_SL_Adult": **249** trees
@@ -32,6 +34,7 @@ Please notify for any discrepancy for the above numbers.
 - The scripts have been verified to work on R 3.5.1 . The following guide assumes you are using the Rstudio IDE. 
 
 - After opening the script in RStudio, navigate to the "Setup" section of the script by clicking the button on the lower left corner of RStudio's built in text editor.
+![](setup_section.PNG)
 
 - In the "Setup" section fill in:
 
@@ -42,9 +45,9 @@ Please notify for any discrepancy for the above numbers.
     5. the number of replications (defaults to 100)
 
 
-- It is also possible to omit the step of missing data replacent by commenting the appropriate line. 
+- It is also possible to omit the step of missing data replacement by commenting the appropriate line. 
 
-- To run the analysis simply select all the script's text and click the button "Run" on the upper right side of the text editor.
+- To run the analysis simply select all the script's text and click the button "Run" on the upper right corner of the text editor.
 
 
 ### Output
