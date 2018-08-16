@@ -46,7 +46,6 @@ Please notify for any discrepancy for the above numbers.
     4. the population name (according to the names specified above)
     5. the number of replications (defaults to 100)
 
-&nbsp;   
 
 - It is also possible to omit the step of missing data replacent by commenting the appropriate line. 
 
