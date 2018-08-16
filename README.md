@@ -64,7 +64,6 @@ After the analysis is finished you should find five files in the working directo
     2. A pdf file with graphs only for the sample size classes of 25, 30, 50, 75 individuals.
     3. A pdf file with graphs only for the the replications containing all the available loci.
 
-&nbsp;
 
 3. A txt file which contains the parameters used in the R environment for reproducibility purposes.    
 
