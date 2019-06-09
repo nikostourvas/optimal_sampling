@@ -69,13 +69,32 @@ system.time({
 
 
 # Hexp
-extract_het_fun <- function(x){
-  x$Hobs
+extract_het_fun <- function(results, heterozygosity){
+  print(results$heterozygosity)
+}
+
+# THIS WORKS!!!!
+hexp_rap <- rapply(res_rap, 
+                   mean, 
+                   how = "replace")
+
+test <- rapply(hexp_rap,
+               melt,
+               how = "replace")
+
+test3 <- list()
+for(h in 2:11){  
+  for(i in samp_size[-length(samp_size)]){
+    for(j in 1:replic_num){ # number of replications
+      test3[[h]][[i]][[j]] <- 
+        hexp_rap[[h]][[i]][[j]]$Hexp
+    }
+  }
 }
 
 
-hexp_rap <- rapply(res_rap, extract_het_fun, how = "replace")
-
+library(rlang)
+test <- unlist(hexp_rap, recursive = F)
 
 # ---
 

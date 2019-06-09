@@ -38,6 +38,7 @@ obj <- read.genalexcel(
 # Comment next line to leave missing data as they are.
 obj <- missingno(obj, type = "mean")
 
+replic_num <- 100   # set number of replications
 
 # hierfstat ---------------------------------------------------------------
 
