@@ -1,0 +1,91 @@
+---
+title: "pres_plots_grid"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+load("/home/rstudio/working/Dropbox/WORK/LIFEGenMon/optimal_sampling/Simulations_adegenet/Optimal_Sampling_simulation_data/Abies/Abies_DE_Adult_100_repl_results.RData")
+```
+
+```{r}
+hexp_de <- Hexp_means_tidy
+hexp_de$Country <- "Germany"
+
+ar_de <- ar_means_tidy
+ar_de$Country <- "Germany"
+
+perc_de <- perc_repl_detect
+perc_de$Country <- "Germany"
+```
+
+
+
+
+```{r}
+load("/home/rstudio/working/Dropbox/WORK/LIFEGenMon/optimal_sampling/Simulations_adegenet/Optimal_Sampling_simulation_data/Abies/Abies_GR_Adult_100_repl_results.RData")
+```
+
+```{r}
+hexp_gr <- Hexp_means_tidy
+hexp_gr$Country <- "Greece"
+
+ar_gr <- ar_means_tidy
+ar_gr$Country <- "Greece"
+
+perc_gr <- perc_repl_detect
+perc_gr$Country <- "Greece"
+```
+
+
+
+
+
+
+```{r}
+load("/home/rstudio/working/Dropbox/WORK/LIFEGenMon/optimal_sampling/Simulations_adegenet/Optimal_Sampling_simulation_data/Abies/Abies_SL_Adult_100_repl_results.RData")
+```
+
+```{r}
+hexp_sl <- Hexp_means_tidy
+hexp_sl$Country <- "Slovenia"
+
+ar_sl <- ar_means_tidy
+ar_sl$Country <- "Slovenia"
+
+perc_sl <- perc_repl_detect
+perc_sl$Country <- "Slovenia"
+```
+
+
+```{r}
+hexp <- rbind(hexp_de, hexp_gr, hexp_sl)
+```
+
+
+```{r fig.height=10, fig.width=10, cache=T}
+hexp3 <- hexp %>% 
+  filter(marker_num %in% c('5 markers', '8 markers', '11 markers'))
+
+
+y_axis_He <- seq(0.05, 0.95, 0.05)
+
+p_He_tidy <- ggplot(hexp3, aes(x = samp_size, y = value)) + 
+  geom_boxplot(aes(fill = samp_size)) + 
+  facet_grid(Country ~ marker_num, scales = "free")
+
+p_He_tidy + xlab("Sample Size") + 
+  scale_fill_manual(values = my_palette) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5)) + 
+  theme(text = element_text(size = 18)) +
+  theme(title = element_text(size = 18)) +
+  scale_y_continuous(name = expression(paste("",H[e],"") ), 
+                     breaks = y_axis_He) +
+  stat_summary(fun.y=mean, geom="point", shape=4, size=2, color="black", fill="black")
+```
+
