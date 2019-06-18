@@ -1,0 +1,167 @@
+---
+title: "Ne Estimation using batch mode in NeEstimator"
+output: html_notebook
+---
+
+
+```{r}
+# Install (if needed) & load required libraries
+if (!require("adegenet")) install.packages("adegenet")
+library(adegenet)
+if (!require("popprxl")) install.packages("popprxl")
+library(popprxl)
+if (!require("reshape2")) install.packages("reshape2")
+library(reshape2)
+if (!require("ggplot2")) install.packages("ggplot2") 
+library(ggplot2)
+if (!require("dplyr")) install.packages("dplyr") 
+library(dplyr)
+if (!require("tidyr")) install.packages("tidyr") 
+library(tidyr)
+if (!require("RColorBrewer")) install.packages("RColorBrewer") 
+library(RColorBrewer)
+if (!require("devtools")) install.packages("devtools") 
+library(devtools)
+if (!require("hierfstat")) install_github("jgx65/hierfstat") 
+library("hierfstat")
+```
+
+```{r}
+set.seed(1994)
+
+# Setup -------------------------------------------------------------------
+
+
+# Load dataset
+# A GenAlEx formatted excel sheet is the required input
+obj <- read.genalexcel(
+  "LGM_DE_SI_GR_final.xlsx",   # name of excel file
+  sheet = "Abies",             # name of sheet where the genotypes reside
+  genclone = F) 
+
+# Real-world datasets are expected to contain missing data which might introduce bias in 
+# simulations. With the following function, missing data are replaced with mean values.
+# Comment next line to leave missing data as they are.
+obj <- missingno(obj, type = "mean")
+
+species <- "Abies"  # "Abies" or "Fagus"
+pop <- "GR_Regen" # select pop to analyze (acceptable names: "SL_Adult", "SL_Regen", "SL_Seed")
+
+replic_num <- 100   # set number of replications
+
+
+
+
+
+
+loci <- sort(nAll(obj)) # vector containing loci from least to
+  # most polymorphic according to the pooled dataset from all countries and pops
+  loci <- names(loci) # transform named vector to vector of names
+  most_poly_locus <- loci[length(loci)]
+  
+  # Seperate dataset by pop & select pop to analyze
+  obj_list <- seppop(obj) # separate pops
+  obj <- obj_list[[pop]] 
+  id <- paste(species, pop, sep = "_")
+  rm(obj_list)
+  
+  
+  
+  # Set sample size
+  if(id %in% c("Abies_DE_Adult", "Abies_GR_Adult", "Fagus_DE_Adult", "Fagus_GR_Adult")){
+    samp_size <- c("10", "15", "25", "30", "50", "75", "100", "125", "150", "175", "200", 
+                   "225","250")
+  }else if (id == "Abies_SL_Adult"){
+    samp_size <- c("10", "15", "25", "30", "50", "75", "100", "125", "150", "175", "200", 
+                   "225","249")
+  }else if (id == "Fagus_SL_Adult"){
+    samp_size <- c("10", "15", "25", "30", "50", "75", "100", "125", "150", "175", "200", 
+                   "225","251")
+  }else if (id %in% c("Abies_DE_Regen", "Abies_GR_Regen", "Abies_SL_Regen",
+                      "Fagus_DE_Regen", "Fagus_GR_Regen", "Fagus_SL_Regen")){
+    samp_size <- c("10", "15", "25", "30", "50", "75", "100", "125", "150", "175", "200")
+  }else if (id %in% c("Abies_DE_Seed","Abies_SL_Seed",
+                      "Fagus_DE_Seed", "Fagus_GR_Seed", "Fagus_SL_Seed")){
+    samp_size <- c("10", "15", "25", "30", "50", "75", "100", "125", "150", "175", "200", 
+                   "225","250","275", "300", "325", "350", "375", "400")
+  }else if (id == "Abies_GR_Seed"){
+    samp_size <- c("10", "15", "25", "30", "50", "75", "100", "125", "150", "175", "200", 
+                   "225","250","275", "300", "325", "350", "375", "382")
+  }else{
+    print("Unknown population - Cannot continue")
+  }
+  
+  
+  data <- list()
+  for(i in 1:length(loci)){
+    data[[length(loci)+1-i]] <- obj[, loc = loci[i:length(loci)]]
+  }
+```
+
+```{r}
+# Simulations -------------------------------------------------------------
+
+
+# Original function
+sim_dataset_fun <- function(empirical){
+  sim_data <- list()
+  for(i in samp_size[-length(samp_size)]){ 
+    sim_data[[i]] <-
+      replicate (replic_num, empirical[sample(1:nrow(empirical$tab), 
+                                              i, replace = F)])
+  }
+  
+  sim_data[[samp_size[length(samp_size)]]] <- empirical
+  return(sim_data)
+}
+
+# Nested function
+sim_fun <- function(data){
+  res <- list()
+  for(j in 1:length(data)){
+    res[[j]] <- sim_dataset_fun(data[[j]])
+  }
+  return(res)  
+}  
+
+
+sims <- sim_fun(data)
+```
+
+```{r eval=F, warning=F, results='hide'}
+library(hierfstat)
+
+hier_list <- rapply(sims, genind2hierfstat, how = "replace")
+```
+
+```{r}
+for(h in 2:11){
+  for(i in samp_size[-length(samp_size)]){
+    for(j in 1:replic_num){ # number of replications
+      write.fstat(hier_list[[h]][[i]][[j]],
+                  fname = paste(h, i, j, "obj.dat", sep = "_"))
+    }
+  }
+}
+
+for(h in 2:11){
+write.fstat(hier_list[[h]][[samp_size[length(samp_size)]]],
+            fname = paste(h, samp_size[length(samp_size)], 
+                                       "obj.dat", sep="_"))
+}
+
+```
+
+```{bash eval=F}
+mv *dat /home/rstudio/working/R_projects/optimal_sampling/ne/
+
+pwd
+```
+
+
+```{bash}
+cd ne
+
+rm *dat
+```
+
