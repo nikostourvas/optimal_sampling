@@ -1,0 +1,76 @@
+---
+title: "ne"
+output: html_notebook
+---
+
+```{r}
+ne <- read.csv(file = "ne.csv")
+```
+
+```{r}
+ne$samp_size <- as.factor(ne$samp_size)
+```
+
+```{r}
+library(ggplot2)
+ne_p <- ggplot(ne, aes(x=samp_size, y=Ne)) +
+  geom_boxplot() +
+  facet_grid(loci ~ Maf, scales = "free")
+
+ne_p
+```
+
+```{r}
+library(tidyverse)
+ne_002 <- ne %>% 
+  filter(Maf == 0.02) %>% 
+  filter(loci == 10)
+
+ggplot(ne_002, aes(x=samp_size, y=Ne)) +
+  geom_boxplot() 
+```
+
+
+```{r}
+ne002_filtered <- ne_002 %>% 
+  filter(Ne > -2000) %>% 
+  filter(Ne <= 2000)
+
+ggplot(ne002_filtered, aes(x=samp_size, y=Ne)) +
+  geom_boxplot() 
+```
+
+```{r}
+# CV function for all parameters
+
+cv_opt <- function(input){
+  sd(input, na.rm = TRUE) /
+    mean(input, na.rm = TRUE) * 100
+}
+
+
+library(dplyr)
+
+ne_cv <- ne_002 %>% 
+  group_by(samp_size, loci) %>%
+  summarise(cv_opt(Ne))
+
+ne_sd_sqrt <- ne_002 %>% 
+  group_by(samp_size, loci) %>%
+  summarise(sqrt(sd(Ne)))
+
+ne_median <- ne_002 %>% 
+  group_by(samp_size, loci) %>%
+  summarise(median(Ne))
+
+library(ggplot2)
+p_test_tidy <- ggplot(test0, 
+                      aes(x = samp_size, 
+                          y = `cv_opt(value)`)) + 
+  geom_point() + 
+  facet_wrap(~ marker_num, nrow = 2)
+
+p_test_tidy
+
+```
+

@@ -51,7 +51,7 @@ for(h in 2:11){
   for(i in samp_size[-length(samp_size)]){
     for(j in 1:replic_num){ # number of replications
       write.fstat(hier_list[[h]][[i]][[j]],
-                  fname = paste(h, i, j, "obj.dat", sep = "_"))
+                  fname = paste(h, i, j, ".dat", sep = "_"))
     }
   }
 }
@@ -59,7 +59,7 @@ for(h in 2:11){
 for(h in 2:11){
 write.fstat(hier_list[[h]][[samp_size[length(samp_size)]]],
             fname = paste(h, samp_size[length(samp_size)], 
-                                       "obj.dat", sep="_"))
+                                       ".dat", sep="_"))
 }
 
 
