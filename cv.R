@@ -8,7 +8,7 @@ cv_opt <- function(input){
 
 library(dplyr)
 
-test0 <- ar_means_tidy %>% 
+test0 <- Hexp_means_tidy %>% 
   group_by(samp_size, marker_num) %>%
   summarise(cv_opt(value))
 

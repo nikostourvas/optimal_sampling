@@ -8,10 +8,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-load("/home/rstudio/working/Dropbox/WORK/LIFEGenMon/optimal_sampling/Simulations_adegenet/Optimal_Sampling_simulation_data/Abies/Abies_DE_Adult_100_repl_results.RData")
+rm(list=ls())
 ```
 
-```{r DE_Ho_He, fig.height=4, fig.width=10, cache=T}
+```{r}
+load("/home/rstudio/working/Dropbox/WORK/LIFEGenMon/optimal_sampling/Simulations_adegenet/Optimal_Sampling_simulation_data/Abies/Abies_SL_Adult_100_repl_results.RData")
+```
+
+```{r SL_Ho_He, fig.height=4, fig.width=10, cache=T}
 # First run the plots section from optimal_sampling.R
 
 # Filter results for 3 loci classes
@@ -92,7 +96,7 @@ p_He_tidy + xlab("Sample Size") +
 
 
 
-```{r DE_Ar_perc, fig.height=4, fig.width=10, cache=T}
+```{r SL_Ar_perc, fig.height=4, fig.width=10, cache=T}
 
 ar_means_tidy3 <- ar_means_tidy %>% 
   filter(marker_num %in% c('5 markers', '8 markers', '11 markers'))
@@ -159,10 +163,13 @@ rm(list=ls())
 
 
 ```{r}
-load("/home/rstudio/working/Dropbox/WORK/LIFEGenMon/optimal_sampling/Simulations_adegenet/Optimal_Sampling_simulation_data/Abies_distances/Abies_DE_Adult_100_repl_differentiation_results.RData")
+load("/home/rstudio/working/Dropbox/WORK/LIFEGenMon/optimal_sampling/Simulations_adegenet/Optimal_Sampling_simulation_data/Abies_distances/Abies_SL_Adult_100_repl_differentiation_results.RData")
 ```
 
-```{r DE_fst_dch, fig.height=4, fig.width=10, cache=T}
+```{r SL_fst_dch, fig.height=4, fig.width=10, cache=T}
+my_palette <- brewer.pal(12, "Set3") # create a new palette
+my_palette <- colorRampPalette(my_palette)(19) # how many colors this palette will have
+
 fst_tidy3 <- fst_tidy %>% 
   filter(marker_num %in% c('5 markers', '8 markers', '11 markers'))
 
