@@ -3,6 +3,8 @@ title: "ne"
 output: html_notebook
 ---
 
+YOU HAVE TO REDO ALL CALCULATIONS EXCLUDING ONE OF THE PAIR OF LOCI THAT DISPLAYS ASSociation
+
 ```{r}
 ne <- read.csv(file = "ne.csv")
 ```
@@ -13,21 +15,95 @@ ne$samp_size <- as.factor(ne$samp_size)
 
 ```{r}
 library(ggplot2)
+# library(ggforce)
+
 ne_p <- ggplot(ne, aes(x=samp_size, y=Ne)) +
-  geom_boxplot() +
+  geom_boxplot(outlier.shape = NA) +
   facet_grid(loci ~ Maf, scales = "free")
 
-ne_p
+ne_p + coord_cartesian(ylim = c(-3000, 3000))
+
+# ylim1 <- c(-350, 300)
+# ylim1 <- c(-800, 600)
+
+# ne_p + coord_cartesian(ylim = ylim1) 
+
+# ne_p + 
+#   facet_zoom(ylim = c(0, 300))
+
+ne_p2 <- ggplot(ne, aes(x=samp_size, y=Ne)) +
+  geom_boxplot(outlier.shape = NA) +
+  facet_grid(loci ~ Maf, scales = "free")
+
+ylim1 <- c(-800, 600)
+
+ne_p2 + coord_cartesian(ylim = ylim1)
 ```
 
 ```{r}
 library(tidyverse)
-ne_002 <- ne %>% 
-  filter(Maf == 0.02) %>% 
-  filter(loci == 10)
+ne_compact <- ne %>% 
+  filter(loci %in% c(5,8,11)) %>% 
+  group_by(loci, Maf, samp_size) %>% 
+  summarise(Ne_m = mean(Ne), 
+            Ne_se = sqrt(sd(Ne)),
+            Ne_IQR = IQR(Ne),
+            Ne_mad = mad(Ne),
+            Ne_fiv_min = boxplot.stats(Ne)$stats[1],
+            Ne_fiv_max = boxplot.stats(Ne)$stats[5]) %>% 
+  mutate(Ne_IQR_range = Ne_fiv_max - Ne_fiv_min)
 
-ggplot(ne_002, aes(x=samp_size, y=Ne)) +
-  geom_boxplot() 
+ne_compact[is.na(ne_compact)] <- 0
+
+
+ggplot(ne_compact, aes(x=samp_size, y=Ne_IQR_range)) +
+  geom_point() +
+  facet_grid(loci ~ Maf, 
+             scales = "free"
+             )
+```
+
+
+```{r}
+library(tidyverse)
+ne_compact_11 <- ne_compact %>% 
+  filter(loci == 11)
+
+ggplot(ne_compact_11, aes(x=samp_size, y=Ne_mad)) +
+  geom_point() +
+  facet_wrap(~ Maf)
+```
+
+Are mean values normally distributed?
+```{r}
+ggplot(ne, aes(x=Ne)) +
+  geom_histogram(binwidth = 5) +
+  facet_grid(loci ~ Maf)
+```
+
+```{r}
+ne_11_005 <- ne %>% 
+  filter(loci ==11) %>% 
+  filter(Maf == 0.05)
+         
+ggplot(ne_11_005, aes(x=Ne)) +
+  geom_density() +
+  facet_wrap(~ samp_size)
+
+library(ggridges)
+ggplot(ne_11_005, aes(x=Ne, y = samp_size)) +
+  geom_density_ridges()
+
+p0 <- ggplot(ne_11_005, aes(x=samp_size, y = Ne)) +
+  geom_boxplot(outlier.shape = NA)
+
+# compute lower and upper whiskers
+ylim1 = boxplot.stats(ne_11_005$Ne)$stats[c(1, 5)]
+
+ylim1 <- c(-350, 300)
+
+p1 = p0 + coord_cartesian(ylim = ylim1)
+p1
 ```
 
 
@@ -63,14 +139,18 @@ ne_median <- ne_002 %>%
   group_by(samp_size, loci) %>%
   summarise(median(Ne))
 
-library(ggplot2)
-p_test_tidy <- ggplot(test0, 
-                      aes(x = samp_size, 
-                          y = `cv_opt(value)`)) + 
-  geom_point() + 
-  facet_wrap(~ marker_num, nrow = 2)
+# library(ggplot2)
+# p_test_tidy <- ggplot(test0, 
+#                       aes(x = samp_size, 
+#                           y = `cv_opt(value)`)) + 
+#   geom_point() + 
+#   facet_wrap(~ marker_num, nrow = 2)
+# 
+# p_test_tidy
 
-p_test_tidy
+```
 
+```{r}
+# make a ci line plot: CIs based on sd_sqrt - see code from mountainmair
 ```
 
