@@ -31,7 +31,9 @@ Please notify for any discrepancy for the above numbers.
 
 ### Using the script
 
-- The scripts have been verified to work on R 3.5.1 . The following guide assumes you are using the Rstudio IDE. 
+- The scripts have been verified to work on R 3.5.1 . The following guide assumes you are using the Rstudio IDE.
+The recommended way to run them is using the docker image provided in https://github.com/nikostourvas/optimal-sampling-docker.
+Successful run outside this docker image is not guaranteed, as some of packages that the scripts depend on, received major updates.
 
 - After opening the script in RStudio, navigate to the "Setup" section of the script by clicking the button on the lower left corner of RStudio's built in text editor.
 ![](setup_section.PNG)
