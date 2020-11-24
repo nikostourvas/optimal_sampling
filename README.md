@@ -1,7 +1,7 @@
 # Optimal Sampling
 
 ### Aims
-1. Determination of optimal sampling for accurate estimates of genetic diversity
+1. Determination of optimal number of samples for accurate estimates of genetic diversity
 2. Determination of optimal number of loci for accurate estimates of genetic diversity
 
 ### Description
