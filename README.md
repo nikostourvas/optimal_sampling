@@ -1,8 +1,6 @@
 # Optimal Sampling
 
-### Aims
-1. Determination of optimal number of samples for accurate estimates of genetic diversity
-2. Determination of optimal number of loci for accurate estimates of genetic diversity
+Scripts for the determination of optimal number of samples/loci for accurate estimates of genetic diversity.
 
 ### Description
 - One script for H<sub>e</sub>, H<sub>o</sub>, Ar, Allele detection (optimal_sampling.R).
