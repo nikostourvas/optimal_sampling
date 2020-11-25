@@ -1,5 +1,7 @@
 # Optimal Sampling
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4289396.svg)](https://doi.org/10.5281/zenodo.4289396)
+
 Scripts for the determination of optimal number of samples/loci for accurate estimates of genetic diversity.
 
 ### Description
